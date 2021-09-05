@@ -1,14 +1,14 @@
-import { StyleSheet,View } from "react-native";
+import { StyleSheet,View ,Text} from "react-native";
 import React from 'react'
 
 
-const VeggieDesc=()=>{
-
-
+const VeggieDesc=(props)=>{
+    const {route,navigation}=props
+console.log(route.params.veggie)
 
     return (
             <View>
-                <Button>Log In</Button>
+                <Text> {route.params.veggie}</Text>
             
             </View>
     )
