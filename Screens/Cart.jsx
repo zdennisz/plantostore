@@ -3,12 +3,12 @@ import React from 'react'
 
 
 const Cart=()=>{
-
-
+    //get data from redux
+    
 
     return (
             <View>
-                <Button>Log In</Button>
+               
             
             </View>
     )

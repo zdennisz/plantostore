@@ -1,14 +1,12 @@
-import { StyleSheet,View } from "react-native";
+import { StyleSheet,View,Text,FlatList } from "react-native";
 import React from 'react'
 
 
 const Store=()=>{
 
-
-
     return (
-            <View>
-                <Button>Log In</Button>
+            <View style={stlyes.container}>
+                <Text>Store</Text>
             
             </View>
     )

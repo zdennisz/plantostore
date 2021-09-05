@@ -10,7 +10,10 @@ const Farm=(props)=>{
     const goToCart=()=>{
         navigation.navigate('cart')
     }
-
+    const goToStore=()=>{
+        navigation.navigate('store')
+    }
+   
 
     useEffect(()=>{
         navigation.setOptions({
@@ -24,7 +27,7 @@ const Farm=(props)=>{
                     <Item
                       title='Store'
                       iconName={Platform.OS ==='android'?'md-add-circle-sharp':'ios-add-sharp'}
-                      onPress={goToCart}/>
+                      onPress={goToStore}/>
                   
                 </HeaderButtons>
             )
@@ -33,7 +36,10 @@ const Farm=(props)=>{
     },[]);
     
     return (
-            <View></View>
+            <View style={stlyes.container}>
+                <Text style={stlyes.text}>My Farm :</Text>
+                
+            <View></View></View>
     )
 }
 
@@ -41,8 +47,17 @@ const Farm=(props)=>{
 const stlyes=StyleSheet.create({
     container:{
         flex:1,
-        justifyContent:'center',
-        alignItems:'center'
+        flexDirection:'column',
+        justifyContent:'space-around',
+        alignItems:'flex-start'
+    },
+    text:{
+        flex:1,
+        width:100,
+        marginTop:25,
+        marginStart:10,
+        fontSize:23
+
     }
     
     
