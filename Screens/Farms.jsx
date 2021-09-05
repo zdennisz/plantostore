@@ -2,14 +2,24 @@ import { StyleSheet,View,Button } from "react-native";
 import React from 'react'
 
 
-const Farms=()=>{
+const Farms=(props)=>{
+    const {navigation}=props
+    const goToFarmAhandler=()=>{
+        navigation.navigate('farm',{
+            farm:'A'
+        })
+    }
 
-
+    const goToFarmBhandler=()=>{
+        navigation.navigate('farm',{
+            farm:'B'
+        })
+    }
 
     return (
             <View style={stlyes.container}>
-                <Button title="Farm A"></Button>
-                <Button title="Farm B"></Button>
+                <Button title="Farm A" onPress={goToFarmAhandler}></Button>
+                <Button title="Farm B" onPress={goToFarmBhandler}></Button>
             </View>
     )
 }

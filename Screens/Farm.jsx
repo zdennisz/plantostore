@@ -1,16 +1,20 @@
-import { StyleSheet,View } from "react-native";
-import React from 'react'
+import { StyleSheet,View,Text } from "react-native";
+import React, { useEffect } from 'react'
 
 
-const Farm=()=>{
+const Farm=(props)=>{
+    const {route,navigation}=props
+    
 
 
 
+    useEffect(()=>{
+        navigation.setOptions({
+            title:`Farm ${route.params.farm}`
+        })
+    })
     return (
-            <View>
-                <Button>Log In</Button>
-            
-            </View>
+            <View></View>
     )
 }
 
