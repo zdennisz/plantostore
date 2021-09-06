@@ -1,4 +1,4 @@
-import { ADD_TO_CART } from "../Actions/cart"
+import { ADD_TO_CART, PLACE_ORDER, INC_CART_ORDER, DEC_CART_ORDER } from "../Actions/cart"
 
 const initialState = {
     cartOrders: {},
@@ -16,16 +16,22 @@ const cartReducer = (state = initialState, action) => {
 
             } else {
                 //add new
-                newItemOrUpdated = { id: action.newItemId, name: action.newItemName, amount: 1 }
+                newItemOrUpdated = { name: action.newItemName, amount: 1 }
 
             }
             console.log(newItemOrUpdated)
             return {
                 ...state,
                 cartOrders: { ...state.cartOrders, [action.newItemId]: newItemOrUpdated },
-
             }
 
+        case PLACE_ORDER:
+            return state
+
+        case INC_CART_ORDER:
+            return state;
+        case DEC_CART_ORDER:
+            return state;
         default:
             return state
     }
