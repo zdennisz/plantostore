@@ -2,10 +2,12 @@ import { StyleSheet, View, Text, Platform } from "react-native";
 import React, { useEffect } from 'react'
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import CustomHeaderButton from "../components/CustomHeaderButtons";
+import { useSelector } from "react-redux";
 
 
 const Farm = (props) => {
     const { route, navigation } = props
+    const cartPastOrders = useSelector(state => state.cart.pastOrders)
 
     const goToCart = () => {
         navigation.navigate('cart')
@@ -37,9 +39,13 @@ const Farm = (props) => {
 
     return (
         <View style={stlyes.container}>
-            <Text style={stlyes.text}>My Farm :</Text>
-
-            <View></View></View>
+            <View style={stlyes.textContainer}>
+                <Text style={stlyes.text}>Past Orders:</Text>
+            </View>
+            <View style={stlyes.pastOrders}>
+                {cartPastOrders.length !== 0 ? null : <Text>No Past orders found !</Text>}
+            </View>
+        </View>
     )
 }
 
@@ -47,17 +53,23 @@ const Farm = (props) => {
 const stlyes = StyleSheet.create({
     container: {
         flex: 1,
-        flexDirection: 'column',
-        justifyContent: 'space-around',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    textContainer: {
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'center',
         alignItems: 'flex-start'
     },
+    pastOrders: {
+        flex: 10,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
     text: {
-        flex: 1,
-        width: 100,
-        marginTop: 25,
-        marginStart: 10,
+        marginVertical: 10,
         fontSize: 23
-
     }
 
 

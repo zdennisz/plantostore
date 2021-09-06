@@ -11,10 +11,12 @@ import Farm from './Screens/Farm'
 import Store from './Screens/Store'
 import Cart from './Screens/Cart'
 import VeggieDesc from './Screens/VeggieDesc'
+import cartReducer from './Store/Reducers/cart';
 
 
 const rootReducer = combineReducers({
-  categories: categoriesReducer
+  categories: categoriesReducer,
+  cart: cartReducer
 })
 
 const store = createStore(rootReducer)
