@@ -29,7 +29,12 @@ const cartReducer = (state = initialState, action) => {
             return state
 
         case INC_CART_ORDER:
-            return state;
+            const updatedCartItem = { name: state.cartOrders[action.itemId].name, amount: state.cartOrders[action.itemId].amount + 1 }
+            const newCartOrders = { ...state.cartOrders, [action.itemId]: updatedCartItem }
+            return {
+                ...state,
+                cartOrders: newCartOrders
+            }
         case DEC_CART_ORDER:
             let updatedCartOrders;
             const currAmount = state.cartOrders[action.itemId].amount
