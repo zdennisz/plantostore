@@ -1,12 +1,17 @@
-import { StyleSheet, View, Text, ScrollView } from "react-native";
+import { StyleSheet, View, Text, ScrollView, Button } from "react-native";
 import React, { useEffect, useState } from 'react'
 import axios from "axios";
 import { REACT_APP_AGWA_PLANTS } from '@env'
-
+import { useDispatch } from "react-redux";
+import { add_to_cart } from '../Store/Actions/cart'
 const VeggieDesc = (props) => {
     const { route, navigation } = props
     const [veggieData, SetVeggieData] = useState()
+    const dispatch = useDispatch()
+    const addVeggieToCart = () => {
 
+        dispatch(add_to_cart({ id: route.params.id, name: veggieData.name }))
+    }
 
     useEffect(() => {
         const getVeggieData = async () => {
@@ -41,6 +46,7 @@ const VeggieDesc = (props) => {
                         </View>)
                     })}
                 </View>
+                <Button title="Add to Cart" onPress={addVeggieToCart}></Button>
             </View>) : null
             }
 
