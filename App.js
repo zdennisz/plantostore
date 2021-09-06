@@ -9,7 +9,6 @@ import LogIn from './Screens/LogIn';
 import Farms from './Screens/Farms'
 import Farm from './Screens/Farm'
 import Store from './Screens/Store'
-import Category from './Screens/Category'
 import Cart from './Screens/Cart'
 import VeggieDesc from './Screens/VeggieDesc'
 
@@ -46,10 +45,6 @@ export default function App() {
             name='store'
             component={Store}
             options={{ title: "Store" }} />
-          <Stack.Screen
-            name='category'
-            component={Category}
-            options={{ title: "Categories" }} />
           <Stack.Screen
             name='cart'
             component={Cart}
