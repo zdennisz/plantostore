@@ -19,7 +19,7 @@ const cartReducer = (state = initialState, action) => {
                 newItemOrUpdated = { name: action.newItemName, amount: 1 }
 
             }
-            console.log(newItemOrUpdated)
+
             return {
                 ...state,
                 cartOrders: { ...state.cartOrders, [action.newItemId]: newItemOrUpdated },
@@ -31,7 +31,19 @@ const cartReducer = (state = initialState, action) => {
         case INC_CART_ORDER:
             return state;
         case DEC_CART_ORDER:
-            return state;
+            let updatedCartOrders;
+            const currAmount = state.cartOrders[action.itemId].amount
+            if (currAmount > 1) {
+                const updatedCartItem = { name: state.cartOrders[action.itemId].name, amount: state.cartOrders[action.itemId].amount - 1 }
+                updatedCartOrders = { ...state.cartOrders, [action.itemId]: updatedCartItem }
+            } else {
+                updatedCartOrders = { ...state.cartOrders }
+                delete updatedCartOrders[action.itemId]
+            }
+            return {
+                ...state,
+                cartOrders: updatedCartOrders
+            }
         default:
             return state
     }
