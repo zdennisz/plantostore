@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { add_categories } from '../Store/Actions/categories'
 import axios from "axios";
 import { REACT_APP_AGWA_CATEGORIES } from '@env'
+import GroupedVeggies from "../components/GroupedVeggies";
 
 
 const Store = (props) => {
@@ -28,43 +29,23 @@ const Store = (props) => {
         getCategories()
     }, [])
 
-    const navigateToCatHandler = (item) => {
-
-        navigation.navigate('category', {
-            plants: item.plants,
-            category: item.name
-        })
-    }
 
     return (
         <View style={stlyes.container}>
-            <View style={stlyes.listContainer}>
-                <FlatList data={categories} keyExtractor={(item, index) => index.toString()} renderItem={itemData => <Text style={stlyes.item} onPress={navigateToCatHandler.bind(this, itemData.item)}>{itemData.item.name}</Text>} />
-            </View>
+            <GroupedVeggies />
         </View>
     )
 }
 
 
+
 const stlyes = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center'
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        width: '100%'
     },
-    item: {
-        marginTop: 24,
-        padding: 30,
-        backgroundColor: 'green',
-        textAlign: 'center',
-        color: 'white',
-        borderRadius: 10
-    },
-    listContainer: {
-        marginTop: 100
-    }
-
-
 })
 
 
