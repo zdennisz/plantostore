@@ -12,7 +12,6 @@ const LogIn = (props) => {
     return (
         <View style={stlyes.container}>
             <Button title="Log In" onPress={pressHandler}></Button>
-
         </View>
     )
 }

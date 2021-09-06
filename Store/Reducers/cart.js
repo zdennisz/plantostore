@@ -1,4 +1,4 @@
-import { ADD_TO_CART, PLACE_ORDER, INC_CART_ORDER, DEC_CART_ORDER } from "../Actions/cart"
+import { ADD_TO_CART, PLACE_ORDER, INC_CART_ORDER, DEC_CART_ORDER, RESTORE_CART_ORDER } from "../Actions/cart"
 
 const initialState = {
     cartOrders: {},
@@ -48,6 +48,16 @@ const cartReducer = (state = initialState, action) => {
             return {
                 ...state,
                 cartOrders: updatedCartOrders
+            }
+        case RESTORE_CART_ORDER:
+            let newState = {}
+            for (const key in action.data) {
+                const newOrderItem = { name: action.data[key].name, amount: action.data[key].amount }
+                newState[`${action.data[key].id}`] = newOrderItem
+            }
+            return {
+                cartOrders: newState,
+                pastOrders: []
             }
         default:
             return state

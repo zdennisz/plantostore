@@ -10,7 +10,9 @@ const Farm = (props) => {
     const cartPastOrders = useSelector(state => state.cart.pastOrders)
 
     const goToCart = () => {
-        navigation.navigate('cart')
+        navigation.navigate('cart', {
+            cart: `${route.params.farm}`
+        })
     }
     const goToStore = () => {
         navigation.navigate('store')

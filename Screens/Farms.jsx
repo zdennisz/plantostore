@@ -1,8 +1,11 @@
-import { StyleSheet, View, Button } from "react-native";
+import { StyleSheet, View, Button, AppState } from "react-native";
 import React from 'react'
+import { useEffect, useState } from "react";
+
 
 
 const Farms = (props) => {
+    const [appState, setAppState] = useState(AppState.currentState);
     const { navigation } = props
     const goToFarmAhandler = () => {
         navigation.navigate('farm', {
@@ -15,6 +18,18 @@ const Farms = (props) => {
             farm: 'B'
         })
     }
+
+
+    const handleAppStateChange = (nextAppState) => {
+
+    }
+
+    useEffect(() => {
+        AppState.addEventListener('change', handleAppStateChange);
+        return () => {
+            AppState.removeEventListener('change', handleAppStateChange);
+        }
+    }, [])
 
     return (
         <View style={stlyes.container}>

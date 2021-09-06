@@ -12,7 +12,7 @@ const CartItem = (props) => {
         props.decCartItem(id)
     }
 
-    console.log(props)
+
     return (
         <View style={styles.cartItemContainer}>
             <View style={styles.nameContainer}>
