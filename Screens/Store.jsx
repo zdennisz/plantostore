@@ -12,6 +12,11 @@ const Store = (props) => {
     const categories = useSelector(state => state.categories.allCategories)
     const dispatch = useDispatch()
 
+    const showVeggieDesc = (elementId) => {
+        navigation.navigate('veggieDsec', {
+            id: elementId
+        })
+    }
 
     useEffect(() => {
         const getCategories = async () => {
@@ -32,7 +37,7 @@ const Store = (props) => {
 
     return (
         <View style={stlyes.container}>
-            <GroupedVeggies />
+            <GroupedVeggies showVeggieDesc={showVeggieDesc} />
         </View>
     )
 }

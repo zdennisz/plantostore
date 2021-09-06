@@ -6,12 +6,20 @@ import Card from './Card'
 
 
 
-const GroupedVeggies = () => {
+const GroupedVeggies = (props) => {
     const categories = useSelector(state => state.categories.allCategories)
 
+    const getVeggieDesc = (elementId) => {
+        props.showVeggieDesc(elementId)
+    }
     return (
         <View style={styles.flatListContainer}>
-            <FlatList showsVerticalScrollIndicator={false} data={categories} keyExtractor={(item, index) => index.toString()} renderItem={itemData => <Card itemData={itemData} />} />
+            <FlatList
+                showsVerticalScrollIndicator={false}
+                data={categories}
+                keyExtractor={(item, index) => index.toString()}
+                renderItem={itemData => <Card itemData={itemData} getVeggieDesc={getVeggieDesc} />}
+            />
         </View>
     )
 }

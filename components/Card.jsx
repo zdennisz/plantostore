@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React from 'react'
 
 
@@ -6,16 +6,19 @@ import React from 'react'
 const Card = (props) => {
     const { itemData } = props
 
+    const pressHandler = (element) => {
+        props.getVeggieDesc(element.id)
+    }
     return (
         <View style={styles.cardContainer}>
             <Text>{itemData.item.name}</Text>
             <View style={styles.cardContentContainer}>
-                {itemData.item.plants.map((item, index) => {
+                {itemData.item.plants.map((element, index) => {
                     return (
-                        <View style={styles.cardContent} key={index.toString()}  >
-                            <Text >{item.name}</Text>
+                        <TouchableOpacity key={index.toString()} style={styles.cardContent} onPress={pressHandler.bind(this, element)}>
+                            <Text >{element.name}</Text>
                             <Text>Some Image</Text>
-                        </View>)
+                        </TouchableOpacity>)
                 })}
             </View>
         </View>)
