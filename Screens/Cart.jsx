@@ -16,8 +16,8 @@ const Cart = () => {
                 amount: state.cart.cartOrders[key].amount
             })
         }
-        console.log(cartItems)
-        return cartItems
+
+        return cartItems.sort((a, b) => a.id < b.id ? 1 : -1)
     })
     const dispatch = useDispatch()
 
