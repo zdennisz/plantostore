@@ -8,13 +8,14 @@ import GroupedVeggies from "../components/GroupedVeggies";
 
 
 const Store = (props) => {
-    const { navigation } = props
+    const { route, navigation } = props
     const categories = useSelector(state => state.categories.allCategories)
     const dispatch = useDispatch()
 
     const showVeggieDesc = (elementId) => {
         navigation.navigate('veggieDsec', {
-            id: elementId
+            id: elementId,
+            cart: route.params.cart
         })
     }
 

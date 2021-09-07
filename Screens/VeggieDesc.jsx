@@ -10,7 +10,7 @@ const VeggieDesc = (props) => {
     const dispatch = useDispatch()
     const addVeggieToCart = () => {
 
-        dispatch(add_to_cart({ id: route.params.id, name: veggieData.name }))
+        dispatch(add_to_cart({ id: route.params.id, name: veggieData.name, cart: route.params.cart }))
     }
 
     useEffect(() => {

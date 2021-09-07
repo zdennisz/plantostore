@@ -1,8 +1,14 @@
 import { ADD_TO_CART, PLACE_ORDER, INC_CART_ORDER, DEC_CART_ORDER, RESTORE_CART_ORDER } from "../Actions/cart"
 
 const initialState = {
-    cartOrders: {},
-    pastOrders: []
+    farmA: {
+        cartOrders: {},
+        pastOrders: {}
+    },
+    farmB: {
+        cartOrders: {},
+        pastOrders: {}
+    }
 }
 
 
@@ -10,20 +16,53 @@ const cartReducer = (state = initialState, action) => {
     switch (action.type) {
         case ADD_TO_CART:
             let newItemOrUpdated;
-            if (state.cartOrders[action.newItemId]) {
-                //already have the item in the cart
-                newItemOrUpdated = { amount: state.cartOrders[action.newItemId].amount + 1, name: action.newItemName }
+            switch (action.cart) {
+                case 'farmA':
+                    if (state.farmA.cartOrders[action.newItemId]) {
+                        //already have the item in the cart
+                        newItemOrUpdated = { amount: state.farmA.cartOrders[action.newItemId].amount + 1, name: action.newItemName }
 
-            } else {
-                //add new
-                newItemOrUpdated = { name: action.newItemName, amount: 1 }
+                    } else {
 
+                        //add new
+                        newItemOrUpdated = { name: action.newItemName, amount: 1 }
+
+
+                    }
+
+                    return {
+                        farmA: {
+                            cartOrders: { ...state.farmA.cartOrders, [action.newItemId]: newItemOrUpdated },
+                            pastOrders: { ...state.farmA.pastOrders }
+                        },
+                        farmB: {
+                            cartOrders: { ...state.farmB.cartOrders },
+                            pastOrders: { ...state.farmB.pastOrders }
+                        }
+
+                    }
+
+
+                case 'farmB':
+                    if (state.farmB.cartOrders[action.newItemId]) {
+                        //already have the item in the cart
+                        newItemOrUpdated = { amount: state.farmB.cartOrders[action.newItemId].amount + 1, name: action.newItemName }
+
+                    } else {
+                        //add new
+                        newItemOrUpdated = { name: action.newItemName, amount: 1 }
+
+                    }
+
+                    return {
+                        ...state.farmA,
+                        farmB: {
+                            cartOrders: { ...state.farmB.cartOrders, [action.newItemId]: newItemOrUpdated },
+                            ...state.pastOrders
+                        },
+                    }
             }
 
-            return {
-                ...state,
-                cartOrders: { ...state.cartOrders, [action.newItemId]: newItemOrUpdated },
-            }
 
         case PLACE_ORDER:
             return state

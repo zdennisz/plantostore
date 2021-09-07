@@ -9,13 +9,13 @@ const Farms = (props) => {
     const { navigation } = props
     const goToFarmAhandler = () => {
         navigation.navigate('farm', {
-            farm: 'A'
+            farm: 'farmA'
         })
     }
 
     const goToFarmBhandler = () => {
         navigation.navigate('farm', {
-            farm: 'B'
+            farm: 'farmB'
         })
     }
 

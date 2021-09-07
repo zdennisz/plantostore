@@ -5,9 +5,8 @@ export const DEC_CART_ORDER = "DEC_CART_ORDER"
 export const RESTORE_CART_ORDER = "RESTORE_CART_ORDER"
 
 export const add_to_cart = (data) => {
-    return { type: ADD_TO_CART, newItemId: data.id, newItemName: data.name }
+    return { type: ADD_TO_CART, newItemId: data.id, newItemName: data.name, cart: data.cart }
 }
-
 
 export const place_order = () => {
     return { type: PLACE_ORDER }

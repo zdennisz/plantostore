@@ -7,15 +7,17 @@ import { useSelector } from "react-redux";
 
 const Farm = (props) => {
     const { route, navigation } = props
-    const cartPastOrders = useSelector(state => state.cart.pastOrders)
-
+    // const cartPastOrders = useSelector(state => state.cart[`Farm${route.params.farm}`].pastOrders)
+    // console.log(cartPastOrders)
     const goToCart = () => {
         navigation.navigate('cart', {
             cart: `${route.params.farm}`
         })
     }
     const goToStore = () => {
-        navigation.navigate('store')
+        navigation.navigate('store', {
+            cart: `${route.params.farm}`
+        })
     }
 
 
@@ -45,7 +47,7 @@ const Farm = (props) => {
                 <Text style={stlyes.text}>Past Orders:</Text>
             </View>
             <View style={stlyes.pastOrders}>
-                {cartPastOrders.length !== 0 ? null : <Text>No Past orders found !</Text>}
+                {/* {cartPastOrders.length !== 0 ? null : <Text>No Past orders found !</Text>} */}
             </View>
         </View>
     )

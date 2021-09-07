@@ -4,24 +4,30 @@ import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { place_order, dec_cart_item, inc_cart_item, resotre_cart_order } from "../Store/Actions/cart";
 import CartItem from '../components/CartItem'
+import { cartPicker } from "../utils/cartHelper";
 import { useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
+//
 const Cart = (props) => {
+
     const { route } = props
+
     //get data from redux
     const cart = useSelector(state => {
-        const cartItems = []
-        for (const key in state.cart.cartOrders) {
-            cartItems.push({
-                id: key,
-                name: state.cart.cartOrders[key].name,
-                amount: state.cart.cartOrders[key].amount
-            })
-        }
 
-        return cartItems.sort((a, b) => a.id < b.id ? 1 : -1)
+        let allFarmOrders;
+        if (route.params.cart === 'farmA') {
+            allFarmOrders = state.cart.farmA.cartOrders
+        } else {
+            allFarmOrders = state.cart.farmB.cartOrders
+        }
+        return state?.cart?.farmA?.cartOrders ? cartPicker(allFarmOrders) : []
+
     })
+
+
+
     const dispatch = useDispatch()
 
     const placeOrderHandler = () => {
@@ -50,14 +56,14 @@ const Cart = (props) => {
 
                         data.push({ ...parsedData[key] })
                     }
-                    console.log(data)
+
                     dispatch(resotre_cart_order(data))
                 }
             } catch (err) {
                 console.log(err)
             }
         }
-        getData()
+        // getData()
         return () => {
             const saveData = async () => {
                 try {
@@ -66,7 +72,7 @@ const Cart = (props) => {
                     console.log(err)
                 }
             }
-            saveData()
+            // saveData()
         }
     }, [])
     return (
