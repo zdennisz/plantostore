@@ -1,4 +1,6 @@
 import { ADD_TO_CART, PLACE_ORDER, INC_CART_ORDER, DEC_CART_ORDER, RESTORE_CART_ORDER } from "../Actions/cart"
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 
 const initialState = {
     farmA: {
@@ -10,12 +12,13 @@ const initialState = {
         pastOrders: {}
     }
 }
-
+//TODO add redux-persist to fix the get data from async storage that is called from cart screen
 
 const cartReducer = (state = initialState, action) => {
     switch (action.type) {
         case ADD_TO_CART:
             let newItemOrUpdated;
+            let newState
             switch (action.cart) {
                 case 'farmA':
                     if (state.farmA.cartOrders[action.newItemId]) {
@@ -27,7 +30,7 @@ const cartReducer = (state = initialState, action) => {
                         //add new
                         newItemOrUpdated = { name: action.newItemName, amount: 1 }
                     }
-                    return {
+                    newState = {
                         farmA: {
                             cartOrders: { ...state.farmA.cartOrders, [action.newItemId]: newItemOrUpdated },
                             pastOrders: { ...state.farmA.pastOrders }
@@ -37,6 +40,13 @@ const cartReducer = (state = initialState, action) => {
                             pastOrders: { ...state.farmB.pastOrders }
                         }
                     }
+                    try {
+                        AsyncStorage.setItem(`${action.cart}storeData`, JSON.stringify({ ...newState }))
+                    } catch (err) {
+
+                    }
+
+                    return newState
                 case 'farmB':
                     if (state.farmB.cartOrders[action.newItemId]) {
                         //already have the item in the cart
@@ -48,7 +58,7 @@ const cartReducer = (state = initialState, action) => {
 
                     }
 
-                    return {
+                    newState = {
                         farmA: {
                             cartOrders: { ...state.farmA.cartOrders },
                             pastOrders: { ...state.farmA.pastOrders }
@@ -58,8 +68,14 @@ const cartReducer = (state = initialState, action) => {
                             pastOrders: { ...state.farmB.pastOrders }
                         },
                     }
-            }
+                    try {
+                        AsyncStorage.setItem(`${action.cart}storeData`, JSON.stringify({ ...newState }))
+                    } catch (err) {
 
+                    }
+                    return newState
+            }
+            break;
 
         case PLACE_ORDER:
             return state
@@ -148,15 +164,46 @@ const cartReducer = (state = initialState, action) => {
             }
             break;
         case RESTORE_CART_ORDER:
-            let newState = {}
-            for (const key in action.data) {
-                const newOrderItem = { name: action.data[key].name, amount: action.data[key].amount }
-                newState[`${action.data[key].id}`] = newOrderItem
+            switch (action.cart) {
+                case 'farmA':
+                    console.log("Inside A restore")
+                    return AsyncStorage.getItem(`${action.cart}storeData`).then((storeData) => {
+                        const parsedData = JSON.parse(storeData);
+                        console.log("parsedData", parsedData)
+                        if (parsedData != null) {
+                            return {
+                                farmA: {
+                                    cartOrders: { ...parsedData.cartOrders },
+                                    pastOrders: { ...parsedData.pastOrders }
+                                },
+                                farmB: {
+                                    cartOrders: {},
+                                    pastOrders: {}
+                                }
+                            }
+
+                        } else {
+
+                            return state
+                        }
+                    }).catch((err) => {
+                        console.log("Error happen", err);
+                    })
+                    break;
+                case 'farmB':
+                    console.log("Inside B restore")
+                    return {
+                        farmB: {
+                            cartOrders: { ...action.data.cartOrders },
+                            pastOrders: { ...action.data.pastOrders }
+                        },
+                        farmA: {
+                            cartOrders: {},
+                            pastOrders: {}
+                        }
+                    }
             }
-            return {
-                cartOrders: newState,
-                pastOrders: {}
-            }
+            break;
         default:
             return state
     }

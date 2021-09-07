@@ -14,4 +14,3 @@ export const cartPicker = (dataStructure) => {
     return cartItems.sort((a, b) => a.id < b.id ? 1 : -1)
 
 }
-

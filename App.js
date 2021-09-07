@@ -2,7 +2,7 @@ import { createStore, combineReducers } from 'redux';
 import { Provider } from 'react-redux';
 import categoriesReducer from './Store/Reducers/categories';
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import LogIn from './Screens/LogIn';
@@ -23,6 +23,19 @@ const store = createStore(rootReducer)
 
 const Stack = createNativeStackNavigator()
 
+//this func help identify the screen we are at, we can save the path in the redux and save via async storage and get it on app load and navigate to it
+// export const getCurrentRoute = (state) => {
+//   if (state.index === undefined || state.index < 0) {
+//     return undefined;
+//   }
+//   const nestedState = state.routes[state.index].state;
+//   if (nestedState !== undefined) {
+//     return getCurrentRoute(nestedState);
+//   }
+//   //console.log("state.routes[state.index].name", state.routes[state.index])
+//   return console.log(state.routes[state.index].name);
+// };
+//   <NavigationContainer onStateChange={getCurrentRoute}>
 
 
 export default function App() {
@@ -34,7 +47,6 @@ export default function App() {
             name='logIn'
             component={LogIn}
             options={{ title: "Agwa HW" }} />
-
           <Stack.Screen
             name='farms'
             component={Farms}

@@ -20,16 +20,7 @@ const Farms = (props) => {
     }
 
 
-    const handleAppStateChange = (nextAppState) => {
 
-    }
-
-    useEffect(() => {
-        AppState.addEventListener('change', handleAppStateChange);
-        return () => {
-            AppState.removeEventListener('change', handleAppStateChange);
-        }
-    }, [])
 
     return (
         <View style={stlyes.container}>

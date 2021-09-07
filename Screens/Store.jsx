@@ -1,58 +1,51 @@
 import { StyleSheet, View, Text, FlatList } from "react-native";
-import React, { useEffect } from 'react'
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { add_categories } from '../Store/Actions/categories'
+import { add_categories } from "../Store/Actions/categories";
 import axios from "axios";
-import { REACT_APP_AGWA_CATEGORIES } from '@env'
+import { REACT_APP_AGWA_CATEGORIES } from "@env";
 import GroupedVeggies from "../components/GroupedVeggies";
 
-
 const Store = (props) => {
-    const { route, navigation } = props
-    const categories = useSelector(state => state.categories.allCategories)
-    const dispatch = useDispatch()
+	const { route, navigation } = props;
+	const categories = useSelector((state) => state.categories.allCategories);
+	const dispatch = useDispatch();
 
-    const showVeggieDesc = (elementId) => {
-        navigation.navigate('veggieDsec', {
-            id: elementId,
-            cart: route.params.cart
-        })
-    }
+	const showVeggieDesc = (elementId) => {
+		navigation.navigate("veggieDsec", {
+			id: elementId,
+			cart: route.params.cart,
+		});
+	};
 
-    useEffect(() => {
-        const getCategories = async () => {
-            try {
+	useEffect(() => {
+		const getCategories = async () => {
+			try {
+				const res = await axios.get(`${REACT_APP_AGWA_CATEGORIES}`);
 
-                const res = await axios.get(`${REACT_APP_AGWA_CATEGORIES}`)
+				dispatch(add_categories(res.data.categories));
+			} catch (err) {
+				console.log(err);
+			}
+		};
 
-                dispatch(add_categories(res.data.categories))
+		getCategories();
+	}, []);
 
-            } catch (err) {
-                console.log(err)
-            }
-        };
-
-        getCategories()
-    }, [])
-
-
-    return (
-        <View style={stlyes.container}>
-            <GroupedVeggies showVeggieDesc={showVeggieDesc} />
-        </View>
-    )
-}
-
-
+	return (
+		<View style={stlyes.container}>
+			<GroupedVeggies showVeggieDesc={showVeggieDesc} />
+		</View>
+	);
+};
 
 const stlyes = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        width: '100%'
-    },
-})
+	container: {
+		flex: 1,
+		justifyContent: "space-between",
+		alignItems: "center",
+		width: "100%",
+	},
+});
 
-
-export default Store
+export default Store;
