@@ -5,26 +5,21 @@ import { useDispatch } from "react-redux";
 import { place_order, dec_cart_item, inc_cart_item, resotre_cart_order } from "../Store/Actions/cart";
 import CartItem from '../components/CartItem'
 import { cartPicker } from "../utils/cartHelper";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 //
 const Cart = (props) => {
 
     const { route } = props
-    const farmType = route.params.cart
+    const [farmType, SetFarmType] = useState(route.params.cart)
     //get data from redux
-    const cart = useSelector(state => {
 
-        let allFarmOrders;
-        if (farmType === 'farmA') {
-            allFarmOrders = state.cart.farmA.cartOrders
-        } else {
-            allFarmOrders = state.cart.farmB.cartOrders
-        }
-        return state?.cart?.farmA?.cartOrders ? cartPicker(allFarmOrders) : []
+    const cart = useSelector(state => state.cart);
+    const cartOrders = farmType === 'farmA' ? cart.farmA.cartOrders : cart.farmB.cartOrders;
+    const cartItems = cartOrders ? cartPicker(cartOrders) : [];
 
-    })
+
 
 
 
@@ -49,25 +44,26 @@ const Cart = (props) => {
         const getData = async () => {
             try {
                 let data = []
-                const storeData = await AsyncStorage.getItem(`${route.params.cart}storeData`)
+                const storeData = await AsyncStorage.getItem(`${farmType}storeData`)
                 const parsedData = JSON.parse(storeData)
                 if (parsedData != null) {
+                    console.log(parsedData)
                     for (const key in parsedData) {
 
                         data.push({ ...parsedData[key] })
                     }
-
-                    dispatch(resotre_cart_order(data))
+                    console.log(`${farmType} data from async`, data)
+                    //dispatch(resotre_cart_order(data))
                 }
             } catch (err) {
                 console.log(err)
             }
         }
-        // getData()
+        //getData()
         return () => {
             const saveData = async () => {
                 try {
-                    await AsyncStorage.setItem(`${route.params.cart}storeData`, JSON.stringify({ ...cart }))
+                    await AsyncStorage.setItem(`${farmType}storeData`, JSON.stringify({ ...cart }))
                 } catch (err) {
                     console.log(err)
                 }
@@ -77,13 +73,13 @@ const Cart = (props) => {
     }, [])
     return (
         <View style={stlyes.container}>
-            {cart.length < 1 ?
+            {cartItems.length < 1 ?
                 <View style={stlyes.ordersView}>
                     <Text>No Orders placed...</Text>
                 </View> :
                 <View style={stlyes.ordersView}>
                     <FlatList
-                        data={cart}
+                        data={cartItems}
                         keyExtractor={item => item.id}
                         renderItem={itemData => <CartItem id={itemData.item.id} name={itemData.item.name} incCartItem={incCartItem} decCartItem={decCartItem} amount={itemData.item.amount} />} />
                     <Button title="Place Order" onPress={placeOrderHandler}></Button>

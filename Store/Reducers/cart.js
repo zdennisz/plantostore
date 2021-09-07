@@ -26,10 +26,7 @@ const cartReducer = (state = initialState, action) => {
 
                         //add new
                         newItemOrUpdated = { name: action.newItemName, amount: 1 }
-
-
                     }
-
                     return {
                         farmA: {
                             cartOrders: { ...state.farmA.cartOrders, [action.newItemId]: newItemOrUpdated },
@@ -39,10 +36,7 @@ const cartReducer = (state = initialState, action) => {
                             cartOrders: { ...state.farmB.cartOrders },
                             pastOrders: { ...state.farmB.pastOrders }
                         }
-
                     }
-
-
                 case 'farmB':
                     if (state.farmB.cartOrders[action.newItemId]) {
                         //already have the item in the cart
@@ -55,10 +49,13 @@ const cartReducer = (state = initialState, action) => {
                     }
 
                     return {
-                        ...state.farmA,
+                        farmA: {
+                            cartOrders: { ...state.farmA.cartOrders },
+                            pastOrders: { ...state.farmA.pastOrders }
+                        },
                         farmB: {
                             cartOrders: { ...state.farmB.cartOrders, [action.newItemId]: newItemOrUpdated },
-                            ...state.pastOrders
+                            pastOrders: { ...state.farmB.pastOrders }
                         },
                     }
             }
@@ -158,7 +155,7 @@ const cartReducer = (state = initialState, action) => {
             }
             return {
                 cartOrders: newState,
-                pastOrders: []
+                pastOrders: {}
             }
         default:
             return state
