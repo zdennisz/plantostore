@@ -12,12 +12,12 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 const Cart = (props) => {
 
     const { route } = props
-
+    const farmType = route.params.cart
     //get data from redux
     const cart = useSelector(state => {
 
         let allFarmOrders;
-        if (route.params.cart === 'farmA') {
+        if (farmType === 'farmA') {
             allFarmOrders = state.cart.farmA.cartOrders
         } else {
             allFarmOrders = state.cart.farmB.cartOrders
@@ -36,7 +36,7 @@ const Cart = (props) => {
 
 
     const incCartItem = (prop) => {
-        dispatch(inc_cart_item(prop))
+        dispatch(inc_cart_item({ id: prop, cart: farmType }))
     }
 
     const decCartItem = (prop) => {

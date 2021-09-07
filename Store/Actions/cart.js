@@ -13,7 +13,7 @@ export const place_order = () => {
 }
 
 export const inc_cart_item = (data) => {
-    return { type: INC_CART_ORDER, itemId: data }
+    return { type: INC_CART_ORDER, itemId: data.id, cart: data.cart }
 }
 
 export const dec_cart_item = (data) => {

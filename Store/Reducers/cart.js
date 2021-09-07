@@ -68,12 +68,39 @@ const cartReducer = (state = initialState, action) => {
             return state
 
         case INC_CART_ORDER:
-            const updatedCartItem = { name: state.cartOrders[action.itemId].name, amount: state.cartOrders[action.itemId].amount + 1 }
-            const newCartOrders = { ...state.cartOrders, [action.itemId]: updatedCartItem }
-            return {
-                ...state,
-                cartOrders: newCartOrders
+            let updatedCartItem
+            switch (action.cart) {
+                case 'farmA':
+                    updatedCartItem = { name: state.farmA.cartOrders[action.itemId].name, amount: state.farmA.cartOrders[action.itemId].amount + 1 }
+                    return {
+                        farmA: {
+                            cartOrders: {
+                                ...state.farmA.cartOrders, [action.itemId]: updatedCartItem
+                            },
+                            pastOrders: { ...state.farmA.pastOrders }
+                        },
+                        farmB: {
+                            cartOrders: { ...state.farmB.cartOrders },
+                            pastOrders: { ...state.farmB.pastOrders }
+                        }
+                    }
+
+                case 'farmB':
+                    updatedCartItem = { name: state.farmB.cartOrders[action.itemId].name, amount: state.farmB.cartOrders[action.itemId].amount + 1 }
+                    return {
+                        farmB: {
+                            cartOrders: {
+                                ...state.farmB.cartOrders, [action.itemId]: updatedCartItem
+                            },
+                            pastOrders: { ...state.farmB.pastOrders }
+                        },
+                        farmA: {
+                            cartOrders: { ...state.farmA.cartOrders },
+                            pastOrders: { ...state.farmA.pastOrders }
+                        }
+                    }
             }
+            break;
         case DEC_CART_ORDER:
             let updatedCartOrders;
             const currAmount = state.cartOrders[action.itemId].amount
