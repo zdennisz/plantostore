@@ -103,18 +103,53 @@ const cartReducer = (state = initialState, action) => {
             break;
         case DEC_CART_ORDER:
             let updatedCartOrders;
-            const currAmount = state.cartOrders[action.itemId].amount
-            if (currAmount > 1) {
-                const updatedCartItem = { name: state.cartOrders[action.itemId].name, amount: state.cartOrders[action.itemId].amount - 1 }
-                updatedCartOrders = { ...state.cartOrders, [action.itemId]: updatedCartItem }
-            } else {
-                updatedCartOrders = { ...state.cartOrders }
-                delete updatedCartOrders[action.itemId]
+            let currAmount;
+            switch (action.cart) {
+                case 'farmA':
+                    currAmount = state.farmA.cartOrders[action.itemId].amount
+                    if (currAmount > 1) {
+                        const updatedCartItem = { name: state.farmA.cartOrders[action.itemId].name, amount: state.farmA.cartOrders[action.itemId].amount - 1 }
+                        updatedCartOrders = { ...state.farmA.cartOrders, [action.itemId]: updatedCartItem }
+                    } else {
+                        updatedCartOrders = { ...state.farmA.cartOrders }
+                        delete updatedCartOrders[action.itemId]
+                    }
+
+                    return {
+                        farmA: {
+                            cartOrders: { ...updatedCartOrders },
+                            pastOrders: { ...state.farmA.pastOrders }
+                        },
+                        farmB: {
+                            cartOrders: { ...state.farmB.cartOrders },
+                            pastOrders: { ...state.farmB.pastOrders }
+                        }
+
+                    }
+                case 'farmB':
+                    currAmount = state.farmB.cartOrders[action.itemId].amount
+                    if (currAmount > 1) {
+                        const updatedCartItem = { name: state.farmB.cartOrders[action.itemId].name, amount: state.farmB.cartOrders[action.itemId].amount - 1 }
+                        updatedCartOrders = { ...state.farmB.cartOrders, [action.itemId]: updatedCartItem }
+                    } else {
+                        updatedCartOrders = { ...state.farmB.cartOrders }
+                        delete updatedCartOrders[action.itemId]
+                    }
+
+                    return {
+                        farmB: {
+                            cartOrders: { ...updatedCartOrders },
+                            pastOrders: { ...state.farmB.pastOrders }
+                        },
+                        farmA: {
+                            cartOrders: { ...state.farmA.cartOrders },
+                            pastOrders: { ...state.farmA.pastOrders }
+                        }
+
+                    }
+
             }
-            return {
-                ...state,
-                cartOrders: updatedCartOrders
-            }
+            break;
         case RESTORE_CART_ORDER:
             let newState = {}
             for (const key in action.data) {

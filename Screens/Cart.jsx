@@ -40,7 +40,7 @@ const Cart = (props) => {
     }
 
     const decCartItem = (prop) => {
-        dispatch(dec_cart_item(prop))
+        dispatch(dec_cart_item({ id: prop, cart: farmType }))
     }
 
 

@@ -17,7 +17,7 @@ export const inc_cart_item = (data) => {
 }
 
 export const dec_cart_item = (data) => {
-    return { type: DEC_CART_ORDER, itemId: data }
+    return { type: DEC_CART_ORDER, itemId: data.id, cart: data.cart }
 }
 
 export const resotre_cart_order = (data) => {
