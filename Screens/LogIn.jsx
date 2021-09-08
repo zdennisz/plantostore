@@ -1,5 +1,5 @@
-import { StyleSheet, View, Button } from "react-native";
 import React from "react";
+import { StyleSheet, View, Button } from "react-native";
 
 const LogIn = (props) => {
 	const { navigation } = props;

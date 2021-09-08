@@ -1,74 +1,83 @@
-import { StyleSheet, View, Button, Text, FlatList } from "react-native";
-import React, { useEffect, useState, useCallback, useMemo } from "react";
+import React, { useEffect, useState } from "react";
+import { cartPicker } from "../utils/cartHelper";
+import { set_item_id } from "../Store/Actions/itemId";
 import { useSelector, useDispatch } from "react-redux";
+import { StyleSheet, View, Button, Text, FlatList } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import CartItem from "../components/CartItem";
 import {
 	place_order,
 	dec_cart_item,
 	inc_cart_item,
 	resotre_cart_order,
 } from "../Store/Actions/cart";
-import CartItem from "../components/CartItem";
-import { cartPicker } from "../utils/cartHelper";
-
-import useAppState from "../hooks/useAppState";
 
 const Cart = (props) => {
 	const { route } = props;
-	const [farmType, SetFarmType] = useState(route.params.cart);
-	//get data from redux
+	const [farmType] = useState(route.params.cart);
 
 	const cart = useSelector((state) => state.cart);
+	const currItemId = useSelector((state) => state.itemId.currItemId);
 	const dispatch = useDispatch();
 
-	const cartOrders = useMemo(() => {
-		return farmType === "farmA"
-			? cart?.farmA?.cartOrders
-			: cart?.farmB?.cartOrders;
-	}, [cart.farmA, cart.farmB]);
+	const cartOrders =
+		farmType === "farmA" ? cart?.farmA?.cartOrders : cart?.farmB?.cartOrders;
 
-	const cartItems = useMemo(() => {
-		return cartOrders ? cartPicker(cartOrders) : [];
-	}, [cartOrders]);
-
-	//useAppState(handleStateChange);
+	const cartItems = cartOrders ? cartPicker(cartOrders) : [];
 
 	const placeOrderHandler = () => {
 		dispatch(place_order());
 	};
 
-	const incCartItem = (prop) => {
-		dispatch(inc_cart_item({ id: prop, cart: farmType }));
-	};
-
-	const decCartItem = (prop) => {
-		dispatch(dec_cart_item({ id: prop, cart: farmType }));
-	};
-	const getData = () => {
-		dispatch(resotre_cart_order({ cart: farmType }));
-	};
-	const handleStateChange = useCallback(async () => {
+	const incCart = (dispatch, getState, it) => {
+		dispatch(inc_cart_item({ id: it, cart: farmType }));
+		const farm =
+			farmType === "farmA" ? getState().cart.farmA : getState().cart.farmB;
 		try {
-			if (farmType === "farmA") {
-				await AsyncStorage.setItem(
-					`${farmType}storeData`,
-					JSON.stringify({ ...cart.farmA })
-				);
-			} else {
-				await AsyncStorage.setItem(
-					`${farmType}storeData`,
-					JSON.stringify({ ...cart.farmB })
-				);
-			}
+			AsyncStorage.setItem(`${farmType}storeData`, JSON.stringify({ ...farm }));
 		} catch (err) {
 			console.log(err);
 		}
-	}, [farmType, cart.farmA, cart.farmB]);
+	};
+
+	const decCart = (dispatch, getState) => {
+		dispatch(dec_cart_item({ id: veggieId, cart: farmType }));
+		const farm =
+			farmType === "farmA" ? getState().cart.farmA : getState().cart.farmB;
+		try {
+			AsyncStorage.setItem(`${farmType}storeData`, JSON.stringify({ ...farm }));
+		} catch (err) {
+			console.log(err);
+		}
+	};
+
+	const incCartItem = (itemId) => {
+		dispatch(set_item_id(itemId));
+		dispatch(incCart);
+	};
+
+	const decCartItem = (itemId) => {
+		dispatch(decCart);
+	};
+
+	const getData = (dispatch, getState) => {
+		AsyncStorage.getItem(`${farmType}storeData`)
+			.then((storeData) => {
+				const parsedData = JSON.parse(storeData);
+				if (parsedData != null) {
+					dispatch(
+						resotre_cart_order({ cart: farmType, cartItems: parsedData })
+					);
+				}
+			})
+			.catch((err) => {
+				console.log("Error happen", err);
+			});
+	};
 
 	useEffect(() => {
-		//getData();
-		return () => {
-			//	handleStateChange();
-		};
+		dispatch(getData);
+		return () => {};
 	}, []);
 
 	return (

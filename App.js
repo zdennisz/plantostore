@@ -1,4 +1,4 @@
-import { createStore, combineReducers } from 'redux';
+import { createStore, combineReducers, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
 import categoriesReducer from './Store/Reducers/categories';
 import React from 'react';
@@ -12,17 +12,21 @@ import Store from './Screens/Store'
 import Cart from './Screens/Cart'
 import VeggieDesc from './Screens/VeggieDesc'
 import cartReducer from './Store/Reducers/cart';
-
+import itemIdReducer from './Store/Reducers/itemId'
+import reduxMiddelware from './utils/reduxMiddelware'
 
 const rootReducer = combineReducers({
   categories: categoriesReducer,
-  cart: cartReducer
+  cart: cartReducer,
+  itemId: itemIdReducer
 })
 
-const store = createStore(rootReducer)
+const middlewareEnhancer = applyMiddleware(reduxMiddelware)
+const store = createStore(rootReducer, middlewareEnhancer)
 
 const Stack = createNativeStackNavigator()
 
+// TODO
 //this func help identify the screen we are at, we can save the path in the redux and save via async storage and get it on app load and navigate to it
 // export const getCurrentRoute = (state) => {
 //   if (state.index === undefined || state.index < 0) {

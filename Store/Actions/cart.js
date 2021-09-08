@@ -21,5 +21,5 @@ export const dec_cart_item = (data) => {
 }
 
 export const resotre_cart_order = (data) => {
-    return { type: RESTORE_CART_ORDER, cart: data.cart }
+    return { type: RESTORE_CART_ORDER, cart: data.cart, cartItems: data.cartItems }
 }

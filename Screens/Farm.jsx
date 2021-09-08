@@ -1,11 +1,12 @@
-import { StyleSheet, View, Text, Platform } from "react-native";
 import React, { useEffect } from "react";
+import { StyleSheet, View, Text, Platform } from "react-native";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import CustomHeaderButton from "../components/CustomHeaderButtons";
 import { useSelector } from "react-redux";
 
 const Farm = (props) => {
 	const { route, navigation } = props;
+	// TODO
 	// const cartPastOrders = useSelector(state => state.cart[`Farm${route.params.farm}`].pastOrders)
 	// console.log(cartPastOrders)
 	const goToCart = () => {

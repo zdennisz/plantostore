@@ -3,7 +3,6 @@ const initialState = {
     allCategories: [],
 };
 
-
 const categoriesReducer = (state = initialState, action) => {
     switch (action.type) {
         case ADD_CATEGORIES:

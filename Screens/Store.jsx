@@ -1,10 +1,10 @@
-import { StyleSheet, View, Text, FlatList } from "react-native";
+import { StyleSheet, View } from "react-native";
 import React, { useEffect } from "react";
+import axios from "axios";
+import GroupedVeggies from "../components/GroupedVeggies";
+import { REACT_APP_AGWA_CATEGORIES } from "@env";
 import { useDispatch, useSelector } from "react-redux";
 import { add_categories } from "../Store/Actions/categories";
-import axios from "axios";
-import { REACT_APP_AGWA_CATEGORIES } from "@env";
-import GroupedVeggies from "../components/GroupedVeggies";
 
 const Store = (props) => {
 	const { route, navigation } = props;
