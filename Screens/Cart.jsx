@@ -15,9 +15,7 @@ import {
 const Cart = (props) => {
 	const { route } = props;
 	const [farmType] = useState(route.params.cart);
-
 	const cart = useSelector((state) => state.cart);
-	const currItemId = useSelector((state) => state.itemId.currItemId);
 	const dispatch = useDispatch();
 
 	const cartOrders =
@@ -29,8 +27,8 @@ const Cart = (props) => {
 		dispatch(place_order());
 	};
 
-	const incCart = (dispatch, getState, it) => {
-		dispatch(inc_cart_item({ id: it, cart: farmType }));
+	const incCart = (dispatch, getState, itemId) => {
+		dispatch(inc_cart_item({ id: itemId, cart: farmType }));
 		const farm =
 			farmType === "farmA" ? getState().cart.farmA : getState().cart.farmB;
 		try {
@@ -40,8 +38,8 @@ const Cart = (props) => {
 		}
 	};
 
-	const decCart = (dispatch, getState) => {
-		dispatch(dec_cart_item({ id: veggieId, cart: farmType }));
+	const decCart = (dispatch, getState, itemId) => {
+		dispatch(dec_cart_item({ id: itemId, cart: farmType }));
 		const farm =
 			farmType === "farmA" ? getState().cart.farmA : getState().cart.farmB;
 		try {
@@ -57,6 +55,7 @@ const Cart = (props) => {
 	};
 
 	const decCartItem = (itemId) => {
+		dispatch(set_item_id(itemId));
 		dispatch(decCart);
 	};
 
@@ -77,7 +76,6 @@ const Cart = (props) => {
 
 	useEffect(() => {
 		dispatch(getData);
-		return () => {};
 	}, []);
 
 	return (
