@@ -1,7 +1,7 @@
 import { createStore, combineReducers, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
 import categoriesReducer from './Store/Reducers/categories';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet } from 'react-native';
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -14,7 +14,7 @@ import VeggieDesc from './Screens/VeggieDesc'
 import cartReducer from './Store/Reducers/cart';
 import itemIdReducer from './Store/Reducers/itemId'
 import reduxMiddelware from './utils/reduxMiddelware'
-
+import useAppState from './hooks/useAppState';
 const rootReducer = combineReducers({
   categories: categoriesReducer,
   cart: cartReducer,
@@ -26,26 +26,50 @@ const store = createStore(rootReducer, middlewareEnhancer)
 
 const Stack = createNativeStackNavigator()
 
-// TODO
-//this func help identify the screen we are at, we can save the path in the redux and save via async storage and get it on app load and navigate to it
-// export const getCurrentRoute = (state) => {
-//   if (state.index === undefined || state.index < 0) {
-//     return undefined;
-//   }
-//   const nestedState = state.routes[state.index].state;
-//   if (nestedState !== undefined) {
-//     return getCurrentRoute(nestedState);
-//   }
-//   //console.log("state.routes[state.index].name", state.routes[state.index])
-//   return console.log(state.routes[state.index].name);
-// };
-//   <NavigationContainer onStateChange={getCurrentRoute}>
 
 
-export default function App() {
+export default App = () => {
+  const [historyPath, setHistoryPath] = useState([])
+  useAppState(historyPath)
+
+  const getCurrentRoute = (state) => {
+    if (state.index === undefined || state.index < 0) {
+      return undefined;
+    }
+
+    const nestedState = state.routes[state.index].state;
+    if (nestedState !== undefined) {
+      return getCurrentRoute(nestedState);
+    }
+
+    setHistoryPath(historyPath => {
+      let path
+      switch (state.routes[state.index].name) {
+        case 'logIn':
+          return [...historyPath, state.routes[state.index].name]
+        case 'farms':
+          return [...historyPath, state.routes[state.index].name]
+        case 'farm':
+          return [...historyPath, state.routes[state.index].params.farm]
+        case 'store':
+          path = 'store' + state.routes[state.index].params.cart.slice(-1)
+          return [...historyPath, path]
+        case 'cart':
+          path = 'cart' + state.routes[state.index].params.cart.slice(-1)
+          return [...historyPath, path]
+        case 'veggieDsec':
+          path = state.routes[state.index].params.cart + ' ' + state.routes[state.index].params.id
+          return [...historyPath, path]
+      }
+
+    }
+    )
+
+  }
+
   return (
     <Provider store={store}>
-      <NavigationContainer>
+      <NavigationContainer onStateChange={getCurrentRoute} >
         <Stack.Navigator>
           <Stack.Screen
             name='logIn'
