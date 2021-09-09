@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, View, Text, FlatList } from "react-native";
+import { StyleSheet, View, FlatList } from "react-native";
 import { useSelector } from "react-redux";
 import Card from "./Card";
 
@@ -24,16 +24,12 @@ const GroupedVeggies = (props) => {
 };
 
 const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		justifyContent: "flex-start",
-		alignItems: "center",
-		width: "100%",
-		flexWrap: "wrap",
-	},
 	flatListContainer: {
 		width: "80%",
 		marginVertical: 10,
+		elevation: 5,
+		borderRadius: 5,
+		backfaceVisibility: "hidden",
 	},
 });
 
