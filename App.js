@@ -74,7 +74,7 @@ export default App = () => {
           <Stack.Screen
             name='logIn'
             component={LogIn}
-            options={{ title: "Agwa HW" }} />
+            options={{ title: "" }} />
           <Stack.Screen
             name='farms'
             component={Farms}

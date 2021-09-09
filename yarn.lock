@@ -4806,6 +4806,11 @@ range-parser@~1.2.1:
   resolved "https://registry.yarnpkg.com/range-parser/-/range-parser-1.2.1.tgz#3cf37023d199e1c24d1a55b84800c2f3e6468031"
   integrity sha512-Hrgsx+orqoygnmhFbKaHE6c296J+HTAQXoxEF6gNupROmmGJRoyzfG3ccAveqCBrwr/2yxQ5BVd/GTl5agOwSg==
 
+react-dev-tools@^0.0.1:
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/react-dev-tools/-/react-dev-tools-0.0.1.tgz#f7cf35ad701db3c028280c632767fba6dba13ac7"
+  integrity sha1-9881rXAds8AoKAxjJ2f7ptuhOsc=
+
 react-devtools-core@^4.6.0:
   version "4.18.0"
   resolved "https://registry.yarnpkg.com/react-devtools-core/-/react-devtools-core-4.18.0.tgz#06b2375dcea7858c957d1779cc2339d2a0af200a"
