@@ -1,13 +1,15 @@
-import { StyleSheet, View } from "react-native";
-import React, { useEffect } from "react";
+import { StyleSheet, View, ActivityIndicator } from "react-native";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import GroupedVeggies from "../components/GroupedVeggies";
 import { REACT_APP_AGWA_CATEGORIES } from "@env";
 import { useDispatch, useSelector } from "react-redux";
 import { add_categories } from "../Store/Actions/categories";
+import Colors from "../utils/styles";
 
 const Store = (props) => {
 	const { route, navigation } = props;
+	const [isLoading, setIsLoading] = useState(true);
 	const categories = useSelector((state) => state.categories.allCategories);
 	const dispatch = useDispatch();
 
@@ -24,6 +26,7 @@ const Store = (props) => {
 				const res = await axios.get(`${REACT_APP_AGWA_CATEGORIES}`);
 
 				dispatch(add_categories(res.data.categories));
+				setIsLoading(false);
 			} catch (err) {
 				console.log(err);
 			}
@@ -33,18 +36,31 @@ const Store = (props) => {
 	}, []);
 
 	return (
-		<View style={stlyes.container}>
-			<GroupedVeggies showVeggieDesc={showVeggieDesc} />
+		<View style={styles.container}>
+			{isLoading ? (
+				<ActivityIndicator
+					style={styles.loader}
+					size='large'
+					color={Colors.primary}
+				/>
+			) : (
+				<GroupedVeggies showVeggieDesc={showVeggieDesc} />
+			)}
 		</View>
 	);
 };
 
-const stlyes = StyleSheet.create({
+const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		justifyContent: "space-between",
 		alignItems: "center",
 		width: "100%",
+	},
+	loader: {
+		flex: 1,
+		justifyContent: "center",
+		alignItems: "center",
 	},
 });
 

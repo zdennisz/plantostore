@@ -4,7 +4,7 @@ import {
 	Text,
 	ScrollView,
 	Button,
-	AppState,
+	ActivityIndicator,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
@@ -12,6 +12,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { REACT_APP_AGWA_PLANTS } from "@env";
 import { add_to_cart } from "../Store/Actions/cart";
 import { useDispatch, useSelector } from "react-redux";
+import Colors from "../utils/styles";
 
 const VeggieDesc = (props) => {
 	const { route, navigation } = props;
@@ -61,32 +62,40 @@ const VeggieDesc = (props) => {
 	}, []);
 
 	return (
-		<ScrollView>
+		<View style={styles.container}>
 			{veggieData ? (
-				<View style={stlyes.container}>
-					<Text>{veggieData.name}</Text>
-					<Text>Description : {veggieData.description}</Text>
-					<Text>Life Cycle : {veggieData.lifeCycle}</Text>
-					<Text>Nutritional Facts: </Text>
-					<View style={stlyes.table}>
-						{veggieData.nutritionFacts.items.map((item, index) => {
-							return (
-								<View key={index.toString()} style={stlyes.rowContainer}>
-									<Text>{item.key}</Text>
-									<Text>{item.nutrientValue}</Text>
-									<Text>{item.percentageOfRDA}</Text>
-								</View>
-							);
-						})}
+				<ScrollView>
+					<View style={styles.container}>
+						<Text>{veggieData.name}</Text>
+						<Text>Description : {veggieData.description}</Text>
+						<Text>Life Cycle : {veggieData.lifeCycle}</Text>
+						<Text>Nutritional Facts: </Text>
+						<View style={styles.table}>
+							{veggieData.nutritionFacts.items.map((item, index) => {
+								return (
+									<View key={index.toString()} style={styles.rowContainer}>
+										<Text>{item.key}</Text>
+										<Text>{item.nutrientValue}</Text>
+										<Text>{item.percentageOfRDA}</Text>
+									</View>
+								);
+							})}
+						</View>
+						<Button title='Add to Cart' onPress={addVeggieToCart}></Button>
 					</View>
-					<Button title='Add to Cart' onPress={addVeggieToCart}></Button>
-				</View>
-			) : null}
-		</ScrollView>
+				</ScrollView>
+			) : (
+				<ActivityIndicator
+					style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+					size='large'
+					color={Colors.primary}
+				/>
+			)}
+		</View>
 	);
 };
 
-const stlyes = StyleSheet.create({
+const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		justifyContent: "center",

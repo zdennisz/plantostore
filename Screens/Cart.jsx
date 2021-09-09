@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { cartPicker } from "../utils/cartHelper";
 import { set_item_id } from "../Store/Actions/itemId";
 import { useSelector, useDispatch } from "react-redux";
-import { StyleSheet, View, Button, Text, FlatList } from "react-native";
+import { StyleSheet, View, Text, FlatList } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import CartItem from "../components/CartItem";
 import {
