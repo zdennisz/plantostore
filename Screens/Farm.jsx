@@ -22,7 +22,7 @@ const Farm = (props) => {
 
 	useEffect(() => {
 		navigation.setOptions({
-			title: `Farm ${route.params.farm}`,
+			title: `Farm ${route.params.farm.slice(-1)}`,
 			headerRight: () => (
 				<HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
 					<Item
