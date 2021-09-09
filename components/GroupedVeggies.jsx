@@ -26,10 +26,6 @@ const GroupedVeggies = (props) => {
 const styles = StyleSheet.create({
 	flatListContainer: {
 		width: "80%",
-		marginVertical: 10,
-		elevation: 5,
-		borderRadius: 5,
-		backfaceVisibility: "hidden",
 	},
 });
 
