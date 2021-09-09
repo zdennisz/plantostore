@@ -104,7 +104,7 @@ const Cart = (props) => {
 					</View>
 					<View style={stlyes.buttonContainer}>
 						<CustomButton
-							title='Place Order'
+							title='Checkout'
 							pressHandler={placeOrderHandler}
 							isImage={false}
 							customStyle={{ width: "150%" }}

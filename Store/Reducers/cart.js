@@ -173,8 +173,8 @@ const cartReducer = (state = initialState, action) => {
 
                     return {
                         farmB: {
-                            cartOrders: { ...action.data.cartOrders },
-                            pastOrders: { ...action.data.pastOrders }
+                            cartOrders: { ...action.cartItems.cartOrders },
+                            pastOrders: { ...action.cartItems.pastOrders }
                         },
                         farmA: {
                             cartOrders: {},
