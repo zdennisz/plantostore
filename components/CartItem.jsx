@@ -1,5 +1,8 @@
 import React from "react";
 import { StyleSheet, Text, View, Button } from "react-native";
+import Colors from "../utils/styles";
+import CustomButton from "./CustomButton";
+import CustomRoundButton from "./CustomRoundButton";
 
 const CartItem = (props) => {
 	const { id, name, amount } = props;
@@ -14,13 +17,18 @@ const CartItem = (props) => {
 
 	return (
 		<View style={styles.cartItemContainer}>
-			<View style={styles.nameContainer}>
-				<Text>{name}</Text>
+			<View style={styles.imageContainer}>
+				<Text>PlaceHolder for image</Text>
 			</View>
-			<View style={styles.buttonsContainer}>
-				<Button title='+' onPress={addCartItem} />
-				<Text style={{ marginHorizontal: 10 }}>{amount}</Text>
-				<Button title='-' onPress={decCartItem} />
+			<View style={styles.rightSideConainer}>
+				<View style={styles.nameContainer}>
+					<Text style={styles.titleText}>{name}</Text>
+				</View>
+				<View style={styles.buttonsContainer}>
+					<CustomRoundButton title='+' pressHandler={addCartItem} />
+					<Text style={styles.text}>{amount}</Text>
+					<CustomRoundButton title='-' pressHandler={decCartItem} />
+				</View>
 			</View>
 		</View>
 	);
@@ -30,21 +38,46 @@ const styles = StyleSheet.create({
 	cartItemContainer: {
 		flex: 1,
 		flexDirection: "row",
-		justifyContent: "space-between",
+		justifyContent: "space-around",
 		alignItems: "center",
 		width: "80%",
-		marginVertical: 15,
+		marginVertical: 16,
+		marginHorizontal: 24,
+		borderWidth: 2,
+		borderRadius: 8,
+		padding: 8,
+		backgroundColor: "white",
+		borderColor: Colors.secondary,
+		elevation: 5,
 	},
-	nameContainer: {
-		maxWidth: "80%",
-	},
+	nameContainer: {},
 	buttonsContainer: {
 		flex: 1,
 		flexDirection: "row",
+		justifyContent: "space-around",
+		alignItems: "center",
+		width: "100%",
+	},
+	imageContainer: {
+		flex: 1,
 		justifyContent: "center",
 		alignItems: "center",
-		maxWidth: "20%",
-		marginHorizontal: 20,
+		backgroundColor: "green",
+	},
+	rightSideConainer: {
+		flex: 1,
+		justifyContent: "center",
+		alignItems: "center",
+		backgroundColor: "red",
+	},
+	text: {
+		color: Colors.textColor,
+		fontSize: 16,
+	},
+	titleText: {
+		color: Colors.textColor,
+		fontSize: 20,
+		textAlign: "center",
 	},
 });
 

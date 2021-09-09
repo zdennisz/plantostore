@@ -7,7 +7,7 @@ const CustomButton = (props) => {
 	const onPressHandler = () => {
 		props.pressHandler();
 	};
-
+	//TODO merge the custom round button with custom button
 	return (
 		<View>
 			<TouchableOpacity style={styles.container} onPress={onPressHandler}>
@@ -28,10 +28,10 @@ const styles = StyleSheet.create({
 		flexDirection: "row",
 		justifyContent: "center",
 		alignItems: "center",
-		height: 48,
-		width: 300,
+		height: 36,
+		width: 36,
 		backgroundColor: Colors.primary,
-		borderRadius: 10,
+		borderRadius: 25,
 		elevation: 5,
 	},
 	text: {

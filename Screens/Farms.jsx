@@ -25,10 +25,18 @@ const Farms = (props) => {
 			</View>
 			<View style={stlyes.buttonsContainer}>
 				<View style={stlyes.buttonContainer}>
-					<CustomButton title='FARM A' pressHandler={goToFarmAhandler} />
+					<CustomButton
+						title='FARM A'
+						pressHandler={goToFarmAhandler}
+						isImage={true}
+					/>
 				</View>
 				<View style={stlyes.buttonContainer}>
-					<CustomButton title='FARM B' pressHandler={goToFarmBhandler} />
+					<CustomButton
+						title='FARM B'
+						pressHandler={goToFarmBhandler}
+						isImage={true}
+					/>
 				</View>
 			</View>
 		</View>

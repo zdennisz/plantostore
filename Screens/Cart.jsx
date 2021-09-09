@@ -11,6 +11,7 @@ import {
 	inc_cart_item,
 	resotre_cart_order,
 } from "../Store/Actions/cart";
+import CustomButton from "../components/CustomButton";
 
 const Cart = (props) => {
 	const { route } = props;
@@ -99,7 +100,13 @@ const Cart = (props) => {
 							/>
 						)}
 					/>
-					<Button title='Place Order' onPress={placeOrderHandler}></Button>
+					<View style={stlyes.buttonContainer}>
+						<CustomButton
+							title='Place Order'
+							pressHandler={placeOrderHandler}
+							isImage={false}
+						/>
+					</View>
 				</View>
 			)}
 		</View>
@@ -113,6 +120,11 @@ const stlyes = StyleSheet.create({
 		alignItems: "center",
 	},
 	ordersView: {
+		flex: 1,
+		justifyContent: "center",
+		alignItems: "center",
+	},
+	buttonContainer: {
 		flex: 1,
 		justifyContent: "center",
 		alignItems: "center",
