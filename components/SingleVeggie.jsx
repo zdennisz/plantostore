@@ -1,12 +1,31 @@
 import React from "react";
-import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import { useEffect, useState } from "react";
+import { StyleSheet, Text, View, TouchableOpacity, Image } from "react-native";
+import { useSelector } from "react-redux";
 import Colors from "../utils/styles";
 const SingleVeggie = (props) => {
 	const { element } = props;
-
+	const [imageUrl, setImageUrl] = useState();
+	const plants = useSelector((state) => state.plants);
 	const pressHandler = (element) => {
 		props.pressElementHandler(element);
 	};
+
+	useEffect(() => {
+		if (plants) {
+			if (plants[element.id]) {
+				setImageUrl(
+					`https://dev-agwa-public-static-assets-web.s3-us-west-2.amazonaws.com/images/vegetables/${
+						plants[element.id].imageId
+					}@3x.jpg`
+				);
+			} else {
+				setImageUrl(
+					"https://media.istockphoto.com/vectors/beetle-under-magnifying-glass-on-leaf-solid-icon-allergy-concept-vector-id1263496173?k=20&m=1263496173&s=612x612&w=0&h=C_5Lpzh4p-HuXrzI9tgAXvZcaFb6iy157QKF0OaHuBI="
+				);
+			}
+		}
+	}, [plants]);
 
 	return (
 		<View style={styles.container}>
@@ -14,7 +33,12 @@ const SingleVeggie = (props) => {
 				style={styles.cardContent}
 				onPress={pressHandler.bind(this, element)}
 			>
-				<Text>Some Image</Text>
+				<Image
+					style={styles.tinyImage}
+					source={{
+						uri: imageUrl,
+					}}
+				/>
 				<Text style={styles.text}>{element.name}</Text>
 			</TouchableOpacity>
 		</View>
@@ -43,6 +67,10 @@ const styles = StyleSheet.create({
 	text: {
 		color: Colors.textColor,
 		fontSize: 14,
+	},
+	tinyImage: {
+		width: 50,
+		height: 50,
 	},
 });
 

@@ -2,9 +2,10 @@ import { StyleSheet, View, ActivityIndicator } from "react-native";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import GroupedVeggies from "../components/GroupedVeggies";
-import { REACT_APP_AGWA_CATEGORIES } from "@env";
+import { REACT_APP_AGWA_CATEGORIES, REACT_APP_AGWA_PLANTS } from "@env";
 import { useDispatch, useSelector } from "react-redux";
 import { add_categories } from "../Store/Actions/categories";
+import { add_plants } from "../Store/Actions/plants";
 import Colors from "../utils/styles";
 
 const Store = (props) => {
@@ -26,7 +27,6 @@ const Store = (props) => {
 				const res = await axios.get(`${REACT_APP_AGWA_CATEGORIES}`);
 
 				dispatch(add_categories(res.data.categories));
-				setIsLoading(false);
 			} catch (err) {
 				console.log(err);
 			}
@@ -34,6 +34,37 @@ const Store = (props) => {
 
 		getCategories();
 	}, []);
+
+	useEffect(() => {
+		const getPlantData = async () => {
+			try {
+				const allPlantData = await axios.get(`${REACT_APP_AGWA_PLANTS}`);
+
+				let dataToStore = {};
+
+				for (let i = 0; i < categories.length; i++) {
+					let plantsArray = categories[i].plants;
+
+					for (let j = 0; j < plantsArray.length; j++) {
+						const foundPlant = allPlantData.data.plants.find(
+							(item) => item.id === plantsArray[j].id
+						);
+						if (foundPlant) {
+							dataToStore[plantsArray[j].id] = foundPlant;
+						}
+					}
+				}
+				dispatch(add_plants(dataToStore));
+				setIsLoading(false);
+			} catch (err) {
+				console.log(err);
+			}
+		};
+
+		if (categories) {
+			getPlantData();
+		}
+	}, [categories]);
 
 	return (
 		<View style={styles.container}>

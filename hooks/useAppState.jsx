@@ -22,7 +22,6 @@ const useAppState = (props) => {
 			appState.current.match(/inactive|background/) &&
 			nextAppState === "active"
 		) {
-			console.log("App has come to the foreground!");
 		}
 
 		if (nextAppState === "background" || nextAppState === "inactive") {
@@ -33,7 +32,6 @@ const useAppState = (props) => {
 		setAppStateVisible(appState.current);
 		if (appState.current === "background") {
 		}
-		console.log("AppState", appState.current);
 	};
 
 	useEffect(() => {

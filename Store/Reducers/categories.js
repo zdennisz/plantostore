@@ -10,7 +10,6 @@ const categoriesReducer = (state = initialState, action) => {
             const newData = action.newCategories.map(item => {
                 return { name: item.name, plants: item.plants }
             })
-
             return {
                 ...state,
                 allCategories: newData

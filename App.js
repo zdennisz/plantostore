@@ -13,12 +13,16 @@ import Cart from './Screens/Cart'
 import VeggieDesc from './Screens/VeggieDesc'
 import cartReducer from './Store/Reducers/cart';
 import itemIdReducer from './Store/Reducers/itemId'
+import plantsReducer from './Store/Reducers/plants';
 import reduxMiddelware from './utils/reduxMiddelware'
 import useAppState from './hooks/useAppState';
+
+
 const rootReducer = combineReducers({
   categories: categoriesReducer,
   cart: cartReducer,
-  itemId: itemIdReducer
+  itemId: itemIdReducer,
+  plants: plantsReducer
 })
 
 const middlewareEnhancer = applyMiddleware(reduxMiddelware)
