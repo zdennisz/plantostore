@@ -13,6 +13,7 @@ const CustomButton = (props) => {
 			<TouchableOpacity
 				style={[styles.container, props.customStyle]}
 				onPress={onPressHandler}
+				activeOpacity={0.3}
 			>
 				<View style={styles.contentContainer}>
 					{props.isImage ? (
