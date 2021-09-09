@@ -10,7 +10,10 @@ const CustomButton = (props) => {
 
 	return (
 		<View>
-			<TouchableOpacity style={styles.container} onPress={onPressHandler}>
+			<TouchableOpacity
+				style={[styles.container, props.customStyle]}
+				onPress={onPressHandler}
+			>
 				<View style={styles.contentContainer}>
 					{props.isImage ? (
 						<Ionicons name='leaf' size={35} style={styles.image} />

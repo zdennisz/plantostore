@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
 		elevation: 5,
 	},
 	text: {
-		color: Colors.textColor,
+		color: "white",
 		fontSize: 24,
 	},
 	image: {

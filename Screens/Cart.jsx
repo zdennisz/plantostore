@@ -86,28 +86,31 @@ const Cart = (props) => {
 					<Text>No Orders placed...</Text>
 				</View>
 			) : (
-				<View style={stlyes.ordersView}>
-					<FlatList
-						data={cartItems}
-						keyExtractor={(item) => item.id}
-						renderItem={(itemData) => (
-							<CartItem
-								id={itemData.item.id}
-								name={itemData.item.name}
-								incCartItem={incCartItem}
-								decCartItem={decCartItem}
-								amount={itemData.item.amount}
-							/>
-						)}
-					/>
+				<>
+					<View style={stlyes.ordersView}>
+						<FlatList
+							data={cartItems}
+							keyExtractor={(item) => item.id}
+							renderItem={(itemData) => (
+								<CartItem
+									id={itemData.item.id}
+									name={itemData.item.name}
+									incCartItem={incCartItem}
+									decCartItem={decCartItem}
+									amount={itemData.item.amount}
+								/>
+							)}
+						/>
+					</View>
 					<View style={stlyes.buttonContainer}>
 						<CustomButton
 							title='Place Order'
 							pressHandler={placeOrderHandler}
 							isImage={false}
+							customStyle={{ width: "150%" }}
 						/>
 					</View>
-				</View>
+				</>
 			)}
 		</View>
 	);
@@ -118,16 +121,23 @@ const stlyes = StyleSheet.create({
 		flex: 1,
 		justifyContent: "center",
 		alignItems: "center",
+		backgroundColor: "white",
 	},
 	ordersView: {
 		flex: 1,
 		justifyContent: "center",
 		alignItems: "center",
+		marginBottom: 50,
+		backgroundColor: "white",
 	},
 	buttonContainer: {
 		flex: 1,
 		justifyContent: "center",
 		alignItems: "center",
+		position: "absolute",
+		bottom: 0,
+		height: 50,
+		width: 350,
 	},
 });
 
