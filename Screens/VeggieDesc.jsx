@@ -38,60 +38,76 @@ const VeggieDesc = (props) => {
 	};
 
 	return (
-		<View style={styles.container}>
-			<ScrollView
-				contentContainerStyle={styles.scrollView}
-				showsVerticalScrollIndicator={false}
-			>
-				<View style={styles.titleContainer}>
+		<>
+			{veggieInfo ? (
+				<View style={styles.container}>
+					<ScrollView
+						contentContainerStyle={styles.scrollView}
+						showsVerticalScrollIndicator={false}
+					>
+						<View style={styles.titleContainer}>
+							<Image
+								style={styles.regularImage}
+								source={{
+									uri: `https://dev-agwa-public-static-assets-web.s3-us-west-2.amazonaws.com/images/vegetables/${veggieInfo.imageId}@3x.jpg`,
+								}}
+							/>
+							<Text style={styles.titleText}>{veggieInfo.name}</Text>
+						</View>
+						<View style={styles.detailsContainer}>
+							<Text style={styles.descText}>{veggieInfo.description}</Text>
+							<View style={styles.detailWrapper}>
+								<Text style={styles.detailTitle}>Life Cycle:</Text>
+								<Text> {veggieInfo.lifeCycle}</Text>
+							</View>
+							<View style={styles.detailWrapper}>
+								<Text style={styles.detailTitle}>Yield:</Text>
+								<Text> {veggieInfo.yield}</Text>
+							</View>
+							<View style={styles.detailWrapper}>
+								<Text style={styles.detailTitle}>Seed to crop:</Text>
+								<Text> {veggieInfo.seedToCrop}</Text>
+							</View>
+						</View>
+						<View style={styles.detailsContainer}>
+							<Text style={styles.detailTitle}>Nutritional Facts: </Text>
+							<Text>{veggieInfo.nutritionFacts.portionInfo}</Text>
+						</View>
+						<View style={styles.tableContainer}>
+							{veggieInfo.nutritionFacts.items.map((item, index) => {
+								return (
+									<View key={index.toString()} style={styles.rowContainer}>
+										<Text style={styles.rowTitleContent}>{item.key}</Text>
+										<Text style={styles.rowContent}>{item.nutrientValue}</Text>
+										<Text style={styles.rowContent}>
+											{item.percentageOfRDA}
+										</Text>
+									</View>
+								);
+							})}
+						</View>
+					</ScrollView>
+					<View style={styles.buttonContainer}>
+						<CustomButton
+							title='Add to Cart'
+							pressHandler={addVeggieToCart}
+							isImage={false}
+							customStyle={{ width: "150%" }}
+						/>
+					</View>
+				</View>
+			) : (
+				<View style={styles.container}>
 					<Image
 						style={styles.regularImage}
 						source={{
-							uri: `https://dev-agwa-public-static-assets-web.s3-us-west-2.amazonaws.com/images/vegetables/${veggieInfo.imageId}@3x.jpg`,
+							uri: "https://media.istockphoto.com/vectors/beetle-under-magnifying-glass-on-leaf-solid-icon-allergy-concept-vector-id1263496173?k=20&m=1263496173&s=612x612&w=0&h=C_5Lpzh4p-HuXrzI9tgAXvZcaFb6iy157QKF0OaHuBI=",
 						}}
 					/>
-					<Text style={styles.titleText}>{veggieInfo.name}</Text>
+					<Text style={styles.titleText}>Sorry, plant not found :( </Text>
 				</View>
-				<View style={styles.detailsContainer}>
-					<Text style={styles.descText}>{veggieInfo.description}</Text>
-					<View style={styles.detailWrapper}>
-						<Text style={styles.detailTitle}>Life Cycle:</Text>
-						<Text> {veggieInfo.lifeCycle}</Text>
-					</View>
-					<View style={styles.detailWrapper}>
-						<Text style={styles.detailTitle}>Yield:</Text>
-						<Text> {veggieInfo.yield}</Text>
-					</View>
-					<View style={styles.detailWrapper}>
-						<Text style={styles.detailTitle}>Seed to crop:</Text>
-						<Text> {veggieInfo.seedToCrop}</Text>
-					</View>
-				</View>
-				<View style={styles.detailsContainer}>
-					<Text style={styles.detailTitle}>Nutritional Facts: </Text>
-					<Text>{veggieInfo.nutritionFacts.portionInfo}</Text>
-				</View>
-				<View style={styles.tableContainer}>
-					{veggieInfo.nutritionFacts.items.map((item, index) => {
-						return (
-							<View key={index.toString()} style={styles.rowContainer}>
-								<Text style={styles.rowTitleContent}>{item.key}</Text>
-								<Text style={styles.rowContent}>{item.nutrientValue}</Text>
-								<Text style={styles.rowContent}>{item.percentageOfRDA}</Text>
-							</View>
-						);
-					})}
-				</View>
-			</ScrollView>
-			<View style={styles.buttonContainer}>
-				<CustomButton
-					title='Add to Cart'
-					pressHandler={addVeggieToCart}
-					isImage={false}
-					customStyle={{ width: "150%" }}
-				/>
-			</View>
-		</View>
+			)}
+		</>
 	);
 };
 
