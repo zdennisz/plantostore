@@ -1,7 +1,7 @@
 import React from "react";
 import { StyleSheet, Text, View, Button } from "react-native";
 import Colors from "../utils/styles";
-import CustomButton from "./CustomButton";
+
 import CustomRoundButton from "./CustomRoundButton";
 
 const CartItem = (props) => {
@@ -68,7 +68,6 @@ const styles = StyleSheet.create({
 		flex: 1,
 		justifyContent: "center",
 		alignItems: "center",
-		backgroundColor: "red",
 	},
 	text: {
 		color: Colors.textColor,

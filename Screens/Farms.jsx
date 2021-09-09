@@ -1,11 +1,20 @@
-import React from "react";
-import { StyleSheet, View, Button, Text } from "react-native";
+import React, { useEffect, useState } from "react";
+import { StyleSheet, View, ActivityIndicator, Text } from "react-native";
+import { useDispatch, useSelector } from "react-redux";
 import CustomButton from "../components/CustomButton";
+import { REACT_APP_AGWA_CATEGORIES, REACT_APP_AGWA_PLANTS } from "@env";
+import { add_categories } from "../Store/Actions/categories";
+import { add_plants } from "../Store/Actions/plants";
+import axios from "axios";
 import Colors from "../utils/styles";
 
 const Farms = (props) => {
-	//const [appState, setAppState] = useState(AppState.currentState);
 	const { navigation } = props;
+
+	const [isLoading, setIsLoading] = useState(true);
+	const categories = useSelector((state) => state.categories.allCategories);
+	const dispatch = useDispatch();
+
 	const goToFarmAhandler = () => {
 		navigation.navigate("farm", {
 			farm: "farmA",
@@ -18,32 +27,87 @@ const Farms = (props) => {
 		});
 	};
 
+	useEffect(() => {
+		const getCategories = async () => {
+			try {
+				const res = await axios.get(`${REACT_APP_AGWA_CATEGORIES}`);
+
+				dispatch(add_categories(res.data.categories));
+			} catch (err) {
+				console.log(err);
+			}
+		};
+
+		getCategories();
+	}, []);
+
+	useEffect(() => {
+		const getPlantData = async () => {
+			try {
+				const allPlantData = await axios.get(`${REACT_APP_AGWA_PLANTS}`);
+
+				let dataToStore = {};
+
+				for (let i = 0; i < categories.length; i++) {
+					let plantsArray = categories[i].plants;
+
+					for (let j = 0; j < plantsArray.length; j++) {
+						const foundPlant = allPlantData.data.plants.find(
+							(item) => item.id === plantsArray[j].id
+						);
+						if (foundPlant) {
+							dataToStore[plantsArray[j].id] = foundPlant;
+						}
+					}
+				}
+				dispatch(add_plants(dataToStore));
+				setIsLoading(false);
+			} catch (err) {
+				console.log(err);
+			}
+		};
+
+		if (categories) {
+			getPlantData();
+		}
+	}, [categories]);
+
 	return (
-		<View style={stlyes.container}>
-			<View stlye={stlyes.textContainer}>
-				<Text style={stlyes.text}>Select your farm:</Text>
-			</View>
-			<View style={stlyes.buttonsContainer}>
-				<View style={stlyes.buttonContainer}>
-					<CustomButton
-						title='FARM A'
-						pressHandler={goToFarmAhandler}
-						isImage={true}
-					/>
-				</View>
-				<View style={stlyes.buttonContainer}>
-					<CustomButton
-						title='FARM B'
-						pressHandler={goToFarmBhandler}
-						isImage={true}
-					/>
-				</View>
-			</View>
+		<View style={styles.container}>
+			{isLoading ? (
+				<ActivityIndicator
+					style={styles.loader}
+					size='large'
+					color={Colors.primary}
+				/>
+			) : (
+				<>
+					<View stlye={styles.textContainer}>
+						<Text style={styles.text}>Select your farm:</Text>
+					</View>
+					<View style={styles.buttonsContainer}>
+						<View style={styles.buttonContainer}>
+							<CustomButton
+								title='FARM A'
+								pressHandler={goToFarmAhandler}
+								isImage={true}
+							/>
+						</View>
+						<View style={styles.buttonContainer}>
+							<CustomButton
+								title='FARM B'
+								pressHandler={goToFarmBhandler}
+								isImage={true}
+							/>
+						</View>
+					</View>
+				</>
+			)}
 		</View>
 	);
 };
 
-const stlyes = StyleSheet.create({
+const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		justifyContent: "space-around",
@@ -69,6 +133,11 @@ const stlyes = StyleSheet.create({
 		alignItems: "center",
 
 		maxHeight: 250,
+	},
+	loader: {
+		flex: 1,
+		justifyContent: "center",
+		alignItems: "center",
 	},
 });
 

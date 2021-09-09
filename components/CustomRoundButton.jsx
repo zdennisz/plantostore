@@ -30,12 +30,12 @@ const styles = StyleSheet.create({
 		alignItems: "center",
 		height: 36,
 		width: 36,
-		backgroundColor: Colors.primary,
+		backgroundColor: Colors.accent,
 		borderRadius: 25,
 		elevation: 5,
 	},
 	text: {
-		color: "white",
+		color: Colors.textColor,
 		fontSize: 24,
 	},
 	image: {

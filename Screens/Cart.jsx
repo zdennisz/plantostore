@@ -71,7 +71,7 @@ const Cart = (props) => {
 				}
 			})
 			.catch((err) => {
-				console.log("Error happen", err);
+				console.log("Error happened", err);
 			});
 	};
 
