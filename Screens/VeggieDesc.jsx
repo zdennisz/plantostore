@@ -5,15 +5,17 @@ import { add_to_cart } from "../Store/Actions/cart";
 import { useDispatch, useSelector } from "react-redux";
 import Colors from "../utils/styles";
 import CustomButton from "../components/customButtons/CustomButton";
+import CustomHeaderButton from "../components/customButtons/CustomHeaderButtons";
+import { HeaderButtons, Item } from "react-navigation-header-buttons";
+import { useEffect } from "react";
 
 const VeggieDesc = (props) => {
-	const { route } = props;
+	const { route, navigation } = props;
 	const { id } = route.params;
 	const [farmType] = useState(route.params.cart);
 	const veggieInfo = useSelector((state) => state.plants[id]);
 	const dispatch = useDispatch();
 	const cart = useSelector((state) => state.cart);
-	const currFarm = farmType === "farmA" ? cart.farmA : cart.farmB;
 
 	const saveCurrFarmCart = (dispatch, getState) => {
 		dispatch(
@@ -37,6 +39,25 @@ const VeggieDesc = (props) => {
 		dispatch(saveCurrFarmCart);
 	};
 
+	const goToCart = () => {
+		navigation.navigate("cart", {
+			cart: `${route.params.cart}`,
+		});
+	};
+
+	useEffect(() => {
+		navigation.setOptions({
+			headerRight: () => (
+				<HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
+					<Item
+						title='Cart'
+						iconName={Platform.OS === "android" ? "md-cart" : "ios-cart"}
+						onPress={goToCart}
+					/>
+				</HeaderButtons>
+			),
+		});
+	}, []);
 	return (
 		<>
 			{veggieInfo ? (
