@@ -37,32 +37,21 @@ const VeggieCard = (props) => {
 
 	return (
 		<View style={styles.veggieCardContainer}>
-			{!isDisplayAmount ? (
-				<TouchableOpacity
-					style={styles.cardContent}
-					onPress={pressHandler.bind(this, veggie)}
-				>
-					<Image
-						style={styles.tinyImage}
-						source={{
-							uri: imageUrl,
-						}}
-					/>
-					<Text style={styles.text}>{veggie.name}</Text>
-				</TouchableOpacity>
-			) : (
-				<View style={styles.cardContent}>
-					<View style={styles.imageContainer}>
-						<Image
-							style={styles.tinyImage}
-							source={{
-								uri: imageUrl,
-							}}
-						/>
-					</View>
-					<View style={styles.nameContainer}>
-						<Text style={styles.titleText}>{veggie.name}</Text>
-					</View>
+			<TouchableOpacity
+				style={styles.cardContent}
+				onPress={pressHandler.bind(this, veggie)}
+			>
+				<Image
+					style={styles.tinyImage}
+					source={{
+						uri: imageUrl,
+					}}
+				/>
+				<Text style={styles.titleText}>{veggie.name}</Text>
+			</TouchableOpacity>
+
+			<View style={styles.cardContent}>
+				{isDisplayAmount && (
 					<View style={styles.buttonsContainer}>
 						{isAmountEditable ? (
 							<>
@@ -74,8 +63,8 @@ const VeggieCard = (props) => {
 							<Text style={styles.text}>Quantity: {veggie.amount}</Text>
 						)}
 					</View>
-				</View>
-			)}
+				)}
+			</View>
 		</View>
 	);
 };
@@ -117,10 +106,6 @@ const styles = StyleSheet.create({
 		alignItems: "center",
 	},
 
-	text: {
-		color: Colors.textColor,
-		fontSize: 16,
-	},
 	titleText: {
 		color: Colors.textColor,
 		fontSize: 20,
@@ -129,6 +114,10 @@ const styles = StyleSheet.create({
 	tinyImage: {
 		width: 80,
 		height: 80,
+	},
+	text: {
+		color: Colors.textColor,
+		fontSize: 16,
 	},
 });
 

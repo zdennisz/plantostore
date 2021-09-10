@@ -1,10 +1,19 @@
 import React, { useEffect } from "react";
-import { StyleSheet, View, Text, Platform, FlatList } from "react-native";
+import {
+	StyleSheet,
+	View,
+	Text,
+	Platform,
+	FlatList,
+	Image,
+} from "react-native";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import CustomHeaderButton from "../components/CustomHeaderButtons";
 import { flatListItemParser } from "../utils/helper";
 import { useSelector } from "react-redux";
 import VeggieCard from "../components/VeggieCard";
+import Colors from "../utils/styles";
+import { Ionicons } from "@expo/vector-icons";
 const Farm = (props) => {
 	const { route, navigation } = props;
 	const cartPastOrders = useSelector(
@@ -22,6 +31,12 @@ const Farm = (props) => {
 	const goToStore = () => {
 		navigation.navigate("store", {
 			cart: `${route.params.farm}`,
+		});
+	};
+	const goToVeggieDesc = (veggie) => {
+		navigation.navigate("veggieDsec", {
+			id: veggie.id,
+			cart: route.params.farm,
 		});
 	};
 
@@ -51,31 +66,40 @@ const Farm = (props) => {
 
 	return (
 		<View style={styles.container}>
-			<View style={styles.pastOrders}>
-				{farmPastItems.length > 0 ? (
-					<>
-						<View style={styles.textContainer}>
-							<Text style={styles.text}>Past Orders:</Text>
-						</View>
-						<View style={styles.flatListContainer}>
-							<FlatList
-								showsVerticalScrollIndicator={false}
-								data={farmPastItems}
-								keyExtractor={(item) => item.id}
-								renderItem={(veggieContainer) => (
-									<VeggieCard
-										veggie={veggieContainer.item}
-										isDisplayAmount={true}
-										isAmountEditable={false}
-									/>
-								)}
-							/>
-						</View>
-					</>
-				) : (
-					<Text>No Past orders found !</Text>
-				)}
-			</View>
+			{farmPastItems.length > 0 ? (
+				<>
+					<View style={styles.textContainer}>
+						<Text style={styles.text}>Plants in your farm:</Text>
+					</View>
+					<View style={styles.flatListContainer}>
+						<FlatList
+							showsVerticalScrollIndicator={false}
+							data={farmPastItems}
+							keyExtractor={(item) => item.id}
+							renderItem={(veggieContainer) => (
+								<VeggieCard
+									veggie={veggieContainer.item}
+									isDisplayAmount={true}
+									isAmountEditable={false}
+									pressVeggieHandler={goToVeggieDesc}
+								/>
+							)}
+						/>
+					</View>
+				</>
+			) : (
+				<View style={styles.notFoundContainer}>
+					<Ionicons
+						name='leaf'
+						size={80}
+						style={styles.image}
+						color={Colors.primary}
+					/>
+					<Text style={styles.notFoundText}>
+						Didn't find any plants in your farm :(
+					</Text>
+				</View>
+			)}
 		</View>
 	);
 };
@@ -83,26 +107,36 @@ const Farm = (props) => {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		justifyContent: "center",
+		justifyContent: "flex-start",
 		alignItems: "center",
+		backgroundColor: "white",
 	},
 	textContainer: {
-		flex: 1,
+		height: "8%",
 		flexDirection: "row",
 		justifyContent: "center",
-		alignItems: "flex-start",
-	},
-	pastOrders: {
-		flex: 10,
-		justifyContent: "center",
 		alignItems: "center",
+		backgroundColor: Colors.secondary,
+		width: "100%",
 	},
 	text: {
 		marginVertical: 10,
 		fontSize: 23,
+		color: "white",
 	},
 	flatListContainer: {
 		width: "80%",
+		height: "92%",
+	},
+	notFoundContainer: {
+		flex: 1,
+		justifyContent: "center",
+		alignItems: "center",
+	},
+	notFoundText: {
+		color: Colors.textColor,
+		fontSize: 24,
+		marginTop: 24,
 	},
 });
 
