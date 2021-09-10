@@ -1,36 +1,17 @@
-import { createStore, combineReducers, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
-import categoriesReducer from './Store/Reducers/categories';
 import React, { useState } from 'react';
 import { StyleSheet } from 'react-native';
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import useAppState from './hooks/useAppState';
+import store from './Store/store'
 import LogIn from './Screens/LogIn';
 import Farms from './Screens/Farms'
 import Farm from './Screens/Farm'
 import Store from './Screens/Store'
 import Cart from './Screens/Cart'
 import VeggieDesc from './Screens/VeggieDesc'
-import cartReducer from './Store/Reducers/cart';
-import itemIdReducer from './Store/Reducers/itemId'
-import plantsReducer from './Store/Reducers/plants';
-import reduxMiddelware from './utils/reduxMiddelware'
-import useAppState from './hooks/useAppState';
-
-
-const rootReducer = combineReducers({
-  categories: categoriesReducer,
-  cart: cartReducer,
-  itemId: itemIdReducer,
-  plants: plantsReducer
-})
-
-const middlewareEnhancer = applyMiddleware(reduxMiddelware)
-const store = createStore(rootReducer, middlewareEnhancer)
-
 const Stack = createNativeStackNavigator()
-
-
 
 export default App = () => {
   const [historyPath, setHistoryPath] = useState([])
@@ -98,7 +79,7 @@ export default App = () => {
           <Stack.Screen
             name='veggieDsec'
             component={VeggieDesc}
-            options={{ title: "Veggie Desc" }} />
+            options={{ title: "Plant" }} />
         </Stack.Navigator>
       </NavigationContainer>
     </Provider>
