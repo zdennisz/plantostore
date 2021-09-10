@@ -1,7 +1,6 @@
 import { StyleSheet, View } from "react-native";
 import React from "react";
-import GroupedVeggies from "../components/GroupedVeggies";
-import Colors from "../utils/styles";
+import CategoryList from "../components/CategoryList";
 
 const Store = (props) => {
 	const { route, navigation } = props;
@@ -16,7 +15,7 @@ const Store = (props) => {
 
 	return (
 		<View style={styles.container}>
-			<GroupedVeggies showVeggieDesc={showVeggieDesc} />
+			<CategoryList showVeggieDesc={showVeggieDesc} />
 		</View>
 	);
 };

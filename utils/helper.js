@@ -1,6 +1,6 @@
 
-export const cartPicker = (dataStructure) => {
-    // Parse cart data to fir flatlist array
+export const flatListItemParser = (dataStructure) => {
+    // Parse items for the flatlist array
     const cartItems = []
     for (const key in dataStructure) {
         cartItems.push({

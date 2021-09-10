@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { cartPicker } from "../utils/cartHelper";
+import { flatListItemParser } from "../utils/helper";
 import { set_item_id } from "../Store/Actions/itemId";
 import { useSelector, useDispatch } from "react-redux";
 import { StyleSheet, View, Text, FlatList } from "react-native";
@@ -22,7 +22,7 @@ const Cart = (props) => {
 	const cartOrders =
 		farmType === "farmA" ? cart?.farmA?.cartOrders : cart?.farmB?.cartOrders;
 
-	const cartItems = cartOrders ? cartPicker(cartOrders) : [];
+	const cartItems = cartOrders ? flatListItemParser(cartOrders) : [];
 
 	const placeOrderHandler = () => {
 		dispatch(place_order());

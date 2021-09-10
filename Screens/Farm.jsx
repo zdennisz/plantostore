@@ -2,13 +2,18 @@ import React, { useEffect } from "react";
 import { StyleSheet, View, Text, Platform } from "react-native";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import CustomHeaderButton from "../components/CustomHeaderButtons";
+import { flatListItemParser } from "../utils/helper";
 import { useSelector } from "react-redux";
 
 const Farm = (props) => {
 	const { route, navigation } = props;
-	// TODO
-	// const cartPastOrders = useSelector(state => state.cart[`Farm${route.params.farm}`].pastOrders)
-	// console.log(cartPastOrders)
+	const cartPastOrders = useSelector(
+		(state) => state.cart[`${route.params.farm}`].pastOrders
+	);
+	const farmPastItems = cartPastOrders
+		? flatListItemParser(cartPastOrders)
+		: [];
+
 	const goToCart = () => {
 		navigation.navigate("cart", {
 			cart: `${route.params.farm}`,
@@ -46,11 +51,29 @@ const Farm = (props) => {
 
 	return (
 		<View style={stlyes.container}>
-			<View style={stlyes.textContainer}>
-				<Text style={stlyes.text}>Past Orders:</Text>
-			</View>
 			<View style={stlyes.pastOrders}>
-				{/* {cartPastOrders.length !== 0 ? null : <Text>No Past orders found !</Text>} */}
+				{farmPastItems.length > 0 ? (
+					<>
+						<View style={stlyes.textContainer}>
+							<Text style={stlyes.text}>Past Orders:</Text>
+						</View>
+						<FlatList
+							data={farmPastItems}
+							keyExtractor={(item) => item.id}
+							renderItem={(itemData) => (
+								<CartItem
+									id={itemData.item.id}
+									name={itemData.item.name}
+									incCartItem={incCartItem}
+									decCartItem={decCartItem}
+									amount={itemData.item.amount}
+								/>
+							)}
+						/>
+					</>
+				) : (
+					<Text>No Past orders found !</Text>
+				)}
 			</View>
 		</View>
 	);

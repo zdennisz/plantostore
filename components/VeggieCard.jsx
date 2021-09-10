@@ -3,7 +3,8 @@ import { useEffect, useState } from "react";
 import { StyleSheet, Text, View, TouchableOpacity, Image } from "react-native";
 import { useSelector } from "react-redux";
 import Colors from "../utils/styles";
-const SingleVeggie = (props) => {
+
+const VeggieCard = (props) => {
 	const { element } = props;
 	const [imageUrl, setImageUrl] = useState();
 	const plants = useSelector((state) => state.plants);
@@ -74,4 +75,4 @@ const styles = StyleSheet.create({
 	},
 });
 
-export default SingleVeggie;
+export default VeggieCard;

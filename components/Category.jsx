@@ -1,8 +1,9 @@
 import { StyleSheet, Text, View } from "react-native";
 import React from "react";
 import Colors from "../utils/styles";
-import SingleVeggie from "./SingleVeggie";
-const Card = (props) => {
+import VeggieCard from "./VeggieCard";
+
+const Category = (props) => {
 	const { itemData } = props;
 
 	const pressHandler = (element) => {
@@ -53,4 +54,4 @@ const styles = StyleSheet.create({
 	},
 });
 
-export default Card;
+export default Category;

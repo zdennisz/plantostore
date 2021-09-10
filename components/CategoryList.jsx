@@ -1,9 +1,9 @@
 import React from "react";
 import { StyleSheet, View, FlatList } from "react-native";
 import { useSelector } from "react-redux";
-import Card from "./Card";
+import Category from "./Category";
 
-const GroupedVeggies = (props) => {
+const CategoryList = (props) => {
 	const categories = useSelector((state) => state.categories.allCategories);
 
 	const getVeggieDesc = (elementId) => {
@@ -16,7 +16,7 @@ const GroupedVeggies = (props) => {
 				data={categories}
 				keyExtractor={(item, index) => index.toString()}
 				renderItem={(itemData) => (
-					<Card itemData={itemData} getVeggieDesc={getVeggieDesc} />
+					<Category itemData={itemData} getVeggieDesc={getVeggieDesc} />
 				)}
 			/>
 		</View>
@@ -29,4 +29,4 @@ const styles = StyleSheet.create({
 	},
 });
 
-export default GroupedVeggies;
+export default CategoryList;
