@@ -71,7 +71,7 @@ const VeggieCard = (props) => {
 								<CustomRoundButton title='-' pressHandler={decCartItem} />
 							</>
 						) : (
-							<Text style={styles.text}>{veggie.amount}</Text>
+							<Text style={styles.text}>Quantity: {veggie.amount}</Text>
 						)}
 					</View>
 				</View>

@@ -50,24 +50,27 @@ const Farm = (props) => {
 	}, []);
 
 	return (
-		<View style={stlyes.container}>
-			<View style={stlyes.pastOrders}>
+		<View style={styles.container}>
+			<View style={styles.pastOrders}>
 				{farmPastItems.length > 0 ? (
 					<>
-						<View style={stlyes.textContainer}>
-							<Text style={stlyes.text}>Past Orders:</Text>
+						<View style={styles.textContainer}>
+							<Text style={styles.text}>Past Orders:</Text>
 						</View>
-						<FlatList
-							data={farmPastItems}
-							keyExtractor={(item) => item.id}
-							renderItem={(veggieContainer) => (
-								<VeggieCard
-									veggie={veggieContainer.item}
-									isDisplayAmount={true}
-									isAmountEditable={false}
-								/>
-							)}
-						/>
+						<View style={styles.flatListContainer}>
+							<FlatList
+								showsVerticalScrollIndicator={false}
+								data={farmPastItems}
+								keyExtractor={(item) => item.id}
+								renderItem={(veggieContainer) => (
+									<VeggieCard
+										veggie={veggieContainer.item}
+										isDisplayAmount={true}
+										isAmountEditable={false}
+									/>
+								)}
+							/>
+						</View>
 					</>
 				) : (
 					<Text>No Past orders found !</Text>
@@ -77,7 +80,7 @@ const Farm = (props) => {
 	);
 };
 
-const stlyes = StyleSheet.create({
+const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		justifyContent: "center",
@@ -97,6 +100,9 @@ const stlyes = StyleSheet.create({
 	text: {
 		marginVertical: 10,
 		fontSize: 23,
+	},
+	flatListContainer: {
+		width: "80%",
 	},
 });
 

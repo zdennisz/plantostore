@@ -6,7 +6,6 @@ const Store = (props) => {
 	const { route, navigation } = props;
 
 	const showVeggieDesc = (elementId) => {
-		console.log("elementId", elementId);
 		navigation.navigate("veggieDsec", {
 			id: elementId,
 			cart: route.params.cart,
