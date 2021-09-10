@@ -12,6 +12,8 @@ import {
 	resotre_cart_order,
 } from "../Store/Actions/cart";
 import CustomButton from "../components/CustomButton";
+import { Ionicons } from "@expo/vector-icons";
+import Colors from "../utils/styles";
 
 const Cart = (props) => {
 	const { route } = props;
@@ -89,8 +91,16 @@ const Cart = (props) => {
 	return (
 		<View style={styles.container}>
 			{cartItems.length < 1 ? (
-				<View style={styles.ordersView}>
-					<Text>No Orders placed...</Text>
+				<View style={styles.notFoundContainer}>
+					<Ionicons
+						name='leaf'
+						size={80}
+						style={styles.image}
+						color={Colors.primary}
+					/>
+					<Text style={styles.notFoundText}>
+						Didn't find any plants in your cart :(
+					</Text>
 				</View>
 			) : (
 				<>
@@ -146,6 +156,16 @@ const styles = StyleSheet.create({
 		bottom: 0,
 		height: 50,
 		width: 350,
+	},
+	notFoundContainer: {
+		flex: 1,
+		justifyContent: "center",
+		alignItems: "center",
+	},
+	notFoundText: {
+		color: Colors.textColor,
+		fontSize: 24,
+		marginTop: 24,
 	},
 });
 

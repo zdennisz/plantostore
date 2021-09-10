@@ -53,7 +53,7 @@ const VeggieCard = (props) => {
 			</TouchableOpacity>
 			<View style={styles.cardContent}>
 				{isDisplayAmount && (
-					<View style={styles.buttonsContainer}>
+					<View style={styles.amountContainer}>
 						{isAmountEditable ? (
 							<>
 								<CustomRoundButton title='+' pressHandler={incCartItem} />
@@ -93,13 +93,12 @@ const styles = StyleSheet.create({
 		marginHorizontal: 12,
 		marginVertical: 16,
 	},
-	buttonsContainer: {
+	amountContainer: {
 		flex: 1,
 		flexDirection: "row",
 		justifyContent: "space-around",
 		alignItems: "center",
 		width: "100%",
-		paddingTop: 16,
 	},
 	imageContainer: {
 		flex: 1,

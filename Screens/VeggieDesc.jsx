@@ -58,22 +58,29 @@ const VeggieDesc = (props) => {
 							<Text style={styles.descText}>{veggieInfo.description}</Text>
 							<View style={styles.detailWrapper}>
 								<Text style={styles.detailTitle}>Life Cycle:</Text>
-								<Text> {veggieInfo.lifeCycle}</Text>
+								<Text style={styles.text}> {veggieInfo.lifeCycle}</Text>
 							</View>
 							<View style={styles.detailWrapper}>
 								<Text style={styles.detailTitle}>Yield:</Text>
-								<Text> {veggieInfo.yield}</Text>
+								<Text style={styles.text}> {veggieInfo.yield}</Text>
 							</View>
 							<View style={styles.detailWrapper}>
 								<Text style={styles.detailTitle}>Seed to crop:</Text>
-								<Text> {veggieInfo.seedToCrop}</Text>
+								<Text style={styles.text}> {veggieInfo.seedToCrop}</Text>
 							</View>
 						</View>
 						<View style={styles.detailsContainer}>
 							<Text style={styles.detailTitle}>Nutritional Facts: </Text>
-							<Text>{veggieInfo.nutritionFacts.portionInfo}</Text>
+							<Text style={styles.text}>
+								{veggieInfo.nutritionFacts.portionInfo}
+							</Text>
 						</View>
 						<View style={styles.tableContainer}>
+							<View style={styles.tableRowTitleContainer}>
+								<Text style={styles.tableRowTitle}>Nutrients</Text>
+								<Text style={styles.tableRowTitle}>Amount</Text>
+								<Text style={styles.tableRowTitle}>RDA (%)</Text>
+							</View>
 							{veggieInfo.nutritionFacts.items.map((item, index) => {
 								return (
 									<View key={index.toString()} style={styles.rowContainer}>
@@ -128,6 +135,16 @@ const styles = StyleSheet.create({
 		borderTopWidth: 2,
 		borderColor: Colors.secondary,
 	},
+	tableRowTitleContainer: {
+		flex: 1,
+		flexDirection: "row",
+		justifyContent: "center",
+		alignItems: "center",
+		paddingVertical: 4,
+		width: "90%",
+
+		backgroundColor: Colors.secondary,
+	},
 	tableContainer: {
 		flex: 1,
 		width: "100%",
@@ -177,6 +194,11 @@ const styles = StyleSheet.create({
 	detailTitle: {
 		fontWeight: "bold",
 		fontSize: 16,
+		color: Colors.textColor,
+	},
+	text: {
+		fontSize: 16,
+		color: Colors.textColor,
 	},
 	detailWrapper: {
 		flex: 1,
@@ -188,11 +210,18 @@ const styles = StyleSheet.create({
 	rowContent: {
 		width: "33%",
 		textAlign: "center",
+		color: Colors.textColor,
 	},
 	rowTitleContent: {
 		width: "33%",
 		textAlign: "center",
 		fontWeight: "bold",
+		color: Colors.textColor,
+	},
+	tableRowTitle: {
+		width: "33%",
+		textAlign: "center",
+		color: "white",
 	},
 });
 

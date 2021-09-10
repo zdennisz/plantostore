@@ -15,13 +15,13 @@ const Farms = (props) => {
 	const categories = useSelector((state) => state.categories.allCategories);
 	const dispatch = useDispatch();
 
-	const goToFarmAhandler = () => {
+	const goToFarmAHandler = () => {
 		navigation.navigate("farm", {
 			farm: "farmA",
 		});
 	};
 
-	const goToFarmBhandler = () => {
+	const goToFarmBHandler = () => {
 		navigation.navigate("farm", {
 			farm: "farmB",
 		});
@@ -89,14 +89,14 @@ const Farms = (props) => {
 						<View style={styles.buttonContainer}>
 							<CustomButton
 								title='Farm A'
-								pressHandler={goToFarmAhandler}
+								pressHandler={goToFarmAHandler}
 								isImage={true}
 							/>
 						</View>
 						<View style={styles.buttonContainer}>
 							<CustomButton
 								title='Farm B'
-								pressHandler={goToFarmBhandler}
+								pressHandler={goToFarmBHandler}
 								isImage={true}
 							/>
 						</View>
@@ -112,10 +112,11 @@ const styles = StyleSheet.create({
 		flex: 1,
 		justifyContent: "space-around",
 		alignItems: "center",
-		maxHeight: 350,
+		backgroundColor: "white",
 	},
 	buttonContainer: {
 		height: 68,
+		marginVertical: 28,
 	},
 	text: {
 		color: Colors.textColor,
@@ -126,13 +127,13 @@ const styles = StyleSheet.create({
 		flex: 1,
 		justifyContent: "flex-start",
 		alignItems: "center",
+		height: "10%",
 	},
 	buttonsContainer: {
 		flex: 1,
-		justifyContent: "space-around",
+		justifyContent: "flex-start",
 		alignItems: "center",
-
-		maxHeight: 250,
+		height: "90%",
 	},
 	loader: {
 		flex: 1,
