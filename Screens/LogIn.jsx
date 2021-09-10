@@ -10,7 +10,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Ionicons } from "@expo/vector-icons";
 import Colors from "../utils/styles";
 import { SafeAreaView } from "react-native-safe-area-context";
-
+import CustomButton from "../components/customButtons/CustomButton";
 const LogIn = (props) => {
 	const { navigation } = props;
 
@@ -24,7 +24,7 @@ const LogIn = (props) => {
 		}
 	};
 	//TODO - restore the user path using the async call and the array of the path
-	const pressHandler = () => {
+	const logInHandler = () => {
 		navigation.navigate("farms");
 		// getData()
 		// 	.then((succ) => {
@@ -46,21 +46,21 @@ const LogIn = (props) => {
 				<Ionicons name='leaf' size={70} style={styles.image} />
 			</View>
 			<View style={styles.textContainers}>
-				<View style={styles.userNameContainer}>
+				<View style={styles.inpuContainer}>
 					<Text style={styles.text}>Username</Text>
 					<TextInput style={styles.input}></TextInput>
 				</View>
-				<View style={styles.passwordContainer}>
+				<View style={styles.inpuContainer}>
 					<Text style={styles.text}>Password</Text>
 					<TextInput secureTextEntry={true} style={styles.input}></TextInput>
 				</View>
 			</View>
 			<View style={styles.buttonContainer}>
-				<TouchableOpacity onPress={pressHandler}>
-					<View style={styles.button}>
-						<Text style={styles.customBtnText}>Log In</Text>
-					</View>
-				</TouchableOpacity>
+				<CustomButton
+					title='Log In'
+					pressHandler={logInHandler}
+					customStyle={{ width: "150%" }}
+				/>
 			</View>
 		</SafeAreaView>
 	);
@@ -77,6 +77,8 @@ const styles = StyleSheet.create({
 		flex: 1,
 		justifyContent: "center",
 		alignItems: "center",
+
+		width: "100%",
 	},
 	image: {
 		color: Colors.primary,
@@ -87,23 +89,20 @@ const styles = StyleSheet.create({
 		fontSize: 20,
 	},
 	textContainers: {
-		flex: 1,
-		justifyContent: "center",
+		flex: 2,
+		justifyContent: "flex-start",
 		alignItems: "center",
+
+		width: "100%",
 	},
 	buttonContainer: {
+		position: "absolute",
+		bottom: 0,
 		flex: 1,
 		justifyContent: "center",
 		alignItems: "center",
-		width: 250,
 	},
-	userNameContainer: {
-		flex: 1,
-		justifyContent: "center",
-		alignItems: "flex-start",
-	},
-	passwordContainer: {
-		flex: 1,
+	inpuContainer: {
 		justifyContent: "center",
 		alignItems: "flex-start",
 	},
@@ -116,19 +115,7 @@ const styles = StyleSheet.create({
 		padding: 2,
 		paddingStart: 8,
 		fontSize: 20,
-	},
-	customBtnText: {
-		fontSize: 22,
-		color: "white",
-	},
-	button: {
-		width: 250,
-		height: 48,
-		justifyContent: "center",
-		alignItems: "center",
-		backgroundColor: Colors.primary,
-		borderRadius: 5,
-		elevation: 5,
+		marginVertical: 20,
 	},
 });
 
