@@ -52,7 +52,7 @@ const LogIn = (props) => {
 				</View>
 				<View style={styles.passwordContainer}>
 					<Text style={styles.text}>Password</Text>
-					<TextInput style={styles.input}></TextInput>
+					<TextInput secureTextEntry={true} style={styles.input}></TextInput>
 				</View>
 			</View>
 			<View style={styles.buttonContainer}>
