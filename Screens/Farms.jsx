@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { StyleSheet, View, ActivityIndicator, Text } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
-import CustomButton from "../components/CustomButton";
+import CustomButton from "../components/customButtons/CustomButton";
 import { REACT_APP_AGWA_CATEGORIES, REACT_APP_AGWA_PLANTS } from "@env";
 import { add_categories } from "../Store/Actions/categories";
 import { add_plants } from "../Store/Actions/plants";

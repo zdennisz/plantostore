@@ -4,7 +4,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { add_to_cart } from "../Store/Actions/cart";
 import { useDispatch, useSelector } from "react-redux";
 import Colors from "../utils/styles";
-import CustomButton from "../components/CustomButton";
+import CustomButton from "../components/customButtons/CustomButton";
 
 const VeggieDesc = (props) => {
 	const { route } = props;

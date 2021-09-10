@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { StyleSheet, View, Text, Platform, FlatList } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
-import CustomHeaderButton from "../components/CustomHeaderButtons";
+import CustomHeaderButton from "../components/customButtons/CustomHeaderButtons";
 import { flatListItemParser } from "../utils/helper";
 import { useSelector, useDispatch } from "react-redux";
 import VeggieCard from "../components/VeggieCard";

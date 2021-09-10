@@ -11,7 +11,7 @@ import {
 	inc_cart_item,
 	resotre_cart_order,
 } from "../Store/Actions/cart";
-import CustomButton from "../components/CustomButton";
+import CustomButton from "../components/customButtons/CustomButton";
 import { Ionicons } from "@expo/vector-icons";
 import Colors from "../utils/styles";
 

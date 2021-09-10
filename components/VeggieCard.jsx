@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
 import Colors from "../utils/styles";
 import { useSelector } from "react-redux";
-import CustomRoundButton from "./CustomRoundButton";
+import CustomRoundButton from "./customButtons/CustomRoundButton";
 
 const VeggieCard = (props) => {
 	const { veggie, isDisplayAmount = false, isAmountEditable = false } = props;
