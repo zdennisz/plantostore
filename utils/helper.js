@@ -1,4 +1,4 @@
-
+import AsyncStorage from "@react-native-async-storage/async-storage";
 export const flatListItemParser = (dataStructure) => {
     // Parse items for the flatlist array
     const cartItems = []
@@ -14,3 +14,11 @@ export const flatListItemParser = (dataStructure) => {
     return cartItems.sort((a, b) => a.id < b.id ? 1 : -1)
 
 }
+
+export const saveLocalStorageData = (localStorageKey, farm) => {
+    try {
+        AsyncStorage.setItem(localStorageKey, JSON.stringify({ ...farm }));
+    } catch (err) {
+        console.log(err);
+    }
+};

@@ -1,24 +1,22 @@
-import React, { useEffect } from "react";
-import {
-	StyleSheet,
-	View,
-	Text,
-	Platform,
-	FlatList,
-	Image,
-} from "react-native";
+import React, { useEffect, useState } from "react";
+import { StyleSheet, View, Text, Platform, FlatList } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import CustomHeaderButton from "../components/CustomHeaderButtons";
 import { flatListItemParser } from "../utils/helper";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import VeggieCard from "../components/VeggieCard";
 import Colors from "../utils/styles";
+import { resotre_past_order } from "../Store/Actions/cart";
 import { Ionicons } from "@expo/vector-icons";
+
 const Farm = (props) => {
 	const { route, navigation } = props;
+	const [farmType] = useState(route.params.farm);
 	const cartPastOrders = useSelector(
 		(state) => state.cart[`${route.params.farm}`].pastOrders
 	);
+	const dispatch = useDispatch();
 	const farmPastItems = cartPastOrders
 		? flatListItemParser(cartPastOrders)
 		: [];
@@ -38,6 +36,21 @@ const Farm = (props) => {
 			id: veggie.id,
 			cart: route.params.farm,
 		});
+	};
+
+	const getPastOrdersData = (dispatch, getState) => {
+		AsyncStorage.getItem(`${farmType}pastStoreData`)
+			.then((pastStoreData) => {
+				const parsedData = JSON.parse(pastStoreData);
+				if (parsedData) {
+					dispatch(
+						resotre_past_order({ cart: farmType, cartItems: parsedData })
+					);
+				}
+			})
+			.catch((err) => {
+				console.log("Error happened", err);
+			});
 	};
 
 	useEffect(() => {
@@ -62,6 +75,7 @@ const Farm = (props) => {
 				</HeaderButtons>
 			),
 		});
+		dispatch(getPastOrdersData);
 	}, []);
 
 	return (

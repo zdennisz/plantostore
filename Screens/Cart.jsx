@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { flatListItemParser } from "../utils/helper";
+import { flatListItemParser, saveLocalStorageData } from "../utils/helper";
 import { set_item_id } from "../Store/Actions/itemId";
 import { useSelector, useDispatch } from "react-redux";
 import { StyleSheet, View, Text, FlatList } from "react-native";
@@ -25,46 +25,53 @@ const Cart = (props) => {
 	const cartItems = cartOrders ? flatListItemParser(cartOrders) : [];
 
 	const placeOrderHandler = () => {
-		dispatch(place_order({ cart: farmType }));
+		dispatch(placeOrder);
 	};
 
-	const incCart = (dispatch, getState, itemId) => {
-		dispatch(inc_cart_item({ id: itemId, cart: farmType }));
-		const farm =
-			farmType === "farmA" ? getState().cart.farmA : getState().cart.farmB;
-		try {
-			AsyncStorage.setItem(`${farmType}storeData`, JSON.stringify({ ...farm }));
-		} catch (err) {
-			console.log(err);
-		}
-	};
-
-	const decCart = (dispatch, getState, itemId) => {
-		dispatch(dec_cart_item({ id: itemId, cart: farmType }));
-		const farm =
-			farmType === "farmA" ? getState().cart.farmA : getState().cart.farmB;
-		try {
-			AsyncStorage.setItem(`${farmType}storeData`, JSON.stringify({ ...farm }));
-		} catch (err) {
-			console.log(err);
-		}
-	};
-
-	const incCartItem = (itemId) => {
+	const incCartItemHandler = (itemId) => {
+		// Updates the store with selected item id to increment amount from cart of that item
 		dispatch(set_item_id(itemId));
 		dispatch(incCart);
 	};
 
-	const decCartItem = (itemId) => {
+	const decCartItemHandler = (itemId) => {
+		// Updates the store with selected item id to decetement amount from cart of that item
 		dispatch(set_item_id(itemId));
 		dispatch(decCart);
 	};
 
-	const getData = (dispatch, getState) => {
+	const placeOrder = (dispatch, getState) => {
+		// Function is used via middelawre to sync the dispatch operation with the store and preform the save once the store update is done
+		dispatch(place_order({ cart: farmType }));
+		const farm =
+			farmType === "farmA" ? getState().cart.farmA : getState().cart.farmB;
+
+		saveLocalStorageData(`${farmType}pastStoreData`, farm);
+		saveLocalStorageData(`${farmType}storeData`, farm);
+	};
+
+	const incCart = (dispatch, getState, itemId) => {
+		// Function is used via middelawre to sync the dispatch operation with the store and preform the save once the store update is done
+		dispatch(inc_cart_item({ id: itemId, cart: farmType }));
+		const farm =
+			farmType === "farmA" ? getState().cart.farmA : getState().cart.farmB;
+		saveLocalStorageData(`${farmType}storeData`, farm);
+	};
+
+	const decCart = (dispatch, getState, itemId) => {
+		// Function is used via middelawre to sync the dispatch operation with the store and preform the save once the store update is done
+		dispatch(dec_cart_item({ id: itemId, cart: farmType }));
+		const farm =
+			farmType === "farmA" ? getState().cart.farmA : getState().cart.farmB;
+		saveLocalStorageData(`${farmType}storeData`, farm);
+	};
+
+	const getCartOrdersData = (dispatch, getState) => {
+		// Function is used via middelawre to sync the dispatch operation with the store and preform the save once the store update is done
 		AsyncStorage.getItem(`${farmType}storeData`)
 			.then((storeData) => {
 				const parsedData = JSON.parse(storeData);
-				if (parsedData != null) {
+				if (parsedData) {
 					dispatch(
 						resotre_cart_order({ cart: farmType, cartItems: parsedData })
 					);
@@ -76,7 +83,7 @@ const Cart = (props) => {
 	};
 
 	useEffect(() => {
-		dispatch(getData);
+		dispatch(getCartOrdersData);
 	}, []);
 
 	return (
@@ -95,8 +102,8 @@ const Cart = (props) => {
 							renderItem={(veggieContainer) => (
 								<VeggieCard
 									veggie={veggieContainer.item}
-									incCartItem={incCartItem}
-									decCartItem={decCartItem}
+									incCartItemHandler={incCartItemHandler}
+									decCartItemHandler={decCartItemHandler}
 									isDisplayAmount={true}
 									isAmountEditable={true}
 								/>

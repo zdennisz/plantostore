@@ -9,16 +9,18 @@ const VeggieCard = (props) => {
 	const [imageUrl, setImageUrl] = useState();
 	const plants = useSelector((state) => state.plants);
 
-	const addCartItem = () => {
-		props.incCartItem(veggie.id);
+	const incCartItem = () => {
+		props.incCartItemHandler(veggie.id);
 	};
 
-	const pressHandler = (veggie) => {
+	const decCartItem = () => {
+		props.decCartItemHandler(veggie.id);
+	};
+
+	const navToVeggieDesc = (veggie) => {
 		props.pressVeggieHandler(veggie);
 	};
-	const decCartItem = () => {
-		props.decCartItem(veggie.id);
-	};
+
 	useEffect(() => {
 		if (plants) {
 			if (plants[veggie.id]) {
@@ -39,7 +41,7 @@ const VeggieCard = (props) => {
 		<View style={styles.veggieCardContainer}>
 			<TouchableOpacity
 				style={styles.cardContent}
-				onPress={pressHandler.bind(this, veggie)}
+				onPress={navToVeggieDesc.bind(this, veggie)}
 			>
 				<Image
 					style={styles.tinyImage}
@@ -49,13 +51,12 @@ const VeggieCard = (props) => {
 				/>
 				<Text style={styles.titleText}>{veggie.name}</Text>
 			</TouchableOpacity>
-
 			<View style={styles.cardContent}>
 				{isDisplayAmount && (
 					<View style={styles.buttonsContainer}>
 						{isAmountEditable ? (
 							<>
-								<CustomRoundButton title='+' pressHandler={addCartItem} />
+								<CustomRoundButton title='+' pressHandler={incCartItem} />
 								<Text style={styles.amountText}>{veggie.amount}</Text>
 								<CustomRoundButton title='-' pressHandler={decCartItem} />
 							</>

@@ -1,4 +1,4 @@
-import { ADD_TO_CART, PLACE_ORDER, INC_CART_ORDER, DEC_CART_ORDER, RESTORE_CART_ORDER } from "../Actions/cart"
+import { ADD_TO_CART, PLACE_ORDER, INC_CART_ORDER, DEC_CART_ORDER, RESTORE_CART_ORDER, RESTORE_PAST_ORDER } from "../Actions/cart"
 
 const initialState = {
     farmA: {
@@ -247,6 +247,36 @@ const cartReducer = (state = initialState, action) => {
             }
             break;
 
+        case RESTORE_PAST_ORDER:
+            switch (action.cart) {
+                case 'farmA':
+
+                    return {
+                        farmA: {
+                            cartOrders: { ...state.farmA.cartOrders },
+                            pastOrders: { ...action.cartItems.pastOrders }
+                        },
+                        farmB: {
+                            cartOrders: { ...state.farmB.cartOrders },
+                            pastOrders: { ...state.farmB.pastOrders }
+                        }
+                    }
+
+
+                case 'farmB':
+
+                    return {
+                        farmB: {
+                            cartOrders: { ...state.farmB.cartOrders },
+                            pastOrders: { ...action.cartItems.pastOrders }
+                        },
+                        farmA: {
+                            cartOrders: { ...state.farmA.cartOrders },
+                            pastOrders: { ...state.farmA.pastOrders }
+                        }
+                    }
+            }
+            break;
         default:
             return state
     }
