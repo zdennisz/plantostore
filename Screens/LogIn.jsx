@@ -58,7 +58,7 @@ const LogIn = (props) => {
 			<View style={styles.buttonContainer}>
 				<TouchableOpacity onPress={pressHandler}>
 					<View style={styles.button}>
-						<Text style={styles.customBtnText}>LOG IN</Text>
+						<Text style={styles.customBtnText}>Log In</Text>
 					</View>
 				</TouchableOpacity>
 			</View>

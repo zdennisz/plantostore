@@ -88,14 +88,14 @@ const Farms = (props) => {
 					<View style={styles.buttonsContainer}>
 						<View style={styles.buttonContainer}>
 							<CustomButton
-								title='FARM A'
+								title='Farm A'
 								pressHandler={goToFarmAhandler}
 								isImage={true}
 							/>
 						</View>
 						<View style={styles.buttonContainer}>
 							<CustomButton
-								title='FARM B'
+								title='Farm B'
 								pressHandler={goToFarmBhandler}
 								isImage={true}
 							/>
