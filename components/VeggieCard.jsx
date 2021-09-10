@@ -56,7 +56,7 @@ const VeggieCard = (props) => {
 						{isAmountEditable ? (
 							<>
 								<CustomRoundButton title='+' pressHandler={addCartItem} />
-								<Text style={styles.text}>{veggie.amount}</Text>
+								<Text style={styles.amountText}>{veggie.amount}</Text>
 								<CustomRoundButton title='-' pressHandler={decCartItem} />
 							</>
 						) : (
@@ -118,6 +118,12 @@ const styles = StyleSheet.create({
 	text: {
 		color: Colors.textColor,
 		fontSize: 16,
+	},
+	amountText: {
+		color: Colors.textColor,
+		fontSize: 16,
+		width: 28,
+		textAlign: "center",
 	},
 });
 
