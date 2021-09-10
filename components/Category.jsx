@@ -6,19 +6,20 @@ import VeggieCard from "./VeggieCard";
 const Category = (props) => {
 	const { itemData } = props;
 
-	const pressHandler = (element) => {
-		props.getVeggieDesc(element.id);
+	const pressHandler = (veggie) => {
+		props.getVeggieDesc(veggie.id);
 	};
 	return (
 		<View style={styles.cardContainer}>
 			<Text style={styles.titleText}>{itemData.item.name}</Text>
 			<View style={styles.cardContentContainer}>
-				{itemData.item.plants.map((element, index) => {
+				{itemData.item.plants.map((veggie) => {
 					return (
-						<SingleVeggie
-							key={index.toString()}
-							pressElementHandler={pressHandler}
-							element={element}
+						<VeggieCard
+							key={veggie.id.toString()}
+							pressVeggieHandler={pressHandler}
+							veggie={veggie}
+							isDisplayAmount={false}
 						/>
 					);
 				})}

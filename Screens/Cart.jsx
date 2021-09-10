@@ -4,7 +4,7 @@ import { set_item_id } from "../Store/Actions/itemId";
 import { useSelector, useDispatch } from "react-redux";
 import { StyleSheet, View, Text, FlatList } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import CartItem from "../components/CartItem";
+import VeggieCard from "../components/VeggieCard";
 import {
 	place_order,
 	dec_cart_item,
@@ -80,29 +80,30 @@ const Cart = (props) => {
 	}, []);
 
 	return (
-		<View style={stlyes.container}>
+		<View style={styles.container}>
 			{cartItems.length < 1 ? (
-				<View style={stlyes.ordersView}>
+				<View style={styles.ordersView}>
 					<Text>No Orders placed...</Text>
 				</View>
 			) : (
 				<>
-					<View style={stlyes.ordersView}>
+					<View style={styles.ordersView}>
 						<FlatList
+							showsVerticalScrollIndicator={false}
 							data={cartItems}
 							keyExtractor={(item) => item.id}
-							renderItem={(itemData) => (
-								<CartItem
-									id={itemData.item.id}
-									name={itemData.item.name}
+							renderItem={(veggieContainer) => (
+								<VeggieCard
+									veggie={veggieContainer.item}
 									incCartItem={incCartItem}
 									decCartItem={decCartItem}
-									amount={itemData.item.amount}
+									isDisplayAmount={true}
+									isAmountEditable={true}
 								/>
 							)}
 						/>
 					</View>
-					<View style={stlyes.buttonContainer}>
+					<View style={styles.buttonContainer}>
 						<CustomButton
 							title='Checkout'
 							pressHandler={placeOrderHandler}
@@ -116,7 +117,7 @@ const Cart = (props) => {
 	);
 };
 
-const stlyes = StyleSheet.create({
+const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		justifyContent: "center",

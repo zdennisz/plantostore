@@ -4,7 +4,7 @@ import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import CustomHeaderButton from "../components/CustomHeaderButtons";
 import { flatListItemParser } from "../utils/helper";
 import { useSelector } from "react-redux";
-
+import VeggieCard from "../components/VeggieCard";
 const Farm = (props) => {
 	const { route, navigation } = props;
 	const cartPastOrders = useSelector(
@@ -60,13 +60,11 @@ const Farm = (props) => {
 						<FlatList
 							data={farmPastItems}
 							keyExtractor={(item) => item.id}
-							renderItem={(itemData) => (
-								<CartItem
-									id={itemData.item.id}
-									name={itemData.item.name}
-									incCartItem={incCartItem}
-									decCartItem={decCartItem}
-									amount={itemData.item.amount}
+							renderItem={(veggieContainer) => (
+								<VeggieCard
+									veggie={veggieContainer.item}
+									isDisplayAmount={true}
+									isAmountEditable={false}
 								/>
 							)}
 						/>
