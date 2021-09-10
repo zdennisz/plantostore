@@ -8,8 +8,8 @@ export const add_to_cart = (data) => {
     return { type: ADD_TO_CART, newItemId: data.id, newItemName: data.name, cart: data.cart }
 }
 
-export const place_order = () => {
-    return { type: PLACE_ORDER }
+export const place_order = (data) => {
+    return { type: PLACE_ORDER, cart: data.cart }
 }
 
 export const inc_cart_item = (data) => {

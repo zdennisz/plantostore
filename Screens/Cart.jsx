@@ -25,7 +25,7 @@ const Cart = (props) => {
 	const cartItems = cartOrders ? flatListItemParser(cartOrders) : [];
 
 	const placeOrderHandler = () => {
-		dispatch(place_order());
+		dispatch(place_order({ cart: farmType }));
 	};
 
 	const incCart = (dispatch, getState, itemId) => {
