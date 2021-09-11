@@ -21,17 +21,8 @@ const LogIn = (props) => {
 	const [isOffline, setOfflineStatus] = useState(false);
 	const [email, setEmail] = useState();
 	const [password, setPassword] = useState();
-
+	const [errorMessage, setErrorMessage] = useState("");
 	const dispatch = useDispatch();
-	const getData = async () => {
-		try {
-			const res = await AsyncStorage.getItem("restorePath");
-			const parRes = JSON.parse(res);
-			return parRes;
-		} catch (err) {
-			console.error(err);
-		}
-	};
 
 	const navigateToSignUpHandler = () => {
 		navigation.navigate("signUp");
@@ -45,7 +36,20 @@ const LogIn = (props) => {
 		setPassword(text);
 	};
 
+	const isValidEmail = (email) => {
+		let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
+		return reg.test(email);
+	};
+
 	const logInHandler = async () => {
+		if (!password || !email) {
+			setErrorMessage("Please fill all fields");
+			return;
+		} else if (!isValidEmail(email)) {
+			setErrorMessage("Please enter a valid email");
+			return;
+		}
+
 		const response = await fetch(
 			"https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyDLTrlLmj_dFKOPI74doQ2rzuWimkIwLcA",
 			{
@@ -63,11 +67,7 @@ const LogIn = (props) => {
 
 		const resData = await response.json();
 		if (!resData.registered) {
-			Alert.alert("Error", "Please Sign Up", [
-				{
-					text: "OK",
-				},
-			]);
+			setErrorMessage("Please Sign Up");
 		} else {
 			dispatch(
 				log_in({ userId: resData.email, firebaseUserId: resData.localId })
@@ -122,6 +122,9 @@ const LogIn = (props) => {
 								onChangeText={changePasswordHandler}
 								defaultValue={password}
 							></TextInput>
+							{errorMessage ? (
+								<Text style={styles.validateFieldsText}>{errorMessage}</Text>
+							) : null}
 						</View>
 					</View>
 					<TouchableOpacity
@@ -222,6 +225,10 @@ const styles = StyleSheet.create({
 		justifyContent: "center",
 		flexDirection: "row",
 		alignItems: "center",
+	},
+	validateFieldsText: {
+		color: "red",
+		marginVertical: 8,
 	},
 });
 

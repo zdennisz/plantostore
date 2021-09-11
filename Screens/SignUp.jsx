@@ -31,7 +31,7 @@ const SignUp = (props) => {
 	};
 
 	const signUpHandler = () => {
-		if (!password && !confirmPassword && !email) {
+		if (!password || !confirmPassword || !email) {
 			setErrorMessage("Please fill all fields");
 		} else if (password != confirmPassword) {
 			setErrorMessage("Passwords do not match");
