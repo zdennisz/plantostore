@@ -1,20 +1,20 @@
 import React, { useEffect, useState } from "react";
-import {
-	StyleSheet,
-	View,
-	TextInput,
-	Text,
-	TouchableOpacity,
-} from "react-native";
+import { StyleSheet, View, TextInput, Text, Alert } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Ionicons } from "@expo/vector-icons";
 import Colors from "../utils/styles";
 import CustomButton from "../components/customButtons/CustomButton";
 import NetInfo from "@react-native-community/netinfo";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useDispatch } from "react-redux";
 
-const LogIn = (props) => {
+const SignUp = (props) => {
 	const { navigation } = props;
+	const [email, setEmail] = useState("");
+	const [password, setPassword] = useState("");
+	const [confirmPassword, setConfirmPassword] = useState("");
+	const [errorMessage, setErrorMessage] = useState();
+	const dispatch = useDispatch();
 	const [isOffline, setOfflineStatus] = useState(false);
 	const getData = async () => {
 		try {
@@ -25,31 +25,66 @@ const LogIn = (props) => {
 			console.log(err);
 		}
 	};
+	const changeEmailHandler = (text) => {
+		setEmail(text);
+	};
 
-	const navigateToSignUpHandler = () => {
-		navigation.navigate("signUp");
+	const changePasswordHandler = (text) => {
+		setPassword(text);
 	};
-	//TODO - restore the user path using the async call and the array of the path
-	const logInHandler = () => {
-		//navigation.navigate("farms");
-		// getData()
-		// 	.then((succ) => {
-		// 		if (succ) {
-		// 			console.log(succ);
-		// 		} else {
-		// 			navigation.navigate("farms");
-		// 		}
-		// 	})
-		// 	.catch((err) => {
-		// 		console.log(err);
-		// 	});
+
+	const changeConfirmPasswordHandler = (text) => {
+		setConfirmPassword(text);
 	};
+
+	const signUpHandler = () => {
+		if (!password && !confirmPassword && !email) {
+			setErrorMessage("Please fill all fields");
+		} else if (password != confirmPassword) {
+			setErrorMessage("Passwords do not match");
+		} else if (password && password.length < 6) {
+			setErrorMessage("Password must be at least 6 characters");
+		} else if (!isValidEmail(email)) {
+			setErrorMessage("Please enter a valid email");
+		} else if (password && confirmPassword && email) {
+			setErrorMessage("");
+			dispatch(signUpToStore);
+		}
+	};
+
+	const isValidEmail = (email) => {
+		let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
+		return reg.test(email);
+	};
+	const signUpToStore = async (dispatch, getState) => {
+		//Send registration data to firebase authentication
+		const response = await fetch(
+			"https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyDLTrlLmj_dFKOPI74doQ2rzuWimkIwLcA",
+			{
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({
+					email: userName,
+					password: password,
+					returnSecureToken: true,
+				}),
+			}
+		);
+
+		const resData = await response.json();
+		console.log(resData);
+	};
+
 	useEffect(() => {
 		const removeNetInfoSubscription = NetInfo.addEventListener((state) => {
 			const offline = !(state.isConnected && state.isInternetReachable);
 			setOfflineStatus(offline);
 		});
-		return () => removeNetInfoSubscription();
+		return () => {
+			removeNetInfoSubscription();
+		};
 	}, []);
 
 	return (
@@ -76,28 +111,37 @@ const LogIn = (props) => {
 					</View>
 					<View style={styles.textContainers}>
 						<View style={styles.inpuContainer}>
-							<Text style={styles.text}>Username</Text>
-							<TextInput style={styles.input}></TextInput>
+							<Text style={styles.text}>Email</Text>
+							<TextInput
+								style={styles.input}
+								onChangeText={changeEmailHandler}
+								defaultValue={email}
+							></TextInput>
 						</View>
 						<View style={styles.inpuContainer}>
 							<Text style={styles.text}>Password</Text>
 							<TextInput
-								secureTextEntry={true}
 								style={styles.input}
+								onChangeText={changePasswordHandler}
+								defaultValue={password}
 							></TextInput>
 						</View>
+						<View style={styles.inpuContainer}>
+							<Text style={styles.text}>Confirm Password</Text>
+							<TextInput
+								style={styles.input}
+								onChangeText={changeConfirmPasswordHandler}
+								defaultValue={confirmPassword}
+							></TextInput>
+						</View>
+						{errorMessage ? (
+							<Text style={styles.validateFieldsText}>{errorMessage}</Text>
+						) : null}
 					</View>
-					<TouchableOpacity
-						style={styles.signUpContainer}
-						onPress={navigateToSignUpHandler}
-					>
-						<Text style={styles.signUpPrimaryText}>New user? Tap to </Text>
-						<Text style={styles.signUpSecondaryText}>sign up</Text>
-					</TouchableOpacity>
 					<View style={styles.buttonContainer}>
 						<CustomButton
-							title='Log In'
-							pressHandler={logInHandler}
+							title='Sign Up'
+							pressHandler={signUpHandler}
 							customStyle={{ width: "150%" }}
 						/>
 					</View>
@@ -130,7 +174,7 @@ const styles = StyleSheet.create({
 		fontSize: 20,
 	},
 	textContainers: {
-		flex: 1,
+		flex: 3,
 		justifyContent: "flex-start",
 		alignItems: "center",
 		width: "100%",
@@ -155,7 +199,6 @@ const styles = StyleSheet.create({
 		padding: 2,
 		paddingStart: 8,
 		fontSize: 20,
-		marginVertical: 20,
 	},
 	notFoundContainer: {
 		flex: 1,
@@ -173,20 +216,10 @@ const styles = StyleSheet.create({
 		alignItems: "center",
 		marginTop: 24,
 	},
-	signUpPrimaryText: {
-		color: Colors.textColor,
-		fontSize: 18,
-	},
-	signUpSecondaryText: {
-		color: Colors.accent,
-		fontSize: 18,
-	},
-	signUpContainer: {
-		flex: 1,
-		justifyContent: "center",
-		flexDirection: "row",
-		alignItems: "center",
+	validateFieldsText: {
+		color: "red",
+		marginVertical: 8,
 	},
 });
 
-export default LogIn;
+export default SignUp;

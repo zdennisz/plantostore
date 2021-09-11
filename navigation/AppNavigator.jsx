@@ -11,6 +11,7 @@ const AppNavigator = (props) => {
 	const [historyPath, setHistoryPath] = useState([]);
 	useAppState(historyPath);
 
+	//onStateChange={getCurrentRoute}
 	const getCurrentRoute = (state) => {
 		if (state.index === undefined || state.index < 0) {
 			return undefined;
@@ -47,7 +48,7 @@ const AppNavigator = (props) => {
 	};
 
 	return (
-		<NavigationContainer onStateChange={getCurrentRoute}>
+		<NavigationContainer>
 			{isAuth ? <StoreNavigator /> : <AuthNavigator />}
 		</NavigationContainer>
 	);
