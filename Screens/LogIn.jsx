@@ -3,7 +3,6 @@ import { StyleSheet, View, TextInput, Text } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Ionicons } from "@expo/vector-icons";
 import Colors from "../utils/styles";
-import { SafeAreaView } from "react-native-safe-area-context";
 import CustomButton from "../components/customButtons/CustomButton";
 import NetInfo from "@react-native-community/netinfo";
 
@@ -44,7 +43,7 @@ const LogIn = (props) => {
 	}, []);
 
 	return (
-		<SafeAreaView style={styles.container}>
+		<View style={styles.container}>
 			{isOffline ? (
 				<View style={styles.notFoundContainer}>
 					<Ionicons
@@ -53,10 +52,12 @@ const LogIn = (props) => {
 						style={styles.image}
 						color={Colors.primary}
 					/>
-					<Text style={styles.notFoundText}>
-						Internet connection was not found.
-					</Text>
-					<Text style={styles.notFoundText}>Please turn it on :)</Text>
+					<View style={styles.notFoundTextContainer}>
+						<Text style={styles.notFoundText}>
+							Internet connection was not found.
+						</Text>
+						<Text style={styles.notFoundText}>Please turn it on :)</Text>
+					</View>
 				</View>
 			) : (
 				<>
@@ -85,7 +86,7 @@ const LogIn = (props) => {
 					</View>
 				</>
 			)}
-		</SafeAreaView>
+		</View>
 	);
 };
 
@@ -95,12 +96,12 @@ const styles = StyleSheet.create({
 		justifyContent: "center",
 		alignItems: "center",
 		width: "100%",
+		backgroundColor: "white",
 	},
 	imageContainer: {
 		flex: 1,
 		justifyContent: "center",
 		alignItems: "center",
-
 		width: "100%",
 	},
 	image: {
@@ -115,7 +116,6 @@ const styles = StyleSheet.create({
 		flex: 2,
 		justifyContent: "flex-start",
 		alignItems: "center",
-
 		width: "100%",
 	},
 	buttonContainer: {
@@ -142,15 +142,19 @@ const styles = StyleSheet.create({
 	},
 	notFoundContainer: {
 		flex: 1,
-		justifyContent: "flex-start",
+		justifyContent: "center",
 		alignItems: "center",
 		width: "90%",
-		marginTop: 50,
 	},
 	notFoundText: {
 		color: Colors.textColor,
-		fontSize: 24,
+		fontSize: 20,
 		textAlign: "center",
+	},
+	notFoundTextContainer: {
+		justifyContent: "center",
+		alignItems: "center",
+		marginTop: 24,
 	},
 });
 

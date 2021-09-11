@@ -146,11 +146,13 @@ const styles = StyleSheet.create({
 		flex: 1,
 		justifyContent: "center",
 		alignItems: "center",
+		width: "90%",
 	},
 	notFoundText: {
 		color: Colors.textColor,
-		fontSize: 24,
+		fontSize: 20,
 		marginTop: 24,
+		textAlign: "center",
 	},
 });
 
