@@ -1,26 +1,27 @@
 import React, { useEffect, useRef, useState } from "react";
-import { StyleSheet, View, Text, Platform, FlatList } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { HeaderButtons, Item } from "react-navigation-header-buttons";
-import CustomHeaderButton from "../components/customButtons/CustomHeaderButtons";
-import { flatListItemParser, saveLocalStorageData } from "../utils/helper";
-import { useSelector, useDispatch } from "react-redux";
-import VeggieCard from "../components/VeggieCard";
 import Colors from "../utils/styles";
-import { resotre_past_order } from "../Store/Actions/cart";
-import { Ionicons } from "@expo/vector-icons";
-import { loadExternalStorageData } from "../utils/helper";
+import VeggieCard from "../components/VeggieCard";
 import NetInfo from "@react-native-community/netinfo";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import CustomHeaderButton from "../components/customButtons/CustomHeaderButtons";
+import { Ionicons } from "@expo/vector-icons";
+import { useSelector, useDispatch } from "react-redux";
+import { loadExternalStorageData } from "../utils/helper";
+import { resotre_past_order } from "../Store/Actions/cart";
+import { HeaderButtons, Item } from "react-navigation-header-buttons";
+import { StyleSheet, View, Text, Platform, FlatList } from "react-native";
+import { flatListItemParser, saveLocalStorageData } from "../utils/helper";
 
 const Farm = (props) => {
 	const { route, navigation } = props;
-	const isOnline = useRef(false);
 	const [farmType] = useState(route.params.farm);
 	const cartPastOrders = useSelector(
 		(state) => state.cart[`${route.params.farm}`].pastOrders
 	);
 	const user = useSelector((state) => state.auth);
+	const isOnline = useRef(false);
 	const dispatch = useDispatch();
+
 	const farmPastItems = cartPastOrders
 		? flatListItemParser(cartPastOrders)
 		: [];
@@ -30,11 +31,13 @@ const Farm = (props) => {
 			cart: `${route.params.farm}`,
 		});
 	};
+
 	const goToStore = () => {
 		navigation.navigate("store", {
 			cart: `${route.params.farm}`,
 		});
 	};
+
 	const goToVeggieDesc = (veggie) => {
 		navigation.navigate("veggieDsec", {
 			id: veggie.id,
@@ -55,7 +58,9 @@ const Farm = (props) => {
 			console.error(err);
 		}
 	};
+
 	const getPastOrdersData = (dispatch, getState) => {
+		// Display past orders from DB if online, else from local storage
 		if (isOnline) {
 			loadPastOrders(dispatch, getState);
 		} else {
@@ -69,7 +74,7 @@ const Farm = (props) => {
 					}
 				})
 				.catch((err) => {
-					console.log("Error happened", err);
+					console.error(err);
 				});
 		}
 	};

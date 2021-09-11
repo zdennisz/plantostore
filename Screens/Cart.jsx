@@ -1,31 +1,33 @@
 import React, { useEffect, useState, useRef } from "react";
+import Colors from "../utils/styles";
+import VeggieCard from "../components/VeggieCard";
+import NetInfo from "@react-native-community/netinfo";
+import CustomButton from "../components/customButtons/CustomButton";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Ionicons } from "@expo/vector-icons";
+import { set_item_id } from "../Store/Actions/itemId";
+import { useSelector, useDispatch } from "react-redux";
+import { StyleSheet, View, Text, FlatList } from "react-native";
+import {
+	place_order,
+	dec_cart_item,
+	inc_cart_item,
+	resotre_cart_order,
+	resotre_past_order,
+} from "../Store/Actions/cart";
 import {
 	flatListItemParser,
 	saveLocalStorageData,
 	saveExternalStorageData,
 	loadExternalStorageData,
 } from "../utils/helper";
-import { set_item_id } from "../Store/Actions/itemId";
-import { useSelector, useDispatch } from "react-redux";
-import { StyleSheet, View, Text, FlatList } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import VeggieCard from "../components/VeggieCard";
-import {
-	place_order,
-	dec_cart_item,
-	inc_cart_item,
-	resotre_cart_order,
-} from "../Store/Actions/cart";
-import CustomButton from "../components/customButtons/CustomButton";
-import { Ionicons } from "@expo/vector-icons";
-import Colors from "../utils/styles";
-import NetInfo from "@react-native-community/netinfo";
+
 const Cart = (props) => {
 	const { route } = props;
-	const isOnline = useRef(false);
 	const [farmType] = useState(route.params.cart);
 	const cart = useSelector((state) => state.cart);
 	const user = useSelector((state) => state.auth);
+	const isOnline = useRef(false);
 	const dispatch = useDispatch();
 
 	const cartOrders =
@@ -78,6 +80,7 @@ const Cart = (props) => {
 		saveLocalStorageData(`${farmType}storeData`, farm);
 		saveExternalStorageData(farm, farmType, user.firebaseUserId);
 	};
+
 	const loadCartOrders = async (dispatch, getState) => {
 		const farm =
 			farmType === "farmA" ? getState().cart.farmA : getState().cart.farmB;
@@ -93,6 +96,7 @@ const Cart = (props) => {
 	};
 
 	const getCartOrdersData = (dispatch, getState) => {
+		// Display cart orders from DB if online, else from local storage
 		if (isOnline) {
 			loadCartOrders(dispatch, getState);
 		} else {
@@ -115,7 +119,6 @@ const Cart = (props) => {
 	useEffect(() => {
 		const unsubscribe = NetInfo.addEventListener((state) => {
 			const online = !!state.isConnected;
-			console.log("online=", !!state.isConnected);
 			isOnline.current = online;
 		});
 		dispatch(getCartOrdersData);

@@ -16,6 +16,11 @@ export const flatListItemParser = (dataStructure) => {
 
 }
 
+export const isValidEmail = (email) => {
+    let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
+    return reg.test(email);
+};
+
 export const saveLocalStorageData = (localStorageKey, farm) => {
     try {
         AsyncStorage.setItem(localStorageKey, JSON.stringify({ ...farm }));
@@ -23,7 +28,6 @@ export const saveLocalStorageData = (localStorageKey, farm) => {
         console.error(err);
     }
 };
-
 
 export const saveExternalStorageData = (farmData, farmType, userId) => {
     const data = { ...farmData }

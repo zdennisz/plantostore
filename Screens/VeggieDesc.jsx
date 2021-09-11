@@ -1,13 +1,11 @@
-import { StyleSheet, View, Text, ScrollView, Image } from "react-native";
-import React, { useState } from "react";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { add_to_cart } from "../Store/Actions/cart";
-import { useDispatch, useSelector } from "react-redux";
+import React, { useState, useEffect } from "react";
 import Colors from "../utils/styles";
 import CustomButton from "../components/customButtons/CustomButton";
 import CustomHeaderButton from "../components/customButtons/CustomHeaderButtons";
+import { add_to_cart } from "../Store/Actions/cart";
+import { useDispatch, useSelector } from "react-redux";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
-import { useEffect } from "react";
+import { StyleSheet, View, Text, ScrollView, Image } from "react-native";
 import { saveLocalStorageData, saveExternalStorageData } from "../utils/helper";
 
 const VeggieDesc = (props) => {
@@ -17,7 +15,6 @@ const VeggieDesc = (props) => {
 	const veggieInfo = useSelector((state) => state.plants[id]);
 	const user = useSelector((state) => state.auth);
 	const dispatch = useDispatch();
-	const cart = useSelector((state) => state.cart);
 
 	const saveCurrFarmCart = (dispatch, getState) => {
 		dispatch(
@@ -57,6 +54,7 @@ const VeggieDesc = (props) => {
 			),
 		});
 	}, []);
+
 	return (
 		<>
 			{veggieInfo ? (

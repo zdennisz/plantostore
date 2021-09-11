@@ -1,25 +1,23 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, View, ActivityIndicator, Text } from "react-native";
-import { useDispatch, useSelector } from "react-redux";
+import axios from "axios";
+import Colors from "../utils/styles";
 import CustomButton from "../components/customButtons/CustomButton";
+import CustomHeaderButton from "../components/customButtons/CustomHeaderButtons";
+import { log_out } from "../Store/Actions/auth";
+import { add_plants } from "../Store/Actions/plants";
+import { useDispatch, useSelector } from "react-redux";
+import { add_categories } from "../Store/Actions/categories";
+import { HeaderButtons, Item } from "react-navigation-header-buttons";
+import { StyleSheet, View, ActivityIndicator, Text } from "react-native";
 import {
 	REACT_APP_AGWA_CATEGORIES,
 	REACT_APP_AGWA_PLANTS,
 } from "../utils/database";
-import { add_categories } from "../Store/Actions/categories";
-import { add_plants } from "../Store/Actions/plants";
-import axios from "axios";
-import { log_out } from "../Store/Actions/auth";
-import { HeaderButtons, Item } from "react-navigation-header-buttons";
-import CustomHeaderButton from "../components/customButtons/CustomHeaderButtons";
-import Colors from "../utils/styles";
 
 const Farms = (props) => {
 	const { navigation } = props;
-
 	const [isLoading, setIsLoading] = useState(true);
 	const categories = useSelector((state) => state.categories.allCategories);
-
 	const dispatch = useDispatch();
 
 	const goToFarmAHandler = () => {
@@ -51,6 +49,7 @@ const Farms = (props) => {
 			),
 		});
 	}, []);
+
 	useEffect(() => {
 		//Gets the categories from plant DB
 		const getCategories = async () => {
@@ -70,12 +69,10 @@ const Farms = (props) => {
 		const getPlantData = async () => {
 			try {
 				const allPlantData = await axios.get(`${REACT_APP_AGWA_PLANTS}`);
-
 				let dataToStore = {};
 
 				for (let i = 0; i < categories.length; i++) {
 					let plantsArray = categories[i].plants;
-
 					for (let j = 0; j < plantsArray.length; j++) {
 						const foundPlant = allPlantData.data.plants.find(
 							(item) => item.id === plantsArray[j].id

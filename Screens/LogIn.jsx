@@ -1,21 +1,20 @@
 import React, { useEffect, useState } from "react";
+import Colors from "../utils/styles";
+import NetInfo from "@react-native-community/netinfo";
+import CustomButton from "../components/customButtons/CustomButton";
+import { useDispatch } from "react-redux";
+import { Ionicons } from "@expo/vector-icons";
+import { isValidEmail } from "../utils/helper";
+import { log_in } from "../Store/Actions/auth";
+import { SafeAreaView } from "react-native-safe-area-context";
 import {
 	StyleSheet,
 	View,
 	TextInput,
 	Text,
 	TouchableOpacity,
-	Alert,
 } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Ionicons } from "@expo/vector-icons";
-import Colors from "../utils/styles";
-import CustomButton from "../components/customButtons/CustomButton";
-import NetInfo from "@react-native-community/netinfo";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { useDispatch } from "react-redux";
-import { log_in } from "../Store/Actions/auth";
-import { useSelector } from "react-redux";
+
 const LogIn = (props) => {
 	const { navigation } = props;
 	const [isOffline, setOfflineStatus] = useState(false);
@@ -36,12 +35,8 @@ const LogIn = (props) => {
 		setPassword(text);
 	};
 
-	const isValidEmail = (email) => {
-		let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
-		return reg.test(email);
-	};
-
 	const logInHandler = async () => {
+		// Validation
 		if (!password || !email) {
 			setErrorMessage("Please fill all fields");
 			return;
@@ -76,6 +71,7 @@ const LogIn = (props) => {
 	};
 
 	useEffect(() => {
+		// Check the network connection
 		const removeNetInfoSubscription = NetInfo.addEventListener((state) => {
 			const offline = !(state.isConnected && state.isInternetReachable);
 			setOfflineStatus(offline);

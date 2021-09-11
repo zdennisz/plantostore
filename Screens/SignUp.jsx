@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, View, TextInput, Text, Alert } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Ionicons } from "@expo/vector-icons";
 import Colors from "../utils/styles";
-import CustomButton from "../components/customButtons/CustomButton";
 import NetInfo from "@react-native-community/netinfo";
-import { SafeAreaView } from "react-native-safe-area-context";
+import CustomButton from "../components/customButtons/CustomButton";
 import { useDispatch } from "react-redux";
+import { Ionicons } from "@expo/vector-icons";
+import { isValidEmail } from "../utils/helper";
 import { sign_up } from "../Store/Actions/auth";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { StyleSheet, View, TextInput, Text } from "react-native";
 
 const SignUp = (props) => {
 	const { navigation } = props;
@@ -15,8 +15,8 @@ const SignUp = (props) => {
 	const [password, setPassword] = useState("");
 	const [confirmPassword, setConfirmPassword] = useState("");
 	const [errorMessage, setErrorMessage] = useState();
-	const dispatch = useDispatch();
 	const [isOffline, setOfflineStatus] = useState(false);
+	const dispatch = useDispatch();
 
 	const changeEmailHandler = (text) => {
 		setEmail(text);
@@ -31,6 +31,7 @@ const SignUp = (props) => {
 	};
 
 	const signUpHandler = () => {
+		// Validation
 		if (!password || !confirmPassword || !email) {
 			setErrorMessage("Please fill all fields");
 		} else if (password != confirmPassword) {
@@ -45,12 +46,8 @@ const SignUp = (props) => {
 		}
 	};
 
-	const isValidEmail = (email) => {
-		let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
-		return reg.test(email);
-	};
 	const signUpToStore = async (dispatch, getState) => {
-		//Send registration data to firebase authentication
+		// Send registration data to firebase authentication
 		const response = await fetch(
 			"https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyDLTrlLmj_dFKOPI74doQ2rzuWimkIwLcA",
 			{
@@ -66,6 +63,7 @@ const SignUp = (props) => {
 			}
 		);
 
+		// Validation
 		const resData = await response.json();
 		if (resData.error.message === "EMAIL_EXISTS") {
 			setErrorMessage("Email already exists");
@@ -76,6 +74,7 @@ const SignUp = (props) => {
 	};
 
 	useEffect(() => {
+		// Check the network connection
 		const removeNetInfoSubscription = NetInfo.addEventListener((state) => {
 			const offline = !(state.isConnected && state.isInternetReachable);
 			setOfflineStatus(offline);

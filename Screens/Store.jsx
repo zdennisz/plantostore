@@ -1,6 +1,6 @@
-import { StyleSheet, View } from "react-native";
 import React from "react";
 import CategoryList from "../components/CategoryList";
+import { StyleSheet, View } from "react-native";
 
 const Store = (props) => {
 	const { route, navigation } = props;
