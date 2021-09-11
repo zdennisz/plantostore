@@ -9,6 +9,9 @@ import {
 import { add_categories } from "../Store/Actions/categories";
 import { add_plants } from "../Store/Actions/plants";
 import axios from "axios";
+import { log_out } from "../Store/Actions/auth";
+import { HeaderButtons, Item } from "react-navigation-header-buttons";
+import CustomHeaderButton from "../components/customButtons/CustomHeaderButtons";
 import Colors from "../utils/styles";
 
 const Farms = (props) => {
@@ -30,8 +33,26 @@ const Farms = (props) => {
 			farm: "farmB",
 		});
 	};
-	//Gets the categories from plant DB
+
+	const logOutHandler = () => {
+		dispatch(log_out());
+	};
+
 	useEffect(() => {
+		navigation.setOptions({
+			headerRight: () => (
+				<HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
+					<Item
+						title='Logout'
+						iconName={Platform.OS === "android" ? "md-exit" : "ios-exit"}
+						onPress={logOutHandler}
+					/>
+				</HeaderButtons>
+			),
+		});
+	}, []);
+	useEffect(() => {
+		//Gets the categories from plant DB
 		const getCategories = async () => {
 			try {
 				const res = await axios.get(`${REACT_APP_AGWA_CATEGORIES}`);
@@ -43,8 +64,9 @@ const Farms = (props) => {
 		};
 		getCategories();
 	}, []);
-	//Gets all the plant info of the categories
+
 	useEffect(() => {
+		//Gets all the plant info of the categories
 		const getPlantData = async () => {
 			try {
 				const allPlantData = await axios.get(`${REACT_APP_AGWA_PLANTS}`);

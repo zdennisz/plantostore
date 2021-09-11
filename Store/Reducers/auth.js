@@ -1,4 +1,4 @@
-import { SIGN_UP, LOG_IN } from "../Actions/auth"
+import { SIGN_UP, LOG_IN, LOG_OUT } from "../Actions/auth"
 
 const initialState = {
     userId: "",
@@ -17,6 +17,8 @@ const authReducer = (state = initialState, action) => {
                 userId: action.userId,
                 firebaseUserId: action.firebaseUserId
             }
+        case LOG_OUT:
+            return initialState
         default:
             return state
     }
