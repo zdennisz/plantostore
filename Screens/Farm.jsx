@@ -1,14 +1,16 @@
-import React, { useEffect, useState } from "react";
-import { StyleSheet, View, Text, Platform, FlatList } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { HeaderButtons, Item } from "react-navigation-header-buttons";
-import CustomHeaderButton from "../components/customButtons/CustomHeaderButtons";
-import { flatListItemParser } from "../utils/helper";
-import { useSelector, useDispatch } from "react-redux";
-import VeggieCard from "../components/VeggieCard";
+import React, { useEffect, useRef, useState } from "react";
 import Colors from "../utils/styles";
-import { resotre_past_order } from "../Store/Actions/cart";
+import VeggieCard from "../components/VeggieCard";
+import NetInfo from "@react-native-community/netinfo";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import CustomHeaderButton from "../components/customButtons/CustomHeaderButtons";
 import { Ionicons } from "@expo/vector-icons";
+import { useSelector, useDispatch } from "react-redux";
+import { loadExternalStorageData } from "../utils/helper";
+import { resotre_past_order } from "../Store/Actions/cart";
+import { HeaderButtons, Item } from "react-navigation-header-buttons";
+import { StyleSheet, View, Text, Platform, FlatList } from "react-native";
+import { flatListItemParser, saveLocalStorageData } from "../utils/helper";
 
 const Farm = (props) => {
 	const { route, navigation } = props;
@@ -16,7 +18,10 @@ const Farm = (props) => {
 	const cartPastOrders = useSelector(
 		(state) => state.cart[`${route.params.farm}`].pastOrders
 	);
+	const user = useSelector((state) => state.auth);
+	const isOnline = useRef(false);
 	const dispatch = useDispatch();
+
 	const farmPastItems = cartPastOrders
 		? flatListItemParser(cartPastOrders)
 		: [];
@@ -26,11 +31,13 @@ const Farm = (props) => {
 			cart: `${route.params.farm}`,
 		});
 	};
+
 	const goToStore = () => {
 		navigation.navigate("store", {
 			cart: `${route.params.farm}`,
 		});
 	};
+
 	const goToVeggieDesc = (veggie) => {
 		navigation.navigate("veggieDsec", {
 			id: veggie.id,
@@ -38,22 +45,46 @@ const Farm = (props) => {
 		});
 	};
 
+	const loadPastOrders = async (dispatch, getState) => {
+		const farm =
+			farmType === "farmA" ? getState().cart.farmA : getState().cart.farmB;
+		try {
+			const res = await loadExternalStorageData(user.firebaseUserId, farmType);
+			if (res.data) {
+				dispatch(resotre_past_order({ cart: farmType, cartItems: res.data }));
+				saveLocalStorageData(`${farmType}pastStoreData`, farm);
+			}
+		} catch (err) {
+			console.error(err);
+		}
+	};
+
 	const getPastOrdersData = (dispatch, getState) => {
-		AsyncStorage.getItem(`${farmType}pastStoreData`)
-			.then((pastStoreData) => {
-				const parsedData = JSON.parse(pastStoreData);
-				if (parsedData) {
-					dispatch(
-						resotre_past_order({ cart: farmType, cartItems: parsedData })
-					);
-				}
-			})
-			.catch((err) => {
-				console.log("Error happened", err);
-			});
+		// Display past orders from DB if online, else from local storage
+		if (isOnline) {
+			loadPastOrders(dispatch, getState);
+		} else {
+			AsyncStorage.getItem(`${farmType}pastStoreData`)
+				.then((pastStoreData) => {
+					const parsedData = JSON.parse(pastStoreData);
+					if (parsedData) {
+						dispatch(
+							resotre_past_order({ cart: farmType, cartItems: parsedData })
+						);
+					}
+				})
+				.catch((err) => {
+					console.error(err);
+				});
+		}
 	};
 
 	useEffect(() => {
+		const unsubscribe = NetInfo.addEventListener((state) => {
+			const online = !!state.isConnected;
+			isOnline.current = online;
+		});
+
 		navigation.setOptions({
 			title: `Farm ${route.params.farm.slice(-1)}`,
 			headerRight: () => (
@@ -75,7 +106,9 @@ const Farm = (props) => {
 				</HeaderButtons>
 			),
 		});
+
 		dispatch(getPastOrdersData);
+		return () => unsubscribe();
 	}, []);
 
 	return (

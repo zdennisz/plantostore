@@ -1,24 +1,33 @@
-import React, { useEffect, useState } from "react";
-import { flatListItemParser, saveLocalStorageData } from "../utils/helper";
+import React, { useEffect, useState, useRef } from "react";
+import Colors from "../utils/styles";
+import VeggieCard from "../components/VeggieCard";
+import NetInfo from "@react-native-community/netinfo";
+import CustomButton from "../components/customButtons/CustomButton";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Ionicons } from "@expo/vector-icons";
 import { set_item_id } from "../Store/Actions/itemId";
 import { useSelector, useDispatch } from "react-redux";
 import { StyleSheet, View, Text, FlatList } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import VeggieCard from "../components/VeggieCard";
 import {
 	place_order,
 	dec_cart_item,
 	inc_cart_item,
 	resotre_cart_order,
+	resotre_past_order,
 } from "../Store/Actions/cart";
-import CustomButton from "../components/customButtons/CustomButton";
-import { Ionicons } from "@expo/vector-icons";
-import Colors from "../utils/styles";
+import {
+	flatListItemParser,
+	saveLocalStorageData,
+	saveExternalStorageData,
+	loadExternalStorageData,
+} from "../utils/helper";
 
 const Cart = (props) => {
 	const { route } = props;
 	const [farmType] = useState(route.params.cart);
 	const cart = useSelector((state) => state.cart);
+	const user = useSelector((state) => state.auth);
+	const isOnline = useRef(false);
 	const dispatch = useDispatch();
 
 	const cartOrders =
@@ -42,6 +51,7 @@ const Cart = (props) => {
 		dispatch(decCart);
 	};
 
+	// Save in the local storage the purched order as past orders & the cleared cart as orders
 	const placeOrder = (dispatch, getState) => {
 		// Function is used via middelawre to sync the dispatch operation with the store and preform the save once the store update is done
 		dispatch(place_order({ cart: farmType }));
@@ -50,6 +60,7 @@ const Cart = (props) => {
 
 		saveLocalStorageData(`${farmType}pastStoreData`, farm);
 		saveLocalStorageData(`${farmType}storeData`, farm);
+		saveExternalStorageData(farm, farmType, user.firebaseUserId);
 	};
 
 	const incCart = (dispatch, getState, itemId) => {
@@ -58,6 +69,7 @@ const Cart = (props) => {
 		const farm =
 			farmType === "farmA" ? getState().cart.farmA : getState().cart.farmB;
 		saveLocalStorageData(`${farmType}storeData`, farm);
+		saveExternalStorageData(farm, farmType, user.firebaseUserId);
 	};
 
 	const decCart = (dispatch, getState, itemId) => {
@@ -66,26 +78,51 @@ const Cart = (props) => {
 		const farm =
 			farmType === "farmA" ? getState().cart.farmA : getState().cart.farmB;
 		saveLocalStorageData(`${farmType}storeData`, farm);
+		saveExternalStorageData(farm, farmType, user.firebaseUserId);
+	};
+
+	const loadCartOrders = async (dispatch, getState) => {
+		const farm =
+			farmType === "farmA" ? getState().cart.farmA : getState().cart.farmB;
+		try {
+			const res = await loadExternalStorageData(user.firebaseUserId, farmType);
+			if (res.data) {
+				dispatch(resotre_past_order({ cart: farmType, cartItems: res.data }));
+				saveLocalStorageData(`${farmType}storeData`, farm);
+			}
+		} catch (err) {
+			console.error(err);
+		}
 	};
 
 	const getCartOrdersData = (dispatch, getState) => {
-		// Function is used via middelawre to sync the dispatch operation with the store and preform the save once the store update is done
-		AsyncStorage.getItem(`${farmType}storeData`)
-			.then((storeData) => {
-				const parsedData = JSON.parse(storeData);
-				if (parsedData) {
-					dispatch(
-						resotre_cart_order({ cart: farmType, cartItems: parsedData })
-					);
-				}
-			})
-			.catch((err) => {
-				console.log("Error happened", err);
-			});
+		// Display cart orders from DB if online, else from local storage
+		if (isOnline) {
+			loadCartOrders(dispatch, getState);
+		} else {
+			AsyncStorage.getItem(`${farmType}storeData`)
+				.then((storeData) => {
+					const parsedData = JSON.parse(storeData);
+					if (parsedData) {
+						// Function is used via middelawre to sync the dispatch operation with the store and preform the save once the store update is done
+						dispatch(
+							resotre_cart_order({ cart: farmType, cartItems: parsedData })
+						);
+					}
+				})
+				.catch((err) => {
+					console.error(err);
+				});
+		}
 	};
 
 	useEffect(() => {
+		const unsubscribe = NetInfo.addEventListener((state) => {
+			const online = !!state.isConnected;
+			isOnline.current = online;
+		});
 		dispatch(getCartOrdersData);
+		return () => unsubscribe();
 	}, []);
 
 	return (

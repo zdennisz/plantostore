@@ -5,29 +5,20 @@ import CustomButton from "../components/customButtons/CustomButton";
 import { useDispatch } from "react-redux";
 import { Ionicons } from "@expo/vector-icons";
 import { isValidEmail } from "../utils/helper";
-import { log_in } from "../Store/Actions/auth";
+import { sign_up } from "../Store/Actions/auth";
 import { SafeAreaView } from "react-native-safe-area-context";
-import {
-	StyleSheet,
-	View,
-	TextInput,
-	Text,
-	TouchableOpacity,
-} from "react-native";
+import { StyleSheet, View, TextInput, Text } from "react-native";
 
-const LogIn = (props) => {
+const SignUp = (props) => {
 	const { navigation } = props;
+	const [email, setEmail] = useState("");
+	const [password, setPassword] = useState("");
+	const [confirmPassword, setConfirmPassword] = useState("");
+	const [errorMessage, setErrorMessage] = useState();
 	const [isOffline, setOfflineStatus] = useState(false);
-	const [email, setEmail] = useState();
-	const [password, setPassword] = useState();
-	const [errorMessage, setErrorMessage] = useState("");
 	const dispatch = useDispatch();
 
-	const navigateToSignUpHandler = () => {
-		navigation.navigate("signUp");
-	};
-
-	const changedEmailHandler = (text) => {
+	const changeEmailHandler = (text) => {
 		setEmail(text);
 	};
 
@@ -35,18 +26,30 @@ const LogIn = (props) => {
 		setPassword(text);
 	};
 
-	const logInHandler = async () => {
+	const changeConfirmPasswordHandler = (text) => {
+		setConfirmPassword(text);
+	};
+
+	const signUpHandler = () => {
 		// Validation
-		if (!password || !email) {
+		if (!password || !confirmPassword || !email) {
 			setErrorMessage("Please fill all fields");
-			return;
+		} else if (password != confirmPassword) {
+			setErrorMessage("Passwords do not match");
+		} else if (password && password.length < 6) {
+			setErrorMessage("Password must be at least 6 characters");
 		} else if (!isValidEmail(email)) {
 			setErrorMessage("Please enter a valid email");
-			return;
+		} else if (password && confirmPassword && email) {
+			setErrorMessage("");
+			dispatch(signUpToStore);
 		}
+	};
 
+	const signUpToStore = async (dispatch, getState) => {
+		// Send registration data to firebase authentication
 		const response = await fetch(
-			"https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyDLTrlLmj_dFKOPI74doQ2rzuWimkIwLcA",
+			"https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyDLTrlLmj_dFKOPI74doQ2rzuWimkIwLcA",
 			{
 				method: "POST",
 				headers: {
@@ -60,13 +63,13 @@ const LogIn = (props) => {
 			}
 		);
 
+		// Validation
 		const resData = await response.json();
-		if (!resData.registered) {
-			setErrorMessage("Please Sign Up");
+		if (resData.error.message === "EMAIL_EXISTS") {
+			setErrorMessage("Email already exists");
 		} else {
-			dispatch(
-				log_in({ userId: resData.email, firebaseUserId: resData.localId })
-			);
+			dispatch(sign_up({ userId: resData.email, userToken: resData.localId }));
+			navigation.navigate("logIn");
 		}
 	};
 
@@ -76,7 +79,9 @@ const LogIn = (props) => {
 			const offline = !(state.isConnected && state.isInternetReachable);
 			setOfflineStatus(offline);
 		});
-		return () => removeNetInfoSubscription();
+		return () => {
+			removeNetInfoSubscription();
+		};
 	}, []);
 
 	return (
@@ -106,34 +111,36 @@ const LogIn = (props) => {
 							<Text style={styles.text}>Email</Text>
 							<TextInput
 								style={styles.input}
-								onChangeText={changedEmailHandler}
+								onChangeText={changeEmailHandler}
 								defaultValue={email}
 							></TextInput>
 						</View>
 						<View style={styles.inpuContainer}>
 							<Text style={styles.text}>Password</Text>
 							<TextInput
-								secureTextEntry={true}
 								style={styles.input}
 								onChangeText={changePasswordHandler}
 								defaultValue={password}
+								secureTextEntry={true}
 							></TextInput>
-							{errorMessage ? (
-								<Text style={styles.validateFieldsText}>{errorMessage}</Text>
-							) : null}
 						</View>
+						<View style={styles.inpuContainer}>
+							<Text style={styles.text}>Confirm Password</Text>
+							<TextInput
+								style={styles.input}
+								onChangeText={changeConfirmPasswordHandler}
+								defaultValue={confirmPassword}
+								secureTextEntry={true}
+							></TextInput>
+						</View>
+						{errorMessage ? (
+							<Text style={styles.validateFieldsText}>{errorMessage}</Text>
+						) : null}
 					</View>
-					<TouchableOpacity
-						style={styles.signUpContainer}
-						onPress={navigateToSignUpHandler}
-					>
-						<Text style={styles.signUpPrimaryText}>New user? Tap to </Text>
-						<Text style={styles.signUpSecondaryText}>sign up</Text>
-					</TouchableOpacity>
 					<View style={styles.buttonContainer}>
 						<CustomButton
-							title='Log In'
-							pressHandler={logInHandler}
+							title='Sign Up'
+							pressHandler={signUpHandler}
 							customStyle={{ width: "150%" }}
 						/>
 					</View>
@@ -166,7 +173,7 @@ const styles = StyleSheet.create({
 		fontSize: 20,
 	},
 	textContainers: {
-		flex: 1,
+		flex: 3,
 		justifyContent: "flex-start",
 		alignItems: "center",
 		width: "100%",
@@ -208,24 +215,10 @@ const styles = StyleSheet.create({
 		alignItems: "center",
 		marginTop: 24,
 	},
-	signUpPrimaryText: {
-		color: Colors.textColor,
-		fontSize: 18,
-	},
-	signUpSecondaryText: {
-		color: Colors.accent,
-		fontSize: 18,
-	},
-	signUpContainer: {
-		flex: 1,
-		justifyContent: "center",
-		flexDirection: "row",
-		alignItems: "center",
-	},
 	validateFieldsText: {
 		color: "red",
 		marginVertical: 8,
 	},
 });
 
-export default LogIn;
+export default SignUp;

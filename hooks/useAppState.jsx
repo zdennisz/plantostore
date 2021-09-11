@@ -13,7 +13,7 @@ const useAppState = (props) => {
 
 			await AsyncStorage.setItem("restorePath", data);
 		} catch (err) {
-			console.log(err);
+			console.error(err);
 		}
 	};
 

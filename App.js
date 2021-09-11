@@ -1,96 +1,13 @@
 import { Provider } from 'react-redux';
-import React, { useState } from 'react';
-import { StyleSheet } from 'react-native';
-import { NavigationContainer } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import useAppState from './hooks/useAppState';
+import React from 'react';
 import store from './Store/store'
-import LogIn from './Screens/LogIn';
-import Farms from './Screens/Farms'
-import Farm from './Screens/Farm'
-import Store from './Screens/Store'
-import Cart from './Screens/Cart'
-import VeggieDesc from './Screens/VeggieDesc'
-const Stack = createNativeStackNavigator()
+import AppNavigator from './navigation/AppNavigator';
+
 
 export default App = () => {
-  const [historyPath, setHistoryPath] = useState([])
-  useAppState(historyPath)
-
-  const getCurrentRoute = (state) => {
-    if (state.index === undefined || state.index < 0) {
-      return undefined;
-    }
-
-    const nestedState = state.routes[state.index].state;
-    if (nestedState !== undefined) {
-      return getCurrentRoute(nestedState);
-    }
-
-    setHistoryPath(historyPath => {
-      let path
-      switch (state.routes[state.index].name) {
-        case 'logIn':
-          return [...historyPath, state.routes[state.index].name]
-        case 'farms':
-          return [...historyPath, state.routes[state.index].name]
-        case 'farm':
-          return [...historyPath, state.routes[state.index].params.farm]
-        case 'store':
-          path = 'store' + state.routes[state.index].params.cart.slice(-1)
-          return [...historyPath, path]
-        case 'cart':
-          path = 'cart' + state.routes[state.index].params.cart.slice(-1)
-          return [...historyPath, path]
-        case 'veggieDsec':
-          path = state.routes[state.index].params.cart + ' ' + state.routes[state.index].params.id
-          return [...historyPath, path]
-      }
-
-    }
-    )
-
-  }
-
   return (
     <Provider store={store}>
-      <NavigationContainer onStateChange={getCurrentRoute} >
-        <Stack.Navigator>
-          <Stack.Screen
-            name='logIn'
-            component={LogIn}
-            options={{ title: "" }} />
-          <Stack.Screen
-            name='farms'
-            component={Farms}
-            options={{ title: "My Farms" }} />
-          <Stack.Screen
-            name='farm'
-            component={Farm}
-            options={{ title: "Farm" }} />
-          <Stack.Screen
-            name='store'
-            component={Store}
-            options={{ title: "Store" }} />
-          <Stack.Screen
-            name='cart'
-            component={Cart}
-            options={{ title: "Cart" }} />
-          <Stack.Screen
-            name='veggieDsec'
-            component={VeggieDesc}
-            options={{ title: "Plant" }} />
-        </Stack.Navigator>
-      </NavigationContainer>
+      <AppNavigator />
     </Provider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});

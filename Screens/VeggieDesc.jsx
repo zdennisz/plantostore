@@ -1,21 +1,20 @@
-import { StyleSheet, View, Text, ScrollView, Image } from "react-native";
-import React, { useState } from "react";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { add_to_cart } from "../Store/Actions/cart";
-import { useDispatch, useSelector } from "react-redux";
+import React, { useState, useEffect } from "react";
 import Colors from "../utils/styles";
 import CustomButton from "../components/customButtons/CustomButton";
 import CustomHeaderButton from "../components/customButtons/CustomHeaderButtons";
+import { add_to_cart } from "../Store/Actions/cart";
+import { useDispatch, useSelector } from "react-redux";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
-import { useEffect } from "react";
+import { StyleSheet, View, Text, ScrollView, Image } from "react-native";
+import { saveLocalStorageData, saveExternalStorageData } from "../utils/helper";
 
 const VeggieDesc = (props) => {
 	const { route, navigation } = props;
 	const { id } = route.params;
 	const [farmType] = useState(route.params.cart);
 	const veggieInfo = useSelector((state) => state.plants[id]);
+	const user = useSelector((state) => state.auth);
 	const dispatch = useDispatch();
-	const cart = useSelector((state) => state.cart);
 
 	const saveCurrFarmCart = (dispatch, getState) => {
 		dispatch(
@@ -28,11 +27,8 @@ const VeggieDesc = (props) => {
 		const farm =
 			farmType === "farmA" ? getState().cart.farmA : getState().cart.farmB;
 
-		try {
-			AsyncStorage.setItem(`${farmType}storeData`, JSON.stringify({ ...farm }));
-		} catch (err) {
-			console.log(err);
-		}
+		saveLocalStorageData(`${farmType}storeData`, farm);
+		saveExternalStorageData(farm, farmType, user.firebaseUserId);
 	};
 
 	const addVeggieToCart = () => {
@@ -58,6 +54,7 @@ const VeggieDesc = (props) => {
 			),
 		});
 	}, []);
+
 	return (
 		<>
 			{veggieInfo ? (
@@ -132,7 +129,7 @@ const VeggieDesc = (props) => {
 							uri: "https://media.istockphoto.com/vectors/beetle-under-magnifying-glass-on-leaf-solid-icon-allergy-concept-vector-id1263496173?k=20&m=1263496173&s=612x612&w=0&h=C_5Lpzh4p-HuXrzI9tgAXvZcaFb6iy157QKF0OaHuBI=",
 						}}
 					/>
-					<Text style={styles.titleText}>Sorry, plant not found :( </Text>
+					<Text style={styles.errorText}>Sorry, plant not found :( </Text>
 				</View>
 			)}
 		</>
@@ -195,6 +192,12 @@ const styles = StyleSheet.create({
 	titleText: {
 		fontSize: 32,
 		color: Colors.textColor,
+		textAlign: "center",
+	},
+	errorText: {
+		fontSize: 20,
+		color: Colors.textColor,
+		textAlign: "center",
 	},
 	detailsContainer: {
 		flex: 1,
