@@ -131,7 +131,7 @@ const VeggieDesc = (props) => {
 							uri: "https://media.istockphoto.com/vectors/beetle-under-magnifying-glass-on-leaf-solid-icon-allergy-concept-vector-id1263496173?k=20&m=1263496173&s=612x612&w=0&h=C_5Lpzh4p-HuXrzI9tgAXvZcaFb6iy157QKF0OaHuBI=",
 						}}
 					/>
-					<Text style={styles.titleText}>Sorry, plant not found :( </Text>
+					<Text style={styles.errorText}>Sorry, plant not found :( </Text>
 				</View>
 			)}
 		</>
@@ -193,6 +193,11 @@ const styles = StyleSheet.create({
 	},
 	titleText: {
 		fontSize: 32,
+		color: Colors.textColor,
+		textAlign: "center",
+	},
+	errorText: {
+		fontSize: 20,
 		color: Colors.textColor,
 		textAlign: "center",
 	},
