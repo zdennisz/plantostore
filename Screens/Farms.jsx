@@ -16,6 +16,8 @@ const Farms = (props) => {
 
 	const [isLoading, setIsLoading] = useState(true);
 	const categories = useSelector((state) => state.categories.allCategories);
+	const plants = useSelector((state) => state.plants.plants);
+	const user = useSelector((state) => state.auth);
 	const dispatch = useDispatch();
 
 	const goToFarmAHandler = () => {
@@ -29,7 +31,7 @@ const Farms = (props) => {
 			farm: "farmB",
 		});
 	};
-
+	//Gets the categories from plant DB
 	useEffect(() => {
 		const getCategories = async () => {
 			try {
@@ -43,7 +45,7 @@ const Farms = (props) => {
 
 		getCategories();
 	}, []);
-
+	//Gets all the plant info of the categories
 	useEffect(() => {
 		const getPlantData = async () => {
 			try {
@@ -74,7 +76,27 @@ const Farms = (props) => {
 			getPlantData();
 		}
 	}, [categories]);
+	//
+	// useEffect(() => {
+	// 	const getUserDataFromDB=async()=>{
+	// 		let url=`https://plantostore-33e3d-default-rtdb.europe-west1.firebasedatabase.app/users/${user.firebaseUserId}`
+	// 		let config=''
+	// 		 const result=await axios.get(url,config)
 
+	// 			if(result.data){
+	// 				//we have the data
+	// 			}
+	// 			saveLocalStorageData()
+	// 		try{
+
+	// 		}catch(err){
+	// 			console.log(err)
+	// 		}
+	// 	}
+
+	// 	getUserDataFromDB()
+
+	// }, [plants]);
 	return (
 		<View style={styles.container}>
 			{isLoading ? (

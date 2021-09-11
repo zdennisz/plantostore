@@ -8,12 +8,14 @@ import CustomButton from "../components/customButtons/CustomButton";
 import CustomHeaderButton from "../components/customButtons/CustomHeaderButtons";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import { useEffect } from "react";
+import { saveLocalStorageData, saveExternalStorageData } from "../utils/helper";
 
 const VeggieDesc = (props) => {
 	const { route, navigation } = props;
 	const { id } = route.params;
 	const [farmType] = useState(route.params.cart);
 	const veggieInfo = useSelector((state) => state.plants[id]);
+	const user = useSelector((state) => state.auth);
 	const dispatch = useDispatch();
 	const cart = useSelector((state) => state.cart);
 
@@ -28,11 +30,8 @@ const VeggieDesc = (props) => {
 		const farm =
 			farmType === "farmA" ? getState().cart.farmA : getState().cart.farmB;
 
-		try {
-			AsyncStorage.setItem(`${farmType}storeData`, JSON.stringify({ ...farm }));
-		} catch (err) {
-			console.log(err);
-		}
+		saveLocalStorageData(`${farmType}storeData`, farm);
+		saveExternalStorageData(farm, farmType, user.firebaseUserId);
 	};
 
 	const addVeggieToCart = () => {

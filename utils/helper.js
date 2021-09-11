@@ -1,4 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
 export const flatListItemParser = (dataStructure) => {
     // Parse items for the flatlist array
     const cartItems = []
@@ -22,3 +23,16 @@ export const saveLocalStorageData = (localStorageKey, farm) => {
         console.log(err);
     }
 };
+
+
+export const saveExternalStorageData = (farmData, farmType, userId) => {
+    const data = { ...farmData }
+    let url = `https://plantostore-33e3d-default-rtdb.europe-west1.firebasedatabase.app/users/${userId}/${farmType}.json`
+    axios.put(url, data).then((success) => {
+
+        console.log(success)
+    }).catch((err) => {
+        console.log(err)
+    })
+
+}

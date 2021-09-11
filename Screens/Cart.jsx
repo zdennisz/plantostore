@@ -1,5 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { flatListItemParser, saveLocalStorageData } from "../utils/helper";
+import {
+	flatListItemParser,
+	saveLocalStorageData,
+	saveExternalStorageData,
+} from "../utils/helper";
 import { set_item_id } from "../Store/Actions/itemId";
 import { useSelector, useDispatch } from "react-redux";
 import { StyleSheet, View, Text, FlatList } from "react-native";
@@ -19,6 +23,7 @@ const Cart = (props) => {
 	const { route } = props;
 	const [farmType] = useState(route.params.cart);
 	const cart = useSelector((state) => state.cart);
+	const user = useSelector((state) => state.auth);
 	const dispatch = useDispatch();
 
 	const cartOrders =
@@ -42,6 +47,7 @@ const Cart = (props) => {
 		dispatch(decCart);
 	};
 
+	// Save in the local storage the purched order as past orders & the cleared cart as orders
 	const placeOrder = (dispatch, getState) => {
 		// Function is used via middelawre to sync the dispatch operation with the store and preform the save once the store update is done
 		dispatch(place_order({ cart: farmType }));
@@ -50,6 +56,7 @@ const Cart = (props) => {
 
 		saveLocalStorageData(`${farmType}pastStoreData`, farm);
 		saveLocalStorageData(`${farmType}storeData`, farm);
+		saveExternalStorageData(farm, farmType, user.firebaseUserId);
 	};
 
 	const incCart = (dispatch, getState, itemId) => {
@@ -58,6 +65,7 @@ const Cart = (props) => {
 		const farm =
 			farmType === "farmA" ? getState().cart.farmA : getState().cart.farmB;
 		saveLocalStorageData(`${farmType}storeData`, farm);
+		saveExternalStorageData(farm, farmType, user.firebaseUserId);
 	};
 
 	const decCart = (dispatch, getState, itemId) => {
@@ -66,6 +74,7 @@ const Cart = (props) => {
 		const farm =
 			farmType === "farmA" ? getState().cart.farmA : getState().cart.farmB;
 		saveLocalStorageData(`${farmType}storeData`, farm);
+		saveExternalStorageData(farm, farmType, user.firebaseUserId);
 	};
 
 	const getCartOrdersData = (dispatch, getState) => {
