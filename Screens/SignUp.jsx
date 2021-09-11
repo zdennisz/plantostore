@@ -7,6 +7,7 @@ import CustomButton from "../components/customButtons/CustomButton";
 import NetInfo from "@react-native-community/netinfo";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useDispatch } from "react-redux";
+import { sign_up } from "../Store/Actions/auth";
 
 const SignUp = (props) => {
 	const { navigation } = props;
@@ -16,15 +17,17 @@ const SignUp = (props) => {
 	const [errorMessage, setErrorMessage] = useState();
 	const dispatch = useDispatch();
 	const [isOffline, setOfflineStatus] = useState(false);
-	const getData = async () => {
-		try {
-			const res = await AsyncStorage.getItem("restorePath");
-			const parRes = JSON.parse(res);
-			return parRes;
-		} catch (err) {
-			console.log(err);
-		}
-	};
+
+	// const getData = async () => {
+	// 	try {
+	// 		const res = await AsyncStorage.getItem("restorePath");
+	// 		const parRes = JSON.parse(res);
+	// 		return parRes;
+	// 	} catch (err) {
+	// 		console.log(err);
+	// 	}
+	// };
+
 	const changeEmailHandler = (text) => {
 		setEmail(text);
 	};
@@ -66,7 +69,7 @@ const SignUp = (props) => {
 					"Content-Type": "application/json",
 				},
 				body: JSON.stringify({
-					email: userName,
+					email: email,
 					password: password,
 					returnSecureToken: true,
 				}),
@@ -74,7 +77,12 @@ const SignUp = (props) => {
 		);
 
 		const resData = await response.json();
-		console.log(resData);
+		if (resData.error.message === "EMAIL_EXISTS") {
+			setErrorMessage("Email already exists");
+		} else {
+			dispatch(sign_up({ userId: resData.email, userToken: resData.localId }));
+			navigation.navigate("logIn");
+		}
 	};
 
 	useEffect(() => {
@@ -124,6 +132,7 @@ const SignUp = (props) => {
 								style={styles.input}
 								onChangeText={changePasswordHandler}
 								defaultValue={password}
+								secureTextEntry={true}
 							></TextInput>
 						</View>
 						<View style={styles.inpuContainer}>
@@ -132,6 +141,7 @@ const SignUp = (props) => {
 								style={styles.input}
 								onChangeText={changeConfirmPasswordHandler}
 								defaultValue={confirmPassword}
+								secureTextEntry={true}
 							></TextInput>
 						</View>
 						{errorMessage ? (

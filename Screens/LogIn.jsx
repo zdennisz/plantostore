@@ -155,7 +155,6 @@ const styles = StyleSheet.create({
 		padding: 2,
 		paddingStart: 8,
 		fontSize: 20,
-		marginVertical: 20,
 	},
 	notFoundContainer: {
 		flex: 1,

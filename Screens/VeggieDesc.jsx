@@ -195,6 +195,7 @@ const styles = StyleSheet.create({
 	titleText: {
 		fontSize: 32,
 		color: Colors.textColor,
+		textAlign: "center",
 	},
 	detailsContainer: {
 		flex: 1,
