@@ -6,8 +6,7 @@ import StoreNavigator from "./StoreNavigator";
 import AuthNavigator from "./AuthNavigator";
 
 const AppNavigator = (props) => {
-	// const isAuth=useSelector(state=>!!state.auth.token)
-	const isAuth = false;
+	const isAuth = useSelector((state) => !!state.auth.userId);
 	const [historyPath, setHistoryPath] = useState([]);
 	useAppState(historyPath);
 

@@ -2,10 +2,8 @@ import { SIGN_UP, LOG_IN } from "../Actions/auth"
 
 const initialState = {
     userId: "",
-    firebaseUserId: ""
+    firebaseUserId: "",
 }
-
-
 
 const authReducer = (state = initialState, action) => {
     switch (action.type) {
@@ -14,18 +12,14 @@ const authReducer = (state = initialState, action) => {
                 userId: action.userId,
                 firebaseUserId: action.firebaseUserId
             }
-            break;
         case LOG_IN:
             return {
                 userId: action.userId,
                 firebaseUserId: action.firebaseUserId
             }
-            break;
         default:
             return state
     }
-
-
 }
 
 export default authReducer

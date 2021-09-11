@@ -5,6 +5,7 @@ import {
 	TextInput,
 	Text,
 	TouchableOpacity,
+	Alert,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Ionicons } from "@expo/vector-icons";
@@ -12,10 +13,14 @@ import Colors from "../utils/styles";
 import CustomButton from "../components/customButtons/CustomButton";
 import NetInfo from "@react-native-community/netinfo";
 import { SafeAreaView } from "react-native-safe-area-context";
-
+import { useDispatch } from "react-redux";
+import { log_in } from "../Store/Actions/auth";
 const LogIn = (props) => {
 	const { navigation } = props;
 	const [isOffline, setOfflineStatus] = useState(false);
+	const [email, setEmail] = useState();
+	const [password, setPassword] = useState();
+	const dispatch = useDispatch();
 	const getData = async () => {
 		try {
 			const res = await AsyncStorage.getItem("restorePath");
@@ -29,21 +34,45 @@ const LogIn = (props) => {
 	const navigateToSignUpHandler = () => {
 		navigation.navigate("signUp");
 	};
-	//TODO - restore the user path using the async call and the array of the path
-	const logInHandler = () => {
-		//navigation.navigate("farms");
-		// getData()
-		// 	.then((succ) => {
-		// 		if (succ) {
-		// 			console.log(succ);
-		// 		} else {
-		// 			navigation.navigate("farms");
-		// 		}
-		// 	})
-		// 	.catch((err) => {
-		// 		console.log(err);
-		// 	});
+
+	const changedEmailHandler = (text) => {
+		setEmail(text);
 	};
+
+	const changePasswordHandler = (text) => {
+		setPassword(text);
+	};
+
+	const logInHandler = async () => {
+		const response = await fetch(
+			"https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyDLTrlLmj_dFKOPI74doQ2rzuWimkIwLcA",
+			{
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({
+					email: email,
+					password: password,
+					returnSecureToken: true,
+				}),
+			}
+		);
+
+		const resData = await response.json();
+		if (!resData.registered) {
+			Alert.alert("Error", "Please Sign Up", [
+				{
+					text: "OK",
+				},
+			]);
+		} else {
+			dispatch(
+				log_in({ userId: resData.email, firebaseUserId: resData.localId })
+			);
+		}
+	};
+
 	useEffect(() => {
 		const removeNetInfoSubscription = NetInfo.addEventListener((state) => {
 			const offline = !(state.isConnected && state.isInternetReachable);
@@ -76,14 +105,20 @@ const LogIn = (props) => {
 					</View>
 					<View style={styles.textContainers}>
 						<View style={styles.inpuContainer}>
-							<Text style={styles.text}>Username</Text>
-							<TextInput style={styles.input}></TextInput>
+							<Text style={styles.text}>Email</Text>
+							<TextInput
+								style={styles.input}
+								onChangeText={changedEmailHandler}
+								defaultValue={email}
+							></TextInput>
 						</View>
 						<View style={styles.inpuContainer}>
 							<Text style={styles.text}>Password</Text>
 							<TextInput
 								secureTextEntry={true}
 								style={styles.input}
+								onChangeText={changePasswordHandler}
+								defaultValue={password}
 							></TextInput>
 						</View>
 					</View>
