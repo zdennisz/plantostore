@@ -27,7 +27,7 @@ export const saveLocalStorageData = (localStorageKey, farm) => {
 
 export const saveExternalStorageData = (farmData, farmType, userId) => {
     const data = { ...farmData }
-    let url = `https://plantostore-33e3d-default-rtdb.europe-west1.firebasedatabase.app/users/${userId}/${farmType}.json`
+    const url = `https://plantostore-33e3d-default-rtdb.europe-west1.firebasedatabase.app/users/${userId}/${farmType}.json`
     axios.put(url, data).then((success) => {
 
         console.log(success)
@@ -35,4 +35,10 @@ export const saveExternalStorageData = (farmData, farmType, userId) => {
         console.log(err)
     })
 
+}
+
+export const loadExternalStorageData = async (userId, farmType) => {
+    const url = `https://plantostore-33e3d-default-rtdb.europe-west1.firebasedatabase.app/users/${userId}/${farmType}.json`
+
+    return axios.get(url)
 }

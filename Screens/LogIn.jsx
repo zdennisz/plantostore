@@ -15,11 +15,13 @@ import NetInfo from "@react-native-community/netinfo";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useDispatch } from "react-redux";
 import { log_in } from "../Store/Actions/auth";
+import { useSelector } from "react-redux";
 const LogIn = (props) => {
 	const { navigation } = props;
 	const [isOffline, setOfflineStatus] = useState(false);
 	const [email, setEmail] = useState();
 	const [password, setPassword] = useState();
+
 	const dispatch = useDispatch();
 	const getData = async () => {
 		try {

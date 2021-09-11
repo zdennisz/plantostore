@@ -18,16 +18,6 @@ const SignUp = (props) => {
 	const dispatch = useDispatch();
 	const [isOffline, setOfflineStatus] = useState(false);
 
-	// const getData = async () => {
-	// 	try {
-	// 		const res = await AsyncStorage.getItem("restorePath");
-	// 		const parRes = JSON.parse(res);
-	// 		return parRes;
-	// 	} catch (err) {
-	// 		console.log(err);
-	// 	}
-	// };
-
 	const changeEmailHandler = (text) => {
 		setEmail(text);
 	};

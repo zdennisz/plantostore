@@ -1,21 +1,25 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { StyleSheet, View, Text, Platform, FlatList } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import CustomHeaderButton from "../components/customButtons/CustomHeaderButtons";
-import { flatListItemParser } from "../utils/helper";
+import { flatListItemParser, saveLocalStorageData } from "../utils/helper";
 import { useSelector, useDispatch } from "react-redux";
 import VeggieCard from "../components/VeggieCard";
 import Colors from "../utils/styles";
 import { resotre_past_order } from "../Store/Actions/cart";
 import { Ionicons } from "@expo/vector-icons";
+import { loadExternalStorageData } from "../utils/helper";
+import NetInfo from "@react-native-community/netinfo";
 
 const Farm = (props) => {
 	const { route, navigation } = props;
+	const isOnline = useRef(false);
 	const [farmType] = useState(route.params.farm);
 	const cartPastOrders = useSelector(
 		(state) => state.cart[`${route.params.farm}`].pastOrders
 	);
+	const user = useSelector((state) => state.auth);
 	const dispatch = useDispatch();
 	const farmPastItems = cartPastOrders
 		? flatListItemParser(cartPastOrders)
@@ -38,22 +42,44 @@ const Farm = (props) => {
 		});
 	};
 
+	const loadPastOrders = async (dispatch, getState) => {
+		const farm =
+			farmType === "farmA" ? getState().cart.farmA : getState().cart.farmB;
+		try {
+			const res = await loadExternalStorageData(user.firebaseUserId, farmType);
+			if (res.data) {
+				dispatch(resotre_past_order({ cart: farmType, cartItems: res.data }));
+				saveLocalStorageData(`${farmType}pastStoreData`, farm);
+			}
+		} catch (err) {
+			console.log(err);
+		}
+	};
 	const getPastOrdersData = (dispatch, getState) => {
-		AsyncStorage.getItem(`${farmType}pastStoreData`)
-			.then((pastStoreData) => {
-				const parsedData = JSON.parse(pastStoreData);
-				if (parsedData) {
-					dispatch(
-						resotre_past_order({ cart: farmType, cartItems: parsedData })
-					);
-				}
-			})
-			.catch((err) => {
-				console.log("Error happened", err);
-			});
+		if (isOnline) {
+			loadPastOrders(dispatch, getState);
+		} else {
+			AsyncStorage.getItem(`${farmType}pastStoreData`)
+				.then((pastStoreData) => {
+					const parsedData = JSON.parse(pastStoreData);
+					if (parsedData) {
+						dispatch(
+							resotre_past_order({ cart: farmType, cartItems: parsedData })
+						);
+					}
+				})
+				.catch((err) => {
+					console.log("Error happened", err);
+				});
+		}
 	};
 
 	useEffect(() => {
+		const unsubscribe = NetInfo.addEventListener((state) => {
+			const online = !!state.isConnected;
+			isOnline.current = online;
+		});
+
 		navigation.setOptions({
 			title: `Farm ${route.params.farm.slice(-1)}`,
 			headerRight: () => (
@@ -75,7 +101,9 @@ const Farm = (props) => {
 				</HeaderButtons>
 			),
 		});
+
 		dispatch(getPastOrdersData);
+		return () => unsubscribe();
 	}, []);
 
 	return (

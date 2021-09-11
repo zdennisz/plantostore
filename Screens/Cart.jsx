@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import {
 	flatListItemParser,
 	saveLocalStorageData,
 	saveExternalStorageData,
+	loadExternalStorageData,
 } from "../utils/helper";
 import { set_item_id } from "../Store/Actions/itemId";
 import { useSelector, useDispatch } from "react-redux";
@@ -18,9 +19,10 @@ import {
 import CustomButton from "../components/customButtons/CustomButton";
 import { Ionicons } from "@expo/vector-icons";
 import Colors from "../utils/styles";
-
+import NetInfo from "@react-native-community/netinfo";
 const Cart = (props) => {
 	const { route } = props;
+	const isOnline = useRef(false);
 	const [farmType] = useState(route.params.cart);
 	const cart = useSelector((state) => state.cart);
 	const user = useSelector((state) => state.auth);
@@ -76,25 +78,48 @@ const Cart = (props) => {
 		saveLocalStorageData(`${farmType}storeData`, farm);
 		saveExternalStorageData(farm, farmType, user.firebaseUserId);
 	};
+	const loadCartOrders = async (dispatch, getState) => {
+		const farm =
+			farmType === "farmA" ? getState().cart.farmA : getState().cart.farmB;
+		try {
+			const res = await loadExternalStorageData(user.firebaseUserId, farmType);
+			if (res.data) {
+				dispatch(resotre_past_order({ cart: farmType, cartItems: res.data }));
+				saveLocalStorageData(`${farmType}storeData`, farm);
+			}
+		} catch (err) {
+			console.log(err);
+		}
+	};
 
 	const getCartOrdersData = (dispatch, getState) => {
-		// Function is used via middelawre to sync the dispatch operation with the store and preform the save once the store update is done
-		AsyncStorage.getItem(`${farmType}storeData`)
-			.then((storeData) => {
-				const parsedData = JSON.parse(storeData);
-				if (parsedData) {
-					dispatch(
-						resotre_cart_order({ cart: farmType, cartItems: parsedData })
-					);
-				}
-			})
-			.catch((err) => {
-				console.log("Error happened", err);
-			});
+		if (isOnline) {
+			loadCartOrders(dispatch, getState);
+		} else {
+			AsyncStorage.getItem(`${farmType}storeData`)
+				.then((storeData) => {
+					const parsedData = JSON.parse(storeData);
+					if (parsedData) {
+						// Function is used via middelawre to sync the dispatch operation with the store and preform the save once the store update is done
+						dispatch(
+							resotre_cart_order({ cart: farmType, cartItems: parsedData })
+						);
+					}
+				})
+				.catch((err) => {
+					console.log("Error happened", err);
+				});
+		}
 	};
 
 	useEffect(() => {
+		const unsubscribe = NetInfo.addEventListener((state) => {
+			const online = !!state.isConnected;
+			console.log("online=", !!state.isConnected);
+			isOnline.current = online;
+		});
 		dispatch(getCartOrdersData);
+		return () => unsubscribe();
 	}, []);
 
 	return (
