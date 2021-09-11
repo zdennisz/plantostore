@@ -52,7 +52,7 @@ const Farm = (props) => {
 				saveLocalStorageData(`${farmType}pastStoreData`, farm);
 			}
 		} catch (err) {
-			console.log(err);
+			console.error(err);
 		}
 	};
 	const getPastOrdersData = (dispatch, getState) => {

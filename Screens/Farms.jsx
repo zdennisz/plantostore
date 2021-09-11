@@ -59,7 +59,7 @@ const Farms = (props) => {
 
 				dispatch(add_categories(res.data.categories));
 			} catch (err) {
-				console.log(err);
+				console.error(err);
 			}
 		};
 		getCategories();
@@ -88,7 +88,7 @@ const Farms = (props) => {
 				dispatch(add_plants(dataToStore));
 				setIsLoading(false);
 			} catch (err) {
-				console.log(err);
+				console.error(err);
 			}
 		};
 

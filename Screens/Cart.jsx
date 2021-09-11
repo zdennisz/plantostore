@@ -88,7 +88,7 @@ const Cart = (props) => {
 				saveLocalStorageData(`${farmType}storeData`, farm);
 			}
 		} catch (err) {
-			console.log(err);
+			console.error(err);
 		}
 	};
 
@@ -107,7 +107,7 @@ const Cart = (props) => {
 					}
 				})
 				.catch((err) => {
-					console.log("Error happened", err);
+					console.error(err);
 				});
 		}
 	};

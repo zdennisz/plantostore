@@ -29,7 +29,7 @@ const LogIn = (props) => {
 			const parRes = JSON.parse(res);
 			return parRes;
 		} catch (err) {
-			console.log(err);
+			console.error(err);
 		}
 	};
 
