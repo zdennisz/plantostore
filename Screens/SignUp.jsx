@@ -7,7 +7,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { isValidEmail } from "../utils/helper";
 import { sign_up } from "../Store/Actions/auth";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { StyleSheet, View, TextInput, Text } from "react-native";
+import { StyleSheet, View, TextInput, Text, Keyboard } from "react-native";
 
 const SignUp = (props) => {
 	const { navigation } = props;
@@ -31,6 +31,7 @@ const SignUp = (props) => {
 	};
 
 	const signUpHandler = () => {
+		Keyboard.dismiss();
 		// Validation
 		if (!password || !confirmPassword || !email) {
 			setErrorMessage("Please fill all fields");
@@ -48,28 +49,32 @@ const SignUp = (props) => {
 
 	const signUpToStore = async (dispatch, getState) => {
 		// Send registration data to firebase authentication
-		const response = await fetch(
-			"https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyDLTrlLmj_dFKOPI74doQ2rzuWimkIwLcA",
-			{
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({
-					email: email,
-					password: password,
-					returnSecureToken: true,
-				}),
+		try {
+			const response = await fetch(
+				"https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyDLTrlLmj_dFKOPI74doQ2rzuWimkIwLcA",
+				{
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					body: JSON.stringify({
+						email: email,
+						password: password,
+						returnSecureToken: true,
+					}),
+				}
+			);
+			const resData = response.json();
+			if (resData.error?.message === "EMAIL_EXISTS") {
+				setErrorMessage("Email already exists");
+			} else {
+				dispatch(
+					sign_up({ userId: resData.email, userToken: resData.localId })
+				);
+				navigation.navigate("logIn");
 			}
-		);
-
-		// Validation
-		const resData = await response.json();
-		if (resData.error.message === "EMAIL_EXISTS") {
-			setErrorMessage("Email already exists");
-		} else {
-			dispatch(sign_up({ userId: resData.email, userToken: resData.localId }));
-			navigation.navigate("logIn");
+		} catch (err) {
+			console.error(err);
 		}
 	};
 
@@ -173,7 +178,7 @@ const styles = StyleSheet.create({
 		fontSize: 20,
 	},
 	textContainers: {
-		flex: 3,
+		flex: 5,
 		justifyContent: "flex-start",
 		alignItems: "center",
 		width: "100%",

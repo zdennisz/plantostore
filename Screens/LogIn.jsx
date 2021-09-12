@@ -13,6 +13,7 @@ import {
 	TextInput,
 	Text,
 	TouchableOpacity,
+	Keyboard,
 } from "react-native";
 
 const LogIn = (props) => {
@@ -36,6 +37,7 @@ const LogIn = (props) => {
 	};
 
 	const logInHandler = async () => {
+		Keyboard.dismiss();
 		// Validation
 		if (!password || !email) {
 			setErrorMessage("Please fill all fields");
@@ -152,7 +154,6 @@ const styles = StyleSheet.create({
 		backgroundColor: "white",
 	},
 	imageContainer: {
-		flex: 1,
 		justifyContent: "center",
 		alignItems: "center",
 		width: "100%",
@@ -166,7 +167,7 @@ const styles = StyleSheet.create({
 		fontSize: 20,
 	},
 	textContainers: {
-		flex: 1,
+		flex: 2,
 		justifyContent: "flex-start",
 		alignItems: "center",
 		width: "100%",
@@ -220,7 +221,7 @@ const styles = StyleSheet.create({
 		flex: 1,
 		justifyContent: "center",
 		flexDirection: "row",
-		alignItems: "center",
+		alignItems: "flex-start",
 	},
 	validateFieldsText: {
 		color: "red",
