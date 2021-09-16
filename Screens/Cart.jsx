@@ -52,7 +52,7 @@ const Cart = (props) => {
 	// Save in the local storage the purched order as past orders & the cleared cart as orders
 	const placeOrder = (dispatch, getState) => {
 		// Function is used via middelawre to sync the dispatch operation with the store and preform the save once the store update is done
-		dispatch(place_order({ cart: farmId }));
+		dispatch(place_order({ farmId: farmId }));
 		const farm = getState().cart[farmId];
 
 		saveLocalStorageData(`${farmId}pastStoreData`, farm);

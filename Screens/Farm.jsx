@@ -9,14 +9,23 @@ import { useSelector, useDispatch } from "react-redux";
 import { loadExternalStorageData } from "../utils/helper";
 import { resotre_past_order } from "../Store/Actions/cart";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
-import { StyleSheet, View, Text, Platform, FlatList } from "react-native";
+import {
+	StyleSheet,
+	View,
+	Text,
+	Platform,
+	FlatList,
+	ActivityIndicator,
+} from "react-native";
 import { flatListItemParser, saveLocalStorageData } from "../utils/helper";
 import farmNames from "../utils/farmNames";
 
 const Farm = (props) => {
 	const { route, navigation } = props;
 	const [farmId] = useState(route.params.farmId);
+	const [isLoading, setIsLoading] = useState(true);
 	const cartPastOrders = useSelector((state) => state.cart[farmId]?.pastOrders);
+
 	const user = useSelector((state) => state.auth);
 	const isOnline = useRef(false);
 	const dispatch = useDispatch();
@@ -49,8 +58,9 @@ const Farm = (props) => {
 		try {
 			const res = await loadExternalStorageData(user.firebaseUserId, farmId);
 			if (res.data) {
-				dispatch(resotre_past_order({ cart: farmId, cartItems: res.data }));
+				dispatch(resotre_past_order({ farmId: farmId, cartItems: res.data }));
 				saveLocalStorageData(`${farmId}pastStoreData`, farm);
+				setIsLoading(false);
 			}
 		} catch (err) {
 			console.error(err);
@@ -67,8 +77,9 @@ const Farm = (props) => {
 					const parsedData = JSON.parse(pastStoreData);
 					if (parsedData) {
 						dispatch(
-							resotre_past_order({ cart: farmId, cartItems: parsedData })
+							resotre_past_order({ farmId: farmId, cartItems: parsedData })
 						);
+						setIsLoading(false);
 					}
 				})
 				.catch((err) => {
@@ -132,17 +143,27 @@ const Farm = (props) => {
 					</View>
 				</>
 			) : (
-				<View style={styles.notFoundContainer}>
-					<Ionicons
-						name='leaf'
-						size={80}
-						style={styles.image}
-						color={Colors.primary}
-					/>
-					<Text style={styles.notFoundText}>
-						Didn't find any plants in your farm :(
-					</Text>
-				</View>
+				<>
+					{isLoading ? (
+						<ActivityIndicator
+							style={styles.loader}
+							size='large'
+							color={Colors.primary}
+						/>
+					) : (
+						<View style={styles.notFoundContainer}>
+							<Ionicons
+								name='leaf'
+								size={80}
+								style={styles.image}
+								color={Colors.primary}
+							/>
+							<Text style={styles.notFoundText}>
+								Didn't find any plants in your farm :(
+							</Text>
+						</View>
+					)}
+				</>
 			)}
 		</View>
 	);
@@ -183,6 +204,11 @@ const styles = StyleSheet.create({
 		fontSize: 20,
 		marginTop: 24,
 		textAlign: "center",
+	},
+	loader: {
+		flex: 1,
+		justifyContent: "center",
+		alignItems: "center",
 	},
 });
 
