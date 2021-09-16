@@ -70,7 +70,7 @@ const Cart = (props) => {
 
 	const decCart = (dispatch, getState, itemId) => {
 		// Function is used via middelawre to sync the dispatch operation with the store and preform the save once the store update is done
-		dispatch(dec_cart_item({ id: itemId, cart: farmId }));
+		dispatch(dec_cart_item({ id: itemId, farmId: farmId }));
 		const farm = getState().cart[farmId];
 		saveLocalStorageData(`${farmId}storeData`, farm);
 		saveExternalStorageData(farm, farmId, user.firebaseUserId);

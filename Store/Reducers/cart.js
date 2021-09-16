@@ -137,53 +137,72 @@ const cartReducer = (state = initialState, action) => {
             break;
 
         case DEC_CART_ORDER:
-            let updatedCartOrders;
+
             let currAmount;
-            switch (action.cart) {
-                case 'farmA':
-                    currAmount = state.farmA.cartOrders[action.itemId].amount
-                    if (currAmount > 1) {
-                        const updatedCartItem = { ...state.farmA.cartOrders[action.itemId], amount: state.farmA.cartOrders[action.itemId].amount - 1 }
-                        updatedCartOrders = { ...state.farmA.cartOrders, [action.itemId]: updatedCartItem }
-                    } else {
-                        updatedCartOrders = { ...state.farmA.cartOrders }
-                        delete updatedCartOrders[action.itemId]
-                    }
-
-                    return {
-                        farmA: {
-                            cartOrders: { ...updatedCartOrders },
-                            pastOrders: { ...state.farmA.pastOrders }
-                        },
-                        farmB: {
-                            cartOrders: { ...state.farmB.cartOrders },
-                            pastOrders: { ...state.farmB.pastOrders }
-                        }
-
-                    }
-                case 'farmB':
-                    currAmount = state.farmB.cartOrders[action.itemId].amount
-                    if (currAmount > 1) {
-                        const updatedCartItem = { ...state.farmB.cartOrders[action.itemId], amount: state.farmB.cartOrders[action.itemId].amount - 1 }
-                        updatedCartOrders = { ...state.farmB.cartOrders, [action.itemId]: updatedCartItem }
-                    } else {
-                        updatedCartOrders = { ...state.farmB.cartOrders }
-                        delete updatedCartOrders[action.itemId]
-                    }
-
-                    return {
-                        farmB: {
-                            cartOrders: { ...updatedCartOrders },
-                            pastOrders: { ...state.farmB.pastOrders }
-                        },
-                        farmA: {
-                            cartOrders: { ...state.farmA.cartOrders },
-                            pastOrders: { ...state.farmA.pastOrders }
-                        }
-
-                    }
-
+            currAmount = state[`${action.farmId}`].cartOrders[action.veggieId].amount
+            if (currAmount > 1) {
+                veggie = {
+                    ...state[`${action.farmId}`].cartOrders[action.veggieId],
+                    amount: state[`${action.farmId}`].cartOrders[action.veggieId].amount - 1
+                }
+                farm = {
+                    ...state[`${action.farmId}`],
+                    cartOrders: { ...state[`${action.farmId}`].cartOrders, [action.veggieId]: veggie },
+                }
+            } else {
+                farm = { ...state[`${action.farmId}`] }
+                delete farm.cartOrders[action.veggieId]
             }
+
+            return {
+                ...state,
+                [`${action.farmId}`]: farm
+            }
+            // switch (action.cart) {
+            //     case 'farmA':
+            //         currAmount = state.farmA.cartOrders[action.itemId].amount
+            //         if (currAmount > 1) {
+            //             const updatedCartItem = { ...state.farmA.cartOrders[action.itemId], amount: state.farmA.cartOrders[action.itemId].amount - 1 }
+            //             updatedCartOrders = { ...state.farmA.cartOrders, [action.itemId]: updatedCartItem }
+            //         } else {
+            //             updatedCartOrders = { ...state.farmA.cartOrders }
+            //             delete updatedCartOrders[action.itemId]
+            //         }
+
+            //         return {
+            //             farmA: {
+            //                 cartOrders: { ...updatedCartOrders },
+            //                 pastOrders: { ...state.farmA.pastOrders }
+            //             },
+            //             farmB: {
+            //                 cartOrders: { ...state.farmB.cartOrders },
+            //                 pastOrders: { ...state.farmB.pastOrders }
+            //             }
+
+            //         }
+            //     case 'farmB':
+            //         currAmount = state.farmB.cartOrders[action.itemId].amount
+            //         if (currAmount > 1) {
+            //             const updatedCartItem = { ...state.farmB.cartOrders[action.itemId], amount: state.farmB.cartOrders[action.itemId].amount - 1 }
+            //             updatedCartOrders = { ...state.farmB.cartOrders, [action.itemId]: updatedCartItem }
+            //         } else {
+            //             updatedCartOrders = { ...state.farmB.cartOrders }
+            //             delete updatedCartOrders[action.itemId]
+            //         }
+
+            //         return {
+            //             farmB: {
+            //                 cartOrders: { ...updatedCartOrders },
+            //                 pastOrders: { ...state.farmB.pastOrders }
+            //             },
+            //             farmA: {
+            //                 cartOrders: { ...state.farmA.cartOrders },
+            //                 pastOrders: { ...state.farmA.pastOrders }
+            //             }
+
+            //         }
+
+            // }
             break;
 
         case RESTORE_CART_ORDER:
