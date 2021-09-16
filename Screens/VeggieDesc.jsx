@@ -12,7 +12,7 @@ const VeggieDesc = (props) => {
 	const { route, navigation } = props;
 	const { id } = route.params;
 	const [farmId] = useState(route.params.farmId);
-	const veggieInfo = useSelector((state) => state.plants[id]);
+	const veggieInfo = useSelector((state) => state.veggies[id]);
 	const user = useSelector((state) => state.auth);
 	const dispatch = useDispatch();
 
@@ -97,13 +97,17 @@ const VeggieDesc = (props) => {
 								<Text style={styles.tableRowTitle}>Amount</Text>
 								<Text style={styles.tableRowTitle}>RDA (%)</Text>
 							</View>
-							{veggieInfo.nutritionFacts.items.map((item, index) => {
+							{veggieInfo.nutritionFacts.items.map((nutritionfact, index) => {
 								return (
 									<View key={index.toString()} style={styles.rowContainer}>
-										<Text style={styles.rowTitleContent}>{item.key}</Text>
-										<Text style={styles.rowContent}>{item.nutrientValue}</Text>
+										<Text style={styles.rowTitleContent}>
+											{nutritionfact.key}
+										</Text>
 										<Text style={styles.rowContent}>
-											{item.percentageOfRDA}
+											{nutritionfact.nutrientValue}
+										</Text>
+										<Text style={styles.rowContent}>
+											{nutritionfact.percentageOfRDA}
 										</Text>
 									</View>
 								);
@@ -127,7 +131,7 @@ const VeggieDesc = (props) => {
 							uri: "https://media.istockphoto.com/vectors/beetle-under-magnifying-glass-on-leaf-solid-icon-allergy-concept-vector-id1263496173?k=20&m=1263496173&s=612x612&w=0&h=C_5Lpzh4p-HuXrzI9tgAXvZcaFb6iy157QKF0OaHuBI=",
 						}}
 					/>
-					<Text style={styles.errorText}>Sorry, plant not found :( </Text>
+					<Text style={styles.errorText}>Sorry, veggie not found :( </Text>
 				</View>
 			)}
 		</>

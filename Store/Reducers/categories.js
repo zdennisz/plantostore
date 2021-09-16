@@ -7,8 +7,8 @@ const categoriesReducer = (state = initialState, action) => {
     switch (action.type) {
         case ADD_CATEGORIES:
 
-            const newData = action.newCategories.map(item => {
-                return { name: item.name, plants: item.plants }
+            const newData = action.newCategories.map(category => {
+                return { name: category.name, veggies: category.veggies }
             })
             return {
                 ...state,

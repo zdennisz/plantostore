@@ -14,7 +14,7 @@ const CategoryList = (props) => {
 			<FlatList
 				showsVerticalScrollIndicator={false}
 				data={categories}
-				keyExtractor={(item, index) => index.toString()}
+				keyExtractor={(category, index) => index.toString()}
 				renderItem={(itemData) => (
 					<Category itemData={itemData} getVeggieDesc={getVeggieDesc} />
 				)}

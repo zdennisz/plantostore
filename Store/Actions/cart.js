@@ -1,9 +1,9 @@
 export const ADD_TO_CART = "ADD_TO_CART"
 export const PLACE_ORDER = "PLACE_ORDER"
-export const INC_CART_ORDER = "INC_CART_ORDER"
-export const DEC_CART_ORDER = "DEC_CART_ORDER"
+export const INCREMENT_CART_ORDER = "INCREMENT_CART_ORDER"
+export const DECREMENT_CART_ORDER = "DECREMENT_CART_ORDER"
 export const RESTORE_CART_ORDER = "RESTORE_CART_ORDER"
-export const RESTORE_PAST_ORDER = "RESTORE_PAST_ORDER"
+export const RESTORE_FARM_VEGGIES = "RESTORE_FARM_VEGGIES"
 
 
 export const add_to_cart = (data) => {
@@ -14,17 +14,17 @@ export const place_order = (data) => {
     return { type: PLACE_ORDER, farmId: data.farmId }
 }
 
-export const inc_cart_item = (data) => {
-    return { type: INC_CART_ORDER, veggieId: data.id, farmId: data.farmId }
+export const increment_cart_item = (data) => {
+    return { type: INCREMENT_CART_ORDER, veggieId: data.id, farmId: data.farmId }
 }
 
-export const dec_cart_item = (data) => {
-    return { type: DEC_CART_ORDER, veggieId: data.id, farmId: data.farmId }
+export const decrement_cart_item = (data) => {
+    return { type: DECREMENT_CART_ORDER, veggieId: data.id, farmId: data.farmId }
 }
 
 export const resotre_cart_order = (data) => {
     return { type: RESTORE_CART_ORDER, farmId: data.farmId, cartItems: data.cartItems }
 }
-export const resotre_past_order = (data) => {
-    return { type: RESTORE_PAST_ORDER, farmId: data.farmId, cartItems: data.cartItems }
+export const restore_farm_veggie = (data) => {
+    return { type: RESTORE_FARM_VEGGIES, farmId: data.farmId, cartItems: data.cartItems }
 }

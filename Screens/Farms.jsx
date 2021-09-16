@@ -4,15 +4,12 @@ import Colors from "../utils/styles";
 import CustomButton from "../components/customButtons/CustomButton";
 import CustomHeaderButton from "../components/customButtons/CustomHeaderButtons";
 import { log_out } from "../Store/Actions/auth";
-import { add_plants } from "../Store/Actions/plants";
+import { add_veggies } from "../Store/Actions/veggies";
 import { useDispatch, useSelector } from "react-redux";
 import { add_categories } from "../Store/Actions/categories";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import { StyleSheet, View, ActivityIndicator, Text } from "react-native";
-import {
-	REACT_APP_AGWA_CATEGORIES,
-	REACT_APP_AGWA_PLANTS,
-} from "../utils/database";
+import { REACT_APP_CATEGORIES, REACT_APP_VEGGIES } from "../utils/database";
 import farmNames from "../utils/farmNames";
 
 const Farms = (props) => {
@@ -52,12 +49,12 @@ const Farms = (props) => {
 	}, []);
 
 	useEffect(() => {
-		//Gets the categories from plant DB
+		//Gets the categories from veggie DB
 		const getCategories = async () => {
 			try {
-				const res = await axios.get(`${REACT_APP_AGWA_CATEGORIES}`);
+				const res = await axios.get(`${REACT_APP_CATEGORIES}`);
 
-				dispatch(add_categories(res.data.categories));
+				dispatch(add_categories(res.data));
 			} catch (err) {
 				console.error(err);
 			}
@@ -66,24 +63,24 @@ const Farms = (props) => {
 	}, []);
 
 	useEffect(() => {
-		//Gets all the plant info of the categories
-		const getPlantData = async () => {
+		//Gets all the veggie info of the categories
+		const getVeggieData = async () => {
 			try {
-				const allPlantData = await axios.get(`${REACT_APP_AGWA_PLANTS}`);
+				const allVeggieData = await axios.get(`${REACT_APP_VEGGIES}`);
 				let dataToStore = {};
 
 				for (let i = 0; i < categories.length; i++) {
-					let plantsArray = categories[i].plants;
-					for (let j = 0; j < plantsArray.length; j++) {
-						const foundPlant = allPlantData.data.plants.find(
-							(item) => item.id === plantsArray[j].id
+					let veggiesArray = categories[i].veggies;
+					for (let j = 0; j < veggiesArray.length; j++) {
+						const foundVeggie = allVeggieData.data.find(
+							(veggie) => veggie.id === veggiesArray[j].id
 						);
-						if (foundPlant) {
-							dataToStore[plantsArray[j].id] = foundPlant;
+						if (foundVeggie) {
+							dataToStore[veggiesArray[j].id] = foundVeggie;
 						}
 					}
 				}
-				dispatch(add_plants(dataToStore));
+				dispatch(add_veggies(dataToStore));
 				setIsLoading(false);
 			} catch (err) {
 				console.error(err);
@@ -91,7 +88,7 @@ const Farms = (props) => {
 		};
 
 		if (categories) {
-			getPlantData();
+			getVeggieData();
 		}
 	}, [categories]);
 

@@ -29,7 +29,7 @@ const Category = (props) => {
 			</TouchableOpacity>
 			{isCategortOpen && (
 				<View style={styles.cardContentContainer}>
-					{itemData.item.plants.map((veggie) => {
+					{itemData.item.veggies.map((veggie) => {
 						return (
 							<VeggieCard
 								key={veggie.id.toString()}

@@ -34,7 +34,7 @@ const StoreNavigator = () => {
 			<StoreScreenStack.Screen
 				name='veggieDsec'
 				component={VeggieDesc}
-				options={{ title: "Plant" }}
+				options={{ title: "Veggie" }}
 			/>
 		</StoreScreenStack.Navigator>
 	);

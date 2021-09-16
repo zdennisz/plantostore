@@ -1,9 +1,9 @@
 import { Store } from 'redux'
 const reduxMiddelware = Store => next => action => {
     if (typeof action === 'function') {
-        if ((action.name === 'incCart') || (action.name === 'decCart')) {
-            const itemId = Store.getState().itemId.currItemId
-            return action(Store.dispatch, Store.getState, itemId)
+        if ((action.name === 'incrementCart') || (action.name === 'decrementCart')) {
+            const selectedVeggieId = Store.getState().selectedVeggieId.currItemId
+            return action(Store.dispatch, Store.getState, selectedVeggieId)
         } else {
             return action(Store.dispatch, Store.getState)
         }
