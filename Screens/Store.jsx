@@ -8,7 +8,7 @@ const Store = (props) => {
 	const showVeggieDesc = (elementId) => {
 		navigation.navigate("veggieDsec", {
 			id: elementId,
-			cart: route.params.cart,
+			farmId: route.params.farmId,
 		});
 	};
 

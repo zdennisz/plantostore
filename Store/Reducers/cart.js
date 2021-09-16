@@ -8,16 +8,15 @@ const cartReducer = (state = initialState, action) => {
         case ADD_TO_CART:
             let veggie;
             let farm;
-
             // Already have the farm 
-            if (state[`F${action.farmIndex}`]) {
+            if (state[`${action.farmId}`]) {
 
                 // Already have the veggie in the cart
-                if (state[`F${action.farmIndex}`].cartOrders[action.veggieId]) {
+                if (state[`${action.farmId}`].cartOrders[action.veggieId]) {
 
                     veggie = {
-                        ...state[`F${action.farmIndex}`].cartOrders[action.veggieId],
-                        amount: state[`F${action.farmIndex}`].cartOrders[action.veggieId].amount + 1
+                        ...state[`${action.farmId}`].cartOrders[action.veggieId],
+                        amount: state[`${action.farmId}`].cartOrders[action.veggieId].amount + 1
                     }
                 } else {
                     veggie = {
@@ -26,8 +25,8 @@ const cartReducer = (state = initialState, action) => {
                     }
                 }
                 farm = {
-                    ...state[`F${action.farmIndex}`],
-                    cartOrders: { ...state[`F${action.farmIndex}`].cartOrders, [action.veggieId]: veggie },
+                    ...state[`${action.farmId}`],
+                    cartOrders: { ...state[`${action.farmId}`].cartOrders, [action.veggieId]: veggie },
                 }
 
             } else {
@@ -53,8 +52,9 @@ const cartReducer = (state = initialState, action) => {
             }
 
             //add the new farm to the farms
-            return { ...state, [`F${action.farmIndex}`]: farm }
+            return { ...state, [`${action.farmId}`]: farm }
             break;
+
         case PLACE_ORDER:
             let newItemPlaceOrder;
             let newStatePlaceOrder = {
@@ -122,38 +122,18 @@ const cartReducer = (state = initialState, action) => {
             }
 
         case INC_CART_ORDER:
-            let updatedCartItem
-            switch (action.cart) {
-                case 'farmA':
-                    updatedCartItem = { ...state.farmA.cartOrders[action.itemId], amount: state.farmA.cartOrders[action.itemId].amount + 1 }
-                    return {
-                        farmA: {
-                            cartOrders: {
-                                ...state.farmA.cartOrders, [action.itemId]: updatedCartItem
-                            },
-                            pastOrders: { ...state.farmA.pastOrders }
-                        },
-                        farmB: {
-                            cartOrders: { ...state.farmB.cartOrders },
-                            pastOrders: { ...state.farmB.pastOrders }
-                        }
-                    }
 
-                case 'farmB':
-                    updatedCartItem = { ...state.farmB.cartOrders[action.itemId], amount: state.farmB.cartOrders[action.itemId].amount + 1 }
-                    return {
-                        farmB: {
-                            cartOrders: {
-                                ...state.farmB.cartOrders, [action.itemId]: updatedCartItem
-                            },
-                            pastOrders: { ...state.farmB.pastOrders }
-                        },
-                        farmA: {
-                            cartOrders: { ...state.farmA.cartOrders },
-                            pastOrders: { ...state.farmA.pastOrders }
-                        }
-                    }
+            //create veggie with updated amount
+            veggie = {
+                ...state[`${action.farmId}`].cartOrders[action.veggieId],
+                amount: state[`${action.farmId}`].cartOrders[action.veggieId].amount + 1
             }
+            //create farm with updated veggie
+            farm = {
+                ...state[`${action.farmId}`],
+                cartOrders: { ...state[`${action.farmId}`].cartOrders, [action.veggieId]: veggie },
+            }
+            return { ...state, [`${action.farmId}`]: farm }
             break;
 
         case DEC_CART_ORDER:
@@ -207,64 +187,21 @@ const cartReducer = (state = initialState, action) => {
             break;
 
         case RESTORE_CART_ORDER:
-            switch (action.cart) {
-                case 'farmA':
-
-                    return {
-                        farmA: {
-                            cartOrders: { ...action.cartItems.cartOrders },
-                            pastOrders: { ...state.farmA.pastOrders }
-                        },
-                        farmB: {
-                            cartOrders: { ...state.farmB.cartOrders },
-                            pastOrders: { ...state.farmB.pastOrders }
-                        }
-                    }
-
-
-                case 'farmB':
-
-                    return {
-                        farmB: {
-                            cartOrders: { ...action.cartItems.cartOrders },
-                            pastOrders: { ...state.farmB.pastOrders }
-                        },
-                        farmA: {
-                            cartOrders: { ...state.farmA.cartOrders },
-                            pastOrders: { ...state.farmA.pastOrders }
-                        }
-                    }
+            farm = {
+                ...state[`F${action.farmId}`],
+                cartOrders: { ...action.cartItems.cartOrders },
+            }
+            return {
+                ...state, [`${action.farmId}`]: farm
             }
             break;
-
         case RESTORE_PAST_ORDER:
-            switch (action.cart) {
-                case 'farmA':
-
-                    return {
-                        farmA: {
-                            cartOrders: { ...state.farmA.cartOrders },
-                            pastOrders: { ...action.cartItems.pastOrders }
-                        },
-                        farmB: {
-                            cartOrders: { ...state.farmB.cartOrders },
-                            pastOrders: { ...state.farmB.pastOrders }
-                        }
-                    }
-
-
-                case 'farmB':
-
-                    return {
-                        farmB: {
-                            cartOrders: { ...state.farmB.cartOrders },
-                            pastOrders: { ...action.cartItems.pastOrders }
-                        },
-                        farmA: {
-                            cartOrders: { ...state.farmA.cartOrders },
-                            pastOrders: { ...state.farmA.pastOrders }
-                        }
-                    }
+            farm = {
+                ...state[`F${action.farmId}`],
+                pastOrders: { ...action.cartItems.pastOrders },
+            }
+            return {
+                ...state, [`${action.farmId}`]: farm
             }
             break;
         default:

@@ -62,7 +62,7 @@ const Cart = (props) => {
 
 	const incCart = (dispatch, getState, itemId) => {
 		// Function is used via middelawre to sync the dispatch operation with the store and preform the save once the store update is done
-		dispatch(inc_cart_item({ id: itemId, cart: farmId }));
+		dispatch(inc_cart_item({ id: itemId, farmId: farmId }));
 		const farm = getState().cart[farmId];
 		saveLocalStorageData(`${farmId}storeData`, farm);
 		saveExternalStorageData(farm, farmId, user.firebaseUserId);
@@ -77,11 +77,11 @@ const Cart = (props) => {
 	};
 
 	const loadCartOrders = async (dispatch, getState) => {
-		const farm = getState().cart[farmId];
+		const farm = getState().cart.farmId;
 		try {
 			const res = await loadExternalStorageData(user.firebaseUserId, farmId);
 			if (res.data) {
-				dispatch(resotre_past_order({ cart: farmId, cartItems: res.data }));
+				dispatch(resotre_cart_order({ farmId: farmId, cartItems: res.data }));
 				saveLocalStorageData(`${farmId}storeData`, farm);
 			}
 		} catch (err) {
@@ -115,7 +115,7 @@ const Cart = (props) => {
 			const online = !!state.isConnected;
 			isOnline.current = online;
 		});
-		//dispatch(getCartOrdersData);
+		dispatch(getCartOrdersData);
 		return () => unsubscribe();
 	}, []);
 

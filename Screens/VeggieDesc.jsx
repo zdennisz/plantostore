@@ -24,8 +24,7 @@ const VeggieDesc = (props) => {
 				farmId: farmId,
 			})
 		);
-		const farm = getState().cart[`${farmId}`];
-
+		const farm = getState().cart[farmId];
 		saveLocalStorageData(`${farmId}storeData`, farm);
 		saveExternalStorageData(farm, farmId, user.firebaseUserId);
 	};
