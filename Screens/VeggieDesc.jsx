@@ -11,7 +11,7 @@ import { saveLocalStorageData, saveExternalStorageData } from "../utils/helper";
 const VeggieDesc = (props) => {
 	const { route, navigation } = props;
 	const { id } = route.params;
-	const [farmType] = useState(route.params.cart);
+	const [farmId] = useState(route.params.farmId);
 	const veggieInfo = useSelector((state) => state.plants[id]);
 	const user = useSelector((state) => state.auth);
 	const dispatch = useDispatch();
@@ -21,14 +21,13 @@ const VeggieDesc = (props) => {
 			add_to_cart({
 				id: id,
 				name: veggieInfo.name,
-				cart: route.params.cart,
+				farmId: farmId,
 			})
 		);
-		const farm =
-			farmType === "farmA" ? getState().cart.farmA : getState().cart.farmB;
+		const farm = getState().cart[`${farmId}`];
 
-		saveLocalStorageData(`${farmType}storeData`, farm);
-		saveExternalStorageData(farm, farmType, user.firebaseUserId);
+		saveLocalStorageData(`${farmId}storeData`, farm);
+		saveExternalStorageData(farm, farmId, user.firebaseUserId);
 	};
 
 	const addVeggieToCart = () => {
@@ -37,7 +36,7 @@ const VeggieDesc = (props) => {
 
 	const goToCart = () => {
 		navigation.navigate("cart", {
-			cart: `${route.params.cart}`,
+			farmId: farmId,
 		});
 	};
 

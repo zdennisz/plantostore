@@ -7,7 +7,7 @@ export const RESTORE_PAST_ORDER = "RESTORE_PAST_ORDER"
 
 
 export const add_to_cart = (data) => {
-    return { type: ADD_TO_CART, newItemId: data.id, newItemName: data.name, cart: data.cart }
+    return { type: ADD_TO_CART, veggieId: data.id, veggieName: data.name, farmIndex: data.cartIndex }
 }
 
 export const place_order = (data) => {
@@ -15,11 +15,11 @@ export const place_order = (data) => {
 }
 
 export const inc_cart_item = (data) => {
-    return { type: INC_CART_ORDER, itemId: data.id, cart: data.cart }
+    return { type: INC_CART_ORDER, itemId: data.id, cartIndex: data.index }
 }
 
 export const dec_cart_item = (data) => {
-    return { type: DEC_CART_ORDER, itemId: data.id, cart: data.cart }
+    return { type: DEC_CART_ORDER, itemId: data.id, cartIndex: data.index }
 }
 
 export const resotre_cart_order = (data) => {

@@ -11,13 +11,12 @@ import { resotre_past_order } from "../Store/Actions/cart";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import { StyleSheet, View, Text, Platform, FlatList } from "react-native";
 import { flatListItemParser, saveLocalStorageData } from "../utils/helper";
+import farmNames from "../utils/farmNames";
 
 const Farm = (props) => {
 	const { route, navigation } = props;
-	const [farmType] = useState(route.params.farm);
-	const cartPastOrders = useSelector(
-		(state) => state.cart[`${route.params.farm}`].pastOrders
-	);
+	const [farmId] = useState(route.params.farmId);
+	const cartPastOrders = useSelector((state) => state.cart[farmId]?.pastOrders);
 	const user = useSelector((state) => state.auth);
 	const isOnline = useRef(false);
 	const dispatch = useDispatch();
@@ -28,31 +27,30 @@ const Farm = (props) => {
 
 	const goToCart = () => {
 		navigation.navigate("cart", {
-			cart: `${route.params.farm}`,
+			farmId: farmId,
 		});
 	};
 
 	const goToStore = () => {
 		navigation.navigate("store", {
-			cart: `${route.params.farm}`,
+			farmId: farmId,
 		});
 	};
 
 	const goToVeggieDesc = (veggie) => {
 		navigation.navigate("veggieDsec", {
 			id: veggie.id,
-			cart: route.params.farm,
+			farmId: farmId,
 		});
 	};
 
 	const loadPastOrders = async (dispatch, getState) => {
-		const farm =
-			farmType === "farmA" ? getState().cart.farmA : getState().cart.farmB;
+		const farm = getState().cart[farmId];
 		try {
-			const res = await loadExternalStorageData(user.firebaseUserId, farmType);
+			const res = await loadExternalStorageData(user.firebaseUserId, farmId);
 			if (res.data) {
-				dispatch(resotre_past_order({ cart: farmType, cartItems: res.data }));
-				saveLocalStorageData(`${farmType}pastStoreData`, farm);
+				dispatch(resotre_past_order({ cart: farmId, cartItems: res.data }));
+				saveLocalStorageData(`${farmId}pastStoreData`, farm);
 			}
 		} catch (err) {
 			console.error(err);
@@ -64,12 +62,12 @@ const Farm = (props) => {
 		if (isOnline) {
 			loadPastOrders(dispatch, getState);
 		} else {
-			AsyncStorage.getItem(`${farmType}pastStoreData`)
+			AsyncStorage.getItem(`${farmId}pastStoreData`)
 				.then((pastStoreData) => {
 					const parsedData = JSON.parse(pastStoreData);
 					if (parsedData) {
 						dispatch(
-							resotre_past_order({ cart: farmType, cartItems: parsedData })
+							resotre_past_order({ cart: farmId, cartItems: parsedData })
 						);
 					}
 				})
@@ -86,7 +84,7 @@ const Farm = (props) => {
 		});
 
 		navigation.setOptions({
-			title: `Farm ${route.params.farm.slice(-1)}`,
+			title: farmNames[farmId],
 			headerRight: () => (
 				<HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
 					<Item
@@ -106,7 +104,6 @@ const Farm = (props) => {
 				</HeaderButtons>
 			),
 		});
-
 		dispatch(getPastOrdersData);
 		return () => unsubscribe();
 	}, []);

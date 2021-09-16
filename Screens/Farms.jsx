@@ -13,6 +13,7 @@ import {
 	REACT_APP_AGWA_CATEGORIES,
 	REACT_APP_AGWA_PLANTS,
 } from "../utils/database";
+import farmNames from "../utils/farmNames";
 
 const Farms = (props) => {
 	const { navigation } = props;
@@ -22,13 +23,13 @@ const Farms = (props) => {
 
 	const goToFarmAHandler = () => {
 		navigation.navigate("farm", {
-			farm: "farmA",
+			farmId: "F0",
 		});
 	};
 
 	const goToFarmBHandler = () => {
 		navigation.navigate("farm", {
-			farm: "farmB",
+			farmId: "F1",
 		});
 	};
 
@@ -110,14 +111,14 @@ const Farms = (props) => {
 					<View style={styles.buttonsContainer}>
 						<View style={styles.buttonContainer}>
 							<CustomButton
-								title='Farm A'
+								title={farmNames.F0}
 								pressHandler={goToFarmAHandler}
 								isImage={true}
 							/>
 						</View>
 						<View style={styles.buttonContainer}>
 							<CustomButton
-								title='Farm B'
+								title={farmNames.F1}
 								pressHandler={goToFarmBHandler}
 								isImage={true}
 							/>

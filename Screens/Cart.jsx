@@ -24,15 +24,13 @@ import {
 
 const Cart = (props) => {
 	const { route } = props;
-	const [farmType] = useState(route.params.cart);
+	const [farmId] = useState(route.params.farmId);
 	const cart = useSelector((state) => state.cart);
 	const user = useSelector((state) => state.auth);
 	const isOnline = useRef(false);
 	const dispatch = useDispatch();
 
-	const cartOrders =
-		farmType === "farmA" ? cart?.farmA?.cartOrders : cart?.farmB?.cartOrders;
-
+	const cartOrders = cart[farmId]?.cartOrders;
 	const cartItems = cartOrders ? flatListItemParser(cartOrders) : [];
 
 	const placeOrderHandler = () => {
@@ -54,41 +52,37 @@ const Cart = (props) => {
 	// Save in the local storage the purched order as past orders & the cleared cart as orders
 	const placeOrder = (dispatch, getState) => {
 		// Function is used via middelawre to sync the dispatch operation with the store and preform the save once the store update is done
-		dispatch(place_order({ cart: farmType }));
-		const farm =
-			farmType === "farmA" ? getState().cart.farmA : getState().cart.farmB;
+		dispatch(place_order({ cart: farmId }));
+		const farm = getState().cart[farmId];
 
-		saveLocalStorageData(`${farmType}pastStoreData`, farm);
-		saveLocalStorageData(`${farmType}storeData`, farm);
-		saveExternalStorageData(farm, farmType, user.firebaseUserId);
+		saveLocalStorageData(`${farmId}pastStoreData`, farm);
+		saveLocalStorageData(`${farmId}storeData`, farm);
+		saveExternalStorageData(farm, farmId, user.firebaseUserId);
 	};
 
 	const incCart = (dispatch, getState, itemId) => {
 		// Function is used via middelawre to sync the dispatch operation with the store and preform the save once the store update is done
-		dispatch(inc_cart_item({ id: itemId, cart: farmType }));
-		const farm =
-			farmType === "farmA" ? getState().cart.farmA : getState().cart.farmB;
-		saveLocalStorageData(`${farmType}storeData`, farm);
-		saveExternalStorageData(farm, farmType, user.firebaseUserId);
+		dispatch(inc_cart_item({ id: itemId, cart: farmId }));
+		const farm = getState().cart[farmId];
+		saveLocalStorageData(`${farmId}storeData`, farm);
+		saveExternalStorageData(farm, farmId, user.firebaseUserId);
 	};
 
 	const decCart = (dispatch, getState, itemId) => {
 		// Function is used via middelawre to sync the dispatch operation with the store and preform the save once the store update is done
-		dispatch(dec_cart_item({ id: itemId, cart: farmType }));
-		const farm =
-			farmType === "farmA" ? getState().cart.farmA : getState().cart.farmB;
-		saveLocalStorageData(`${farmType}storeData`, farm);
-		saveExternalStorageData(farm, farmType, user.firebaseUserId);
+		dispatch(dec_cart_item({ id: itemId, cart: farmId }));
+		const farm = getState().cart[farmId];
+		saveLocalStorageData(`${farmId}storeData`, farm);
+		saveExternalStorageData(farm, farmId, user.firebaseUserId);
 	};
 
 	const loadCartOrders = async (dispatch, getState) => {
-		const farm =
-			farmType === "farmA" ? getState().cart.farmA : getState().cart.farmB;
+		const farm = getState().cart[farmId];
 		try {
-			const res = await loadExternalStorageData(user.firebaseUserId, farmType);
+			const res = await loadExternalStorageData(user.firebaseUserId, farmId);
 			if (res.data) {
-				dispatch(resotre_past_order({ cart: farmType, cartItems: res.data }));
-				saveLocalStorageData(`${farmType}storeData`, farm);
+				dispatch(resotre_past_order({ cart: farmId, cartItems: res.data }));
+				saveLocalStorageData(`${farmId}storeData`, farm);
 			}
 		} catch (err) {
 			console.error(err);
@@ -100,13 +94,13 @@ const Cart = (props) => {
 		if (isOnline) {
 			loadCartOrders(dispatch, getState);
 		} else {
-			AsyncStorage.getItem(`${farmType}storeData`)
+			AsyncStorage.getItem(`${farmId}storeData`)
 				.then((storeData) => {
 					const parsedData = JSON.parse(storeData);
 					if (parsedData) {
 						// Function is used via middelawre to sync the dispatch operation with the store and preform the save once the store update is done
 						dispatch(
-							resotre_cart_order({ cart: farmType, cartItems: parsedData })
+							resotre_cart_order({ cart: farmId, cartItems: parsedData })
 						);
 					}
 				})
@@ -121,7 +115,7 @@ const Cart = (props) => {
 			const online = !!state.isConnected;
 			isOnline.current = online;
 		});
-		dispatch(getCartOrdersData);
+		//dispatch(getCartOrdersData);
 		return () => unsubscribe();
 	}, []);
 
