@@ -5,15 +5,15 @@ import NetInfo from "@react-native-community/netinfo";
 import CustomButton from "../components/customButtons/CustomButton";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Ionicons } from "@expo/vector-icons";
-import { set_item_id } from "../Store/Actions/itemId";
+import { set_selected_veggie_id } from "../Store/Actions/selectedVeggieId";
 import { useSelector, useDispatch } from "react-redux";
 import { StyleSheet, View, Text, FlatList } from "react-native";
 import {
 	place_order,
-	dec_cart_item,
-	inc_cart_item,
+	decrement_cart_item,
+	increment_cart_item,
 	resotre_cart_order,
-	resotre_past_order,
+	restore_farm_veggie,
 } from "../Store/Actions/cart";
 import {
 	flatListItemParser,
@@ -24,71 +24,65 @@ import {
 
 const Cart = (props) => {
 	const { route } = props;
-	const [farmType] = useState(route.params.cart);
+	const [farmId] = useState(route.params.farmId);
 	const cart = useSelector((state) => state.cart);
 	const user = useSelector((state) => state.auth);
 	const isOnline = useRef(false);
 	const dispatch = useDispatch();
 
-	const cartOrders =
-		farmType === "farmA" ? cart?.farmA?.cartOrders : cart?.farmB?.cartOrders;
-
+	const cartOrders = cart[farmId]?.cartOrders;
 	const cartItems = cartOrders ? flatListItemParser(cartOrders) : [];
 
 	const placeOrderHandler = () => {
 		dispatch(placeOrder);
 	};
 
-	const incCartItemHandler = (itemId) => {
-		// Updates the store with selected item id to increment amount from cart of that item
-		dispatch(set_item_id(itemId));
-		dispatch(incCart);
+	const incrementCartItemHandler = (selectedVeggieId) => {
+		// Updates the store with selected veggie id to increment amount from cart of that veggie
+		dispatch(set_selected_veggie_id(selectedVeggieId));
+		dispatch(incrementCart);
 	};
 
-	const decCartItemHandler = (itemId) => {
-		// Updates the store with selected item id to decetement amount from cart of that item
-		dispatch(set_item_id(itemId));
-		dispatch(decCart);
+	const decrementCartItemHandler = (selectedVeggieId) => {
+		// Updates the store with selected veggie id to decetement amount from cart of that veggie
+		dispatch(set_selected_veggie_id(selectedVeggieId));
+		dispatch(decrementCart);
 	};
 
-	// Save in the local storage the purched order as past orders & the cleared cart as orders
+	// Save in the local storage the purched order as farm veggies orders & the cleared cart as orders
 	const placeOrder = (dispatch, getState) => {
 		// Function is used via middelawre to sync the dispatch operation with the store and preform the save once the store update is done
-		dispatch(place_order({ cart: farmType }));
-		const farm =
-			farmType === "farmA" ? getState().cart.farmA : getState().cart.farmB;
+		dispatch(place_order({ farmId: farmId }));
+		const farm = getState().cart[farmId];
 
-		saveLocalStorageData(`${farmType}pastStoreData`, farm);
-		saveLocalStorageData(`${farmType}storeData`, farm);
-		saveExternalStorageData(farm, farmType, user.firebaseUserId);
+		saveLocalStorageData(`${farmId}farmVeggiesStoreData`, farm);
+		saveLocalStorageData(`${farmId}storeData`, farm);
+		saveExternalStorageData(farm, farmId, user.firebaseUserId);
 	};
 
-	const incCart = (dispatch, getState, itemId) => {
+	const incrementCart = (dispatch, getState, selectedVeggieId) => {
 		// Function is used via middelawre to sync the dispatch operation with the store and preform the save once the store update is done
-		dispatch(inc_cart_item({ id: itemId, cart: farmType }));
-		const farm =
-			farmType === "farmA" ? getState().cart.farmA : getState().cart.farmB;
-		saveLocalStorageData(`${farmType}storeData`, farm);
-		saveExternalStorageData(farm, farmType, user.firebaseUserId);
+		dispatch(increment_cart_item({ id: selectedVeggieId, farmId: farmId }));
+		const farm = getState().cart[farmId];
+		saveLocalStorageData(`${farmId}storeData`, farm);
+		saveExternalStorageData(farm, farmId, user.firebaseUserId);
 	};
 
-	const decCart = (dispatch, getState, itemId) => {
+	const decrementCart = (dispatch, getState, selectedVeggieId) => {
 		// Function is used via middelawre to sync the dispatch operation with the store and preform the save once the store update is done
-		dispatch(dec_cart_item({ id: itemId, cart: farmType }));
-		const farm =
-			farmType === "farmA" ? getState().cart.farmA : getState().cart.farmB;
-		saveLocalStorageData(`${farmType}storeData`, farm);
-		saveExternalStorageData(farm, farmType, user.firebaseUserId);
+		dispatch(decrement_cart_item({ id: selectedVeggieId, farmId: farmId }));
+		const farm = getState().cart[farmId];
+		saveLocalStorageData(`${farmId}storeData`, farm);
+		saveExternalStorageData(farm, farmId, user.firebaseUserId);
 	};
 
 	const loadCartOrders = async (dispatch, getState) => {
-		const farm =
-			farmType === "farmA" ? getState().cart.farmA : getState().cart.farmB;
+		const farm = getState().cart.farmId;
 		try {
-			const res = await loadExternalStorageData(user.firebaseUserId, farmType);
+			const res = await loadExternalStorageData(user.firebaseUserId, farmId);
 			if (res.data) {
-				dispatch(resotre_past_order({ cart: farmType, cartItems: res.data }));
-				saveLocalStorageData(`${farmType}storeData`, farm);
+				dispatch(resotre_cart_order({ farmId: farmId, cartItems: res.data }));
+				saveLocalStorageData(`${farmId}storeData`, farm);
 			}
 		} catch (err) {
 			console.error(err);
@@ -100,13 +94,13 @@ const Cart = (props) => {
 		if (isOnline) {
 			loadCartOrders(dispatch, getState);
 		} else {
-			AsyncStorage.getItem(`${farmType}storeData`)
+			AsyncStorage.getItem(`${farmId}storeData`)
 				.then((storeData) => {
 					const parsedData = JSON.parse(storeData);
 					if (parsedData) {
 						// Function is used via middelawre to sync the dispatch operation with the store and preform the save once the store update is done
 						dispatch(
-							resotre_cart_order({ cart: farmType, cartItems: parsedData })
+							resotre_cart_order({ cart: farmId, cartItems: parsedData })
 						);
 					}
 				})
@@ -136,7 +130,7 @@ const Cart = (props) => {
 						color={Colors.primary}
 					/>
 					<Text style={styles.notFoundText}>
-						Didn't find any plants in your cart :(
+						Didn't find any veggies in your cart :(
 					</Text>
 				</View>
 			) : (
@@ -145,12 +139,12 @@ const Cart = (props) => {
 						<FlatList
 							showsVerticalScrollIndicator={false}
 							data={cartItems}
-							keyExtractor={(item) => item.id}
+							keyExtractor={(veggie) => veggie.id}
 							renderItem={(veggieContainer) => (
 								<VeggieCard
 									veggie={veggieContainer.item}
-									incCartItemHandler={incCartItemHandler}
-									decCartItemHandler={decCartItemHandler}
+									incrementCartItemHandler={incrementCartItemHandler}
+									decrementCartItemHandler={decrementCartItemHandler}
 									isDisplayAmount={true}
 									isAmountEditable={true}
 								/>

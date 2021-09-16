@@ -1,7 +1,7 @@
 import { createStore, combineReducers, applyMiddleware } from 'redux';
 import cartReducer from './Reducers/cart';
-import itemIdReducer from './Reducers/itemId'
-import plantsReducer from './Reducers/plants';
+import selectedVeggieIdReducer from './Reducers/selectedVeggieId'
+import veggiesReducer from './Reducers/veggies';
 import reduxMiddelware from './reduxMiddelware'
 import categoriesReducer from './Reducers/categories';
 import authReducer from './Reducers/auth'
@@ -9,8 +9,8 @@ import authReducer from './Reducers/auth'
 const rootReducer = combineReducers({
     categories: categoriesReducer,
     cart: cartReducer,
-    itemId: itemIdReducer,
-    plants: plantsReducer,
+    selectedVeggieId: selectedVeggieIdReducer,
+    veggies: veggiesReducer,
     auth: authReducer
 })
 

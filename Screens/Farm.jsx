@@ -7,70 +7,77 @@ import CustomHeaderButton from "../components/customButtons/CustomHeaderButtons"
 import { Ionicons } from "@expo/vector-icons";
 import { useSelector, useDispatch } from "react-redux";
 import { loadExternalStorageData } from "../utils/helper";
-import { resotre_past_order } from "../Store/Actions/cart";
+import { restore_farm_veggie } from "../Store/Actions/cart";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
-import { StyleSheet, View, Text, Platform, FlatList } from "react-native";
+import {
+	StyleSheet,
+	View,
+	Text,
+	Platform,
+	FlatList,
+	ActivityIndicator,
+} from "react-native";
 import { flatListItemParser, saveLocalStorageData } from "../utils/helper";
+import farmNames from "../utils/farmNames";
 
 const Farm = (props) => {
 	const { route, navigation } = props;
-	const [farmType] = useState(route.params.farm);
-	const cartPastOrders = useSelector(
-		(state) => state.cart[`${route.params.farm}`].pastOrders
-	);
+	const [farmId] = useState(route.params.farmId);
+	const [isLoading, setIsLoading] = useState(true);
+	const farmVeggies = useSelector((state) => state.cart[farmId]?.farmVeggies);
+
 	const user = useSelector((state) => state.auth);
 	const isOnline = useRef(false);
 	const dispatch = useDispatch();
 
-	const farmPastItems = cartPastOrders
-		? flatListItemParser(cartPastOrders)
-		: [];
+	const farmVeggiesArray = farmVeggies ? flatListItemParser(farmVeggies) : [];
 
 	const goToCart = () => {
 		navigation.navigate("cart", {
-			cart: `${route.params.farm}`,
+			farmId: farmId,
 		});
 	};
 
 	const goToStore = () => {
 		navigation.navigate("store", {
-			cart: `${route.params.farm}`,
+			farmId: farmId,
 		});
 	};
 
 	const goToVeggieDesc = (veggie) => {
 		navigation.navigate("veggieDsec", {
 			id: veggie.id,
-			cart: route.params.farm,
+			farmId: farmId,
 		});
 	};
 
-	const loadPastOrders = async (dispatch, getState) => {
-		const farm =
-			farmType === "farmA" ? getState().cart.farmA : getState().cart.farmB;
+	const loadFarmVeggies = async (dispatch, getState) => {
+		const farm = getState().cart[farmId];
 		try {
-			const res = await loadExternalStorageData(user.firebaseUserId, farmType);
+			const res = await loadExternalStorageData(user.firebaseUserId, farmId);
 			if (res.data) {
-				dispatch(resotre_past_order({ cart: farmType, cartItems: res.data }));
-				saveLocalStorageData(`${farmType}pastStoreData`, farm);
+				dispatch(restore_farm_veggie({ farmId: farmId, cartItems: res.data }));
+				saveLocalStorageData(`${farmId}farmVeggiesStoreData`, farm);
 			}
+			setIsLoading(false);
 		} catch (err) {
 			console.error(err);
 		}
 	};
 
-	const getPastOrdersData = (dispatch, getState) => {
-		// Display past orders from DB if online, else from local storage
+	const getFarmVeggiesData = (dispatch, getState) => {
+		// Display farm veggies orders from DB if online, else from local storage
 		if (isOnline) {
-			loadPastOrders(dispatch, getState);
+			loadFarmVeggies(dispatch, getState);
 		} else {
-			AsyncStorage.getItem(`${farmType}pastStoreData`)
-				.then((pastStoreData) => {
-					const parsedData = JSON.parse(pastStoreData);
+			AsyncStorage.getItem(`${farmId}farmVeggiesStoreData`)
+				.then((farmVeggiesStoreData) => {
+					const parsedData = JSON.parse(farmVeggiesStoreData);
 					if (parsedData) {
 						dispatch(
-							resotre_past_order({ cart: farmType, cartItems: parsedData })
+							restore_farm_veggie({ farmId: farmId, cartItems: parsedData })
 						);
+						setIsLoading(false);
 					}
 				})
 				.catch((err) => {
@@ -86,7 +93,7 @@ const Farm = (props) => {
 		});
 
 		navigation.setOptions({
-			title: `Farm ${route.params.farm.slice(-1)}`,
+			title: farmNames[farmId],
 			headerRight: () => (
 				<HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
 					<Item
@@ -106,23 +113,22 @@ const Farm = (props) => {
 				</HeaderButtons>
 			),
 		});
-
-		dispatch(getPastOrdersData);
+		dispatch(getFarmVeggiesData);
 		return () => unsubscribe();
 	}, []);
 
 	return (
 		<View style={styles.container}>
-			{farmPastItems.length > 0 ? (
+			{farmVeggiesArray.length > 0 ? (
 				<>
 					<View style={styles.textContainer}>
-						<Text style={styles.text}>Plants in your farm:</Text>
+						<Text style={styles.text}>Veggies in your farm:</Text>
 					</View>
 					<View style={styles.flatListContainer}>
 						<FlatList
 							showsVerticalScrollIndicator={false}
-							data={farmPastItems}
-							keyExtractor={(item) => item.id}
+							data={farmVeggiesArray}
+							keyExtractor={(veggie) => veggie.id}
 							renderItem={(veggieContainer) => (
 								<VeggieCard
 									veggie={veggieContainer.item}
@@ -135,17 +141,27 @@ const Farm = (props) => {
 					</View>
 				</>
 			) : (
-				<View style={styles.notFoundContainer}>
-					<Ionicons
-						name='leaf'
-						size={80}
-						style={styles.image}
-						color={Colors.primary}
-					/>
-					<Text style={styles.notFoundText}>
-						Didn't find any plants in your farm :(
-					</Text>
-				</View>
+				<>
+					{isLoading ? (
+						<ActivityIndicator
+							style={styles.loader}
+							size='large'
+							color={Colors.primary}
+						/>
+					) : (
+						<View style={styles.notFoundContainer}>
+							<Ionicons
+								name='leaf'
+								size={80}
+								style={styles.image}
+								color={Colors.primary}
+							/>
+							<Text style={styles.notFoundText}>
+								Didn't find any veggies in your farm :(
+							</Text>
+						</View>
+					)}
+				</>
 			)}
 		</View>
 	);
@@ -186,6 +202,11 @@ const styles = StyleSheet.create({
 		fontSize: 20,
 		marginTop: 24,
 		textAlign: "center",
+	},
+	loader: {
+		flex: 1,
+		justifyContent: "center",
+		alignItems: "center",
 	},
 });
 

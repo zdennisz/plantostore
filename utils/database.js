@@ -1,2 +1,2 @@
-export const REACT_APP_AGWA_CATEGORIES = "https://dev-agwa-public-static-assets-web.s3-us-west-2.amazonaws.com/data/catalogs/agwafarm.json"
-export const REACT_APP_AGWA_PLANTS = "https://dev-agwa-public-static-assets-web.s3-us-west-2.amazonaws.com/data/catalogs/plants.json"
+export const REACT_APP_CATEGORIES = "https://plantostore-33e3d-default-rtdb.europe-west1.firebasedatabase.app/categories.json"
+export const REACT_APP_VEGGIES = "https://plantostore-33e3d-default-rtdb.europe-west1.firebasedatabase.app/veggies.json"

@@ -7,14 +7,14 @@ import CustomRoundButton from "./customButtons/CustomRoundButton";
 const VeggieCard = (props) => {
 	const { veggie, isDisplayAmount = false, isAmountEditable = false } = props;
 	const [imageUrl, setImageUrl] = useState();
-	const plants = useSelector((state) => state.plants);
+	const veggies = useSelector((state) => state.veggies);
 
-	const incCartItem = () => {
-		props.incCartItemHandler(veggie.id);
+	const incrementCartItem = () => {
+		props.incrementCartItemHandler(veggie.id);
 	};
 
-	const decCartItem = () => {
-		props.decCartItemHandler(veggie.id);
+	const decrementCartItem = () => {
+		props.decrementCartItemHandler(veggie.id);
 	};
 
 	const navToVeggieDesc = (veggie) => {
@@ -22,11 +22,11 @@ const VeggieCard = (props) => {
 	};
 
 	useEffect(() => {
-		if (plants) {
-			if (plants[veggie.id]) {
+		if (veggies) {
+			if (veggies[veggie.id]) {
 				setImageUrl(
 					`https://dev-agwa-public-static-assets-web.s3-us-west-2.amazonaws.com/images/vegetables/${
-						plants[veggie.id].imageId
+						veggies[veggie.id].imageId
 					}@3x.jpg`
 				);
 			} else {
@@ -35,7 +35,7 @@ const VeggieCard = (props) => {
 				);
 			}
 		}
-	}, [plants]);
+	}, [veggies]);
 
 	return (
 		<View style={styles.veggieCardContainer}>
@@ -56,9 +56,9 @@ const VeggieCard = (props) => {
 					<View style={styles.amountContainer}>
 						{isAmountEditable ? (
 							<>
-								<CustomRoundButton title='+' pressHandler={incCartItem} />
+								<CustomRoundButton title='+' pressHandler={incrementCartItem} />
 								<Text style={styles.amountText}>{veggie.amount}</Text>
-								<CustomRoundButton title='-' pressHandler={decCartItem} />
+								<CustomRoundButton title='-' pressHandler={decrementCartItem} />
 							</>
 						) : (
 							<Text style={styles.text}>Quantity: {veggie.amount}</Text>
