@@ -30,19 +30,19 @@ const cartReducer = (state = initialState, action) => {
                 }
 
             } else {
-                //create farm
+                // Create farm
                 farm = {
                     cartOrders: {},
                     pastOrders: {}
                 }
-                //create veggie
+                // Create veggie
                 veggie = {
                     name: action.veggieName,
                     amount: 1
                 }
 
 
-                //add veggie to farm
+                // Add veggie to farm
 
                 farm = {
                     cartOrders: { [action.veggieId]: veggie },
@@ -51,9 +51,9 @@ const cartReducer = (state = initialState, action) => {
 
             }
 
-            //add the new farm to the farms
+            // Add the new farm to the farms
             return { ...state, [`${action.farmId}`]: farm }
-            break;
+
 
         case PLACE_ORDER:
             let newItemPlaceOrder;
@@ -123,18 +123,18 @@ const cartReducer = (state = initialState, action) => {
 
         case INC_CART_ORDER:
 
-            //create veggie with updated amount
+            // Create veggie with updated amount
             veggie = {
                 ...state[`${action.farmId}`].cartOrders[action.veggieId],
                 amount: state[`${action.farmId}`].cartOrders[action.veggieId].amount + 1
             }
-            //create farm with updated veggie
+            // Create farm with updated veggie
             farm = {
                 ...state[`${action.farmId}`],
                 cartOrders: { ...state[`${action.farmId}`].cartOrders, [action.veggieId]: veggie },
             }
             return { ...state, [`${action.farmId}`]: farm }
-            break;
+
 
         case DEC_CART_ORDER:
 
@@ -158,52 +158,7 @@ const cartReducer = (state = initialState, action) => {
                 ...state,
                 [`${action.farmId}`]: farm
             }
-            // switch (action.cart) {
-            //     case 'farmA':
-            //         currAmount = state.farmA.cartOrders[action.itemId].amount
-            //         if (currAmount > 1) {
-            //             const updatedCartItem = { ...state.farmA.cartOrders[action.itemId], amount: state.farmA.cartOrders[action.itemId].amount - 1 }
-            //             updatedCartOrders = { ...state.farmA.cartOrders, [action.itemId]: updatedCartItem }
-            //         } else {
-            //             updatedCartOrders = { ...state.farmA.cartOrders }
-            //             delete updatedCartOrders[action.itemId]
-            //         }
 
-            //         return {
-            //             farmA: {
-            //                 cartOrders: { ...updatedCartOrders },
-            //                 pastOrders: { ...state.farmA.pastOrders }
-            //             },
-            //             farmB: {
-            //                 cartOrders: { ...state.farmB.cartOrders },
-            //                 pastOrders: { ...state.farmB.pastOrders }
-            //             }
-
-            //         }
-            //     case 'farmB':
-            //         currAmount = state.farmB.cartOrders[action.itemId].amount
-            //         if (currAmount > 1) {
-            //             const updatedCartItem = { ...state.farmB.cartOrders[action.itemId], amount: state.farmB.cartOrders[action.itemId].amount - 1 }
-            //             updatedCartOrders = { ...state.farmB.cartOrders, [action.itemId]: updatedCartItem }
-            //         } else {
-            //             updatedCartOrders = { ...state.farmB.cartOrders }
-            //             delete updatedCartOrders[action.itemId]
-            //         }
-
-            //         return {
-            //             farmB: {
-            //                 cartOrders: { ...updatedCartOrders },
-            //                 pastOrders: { ...state.farmB.pastOrders }
-            //             },
-            //             farmA: {
-            //                 cartOrders: { ...state.farmA.cartOrders },
-            //                 pastOrders: { ...state.farmA.pastOrders }
-            //             }
-
-            //         }
-
-            // }
-            break;
 
         case RESTORE_CART_ORDER:
             farm = {
@@ -213,7 +168,7 @@ const cartReducer = (state = initialState, action) => {
             return {
                 ...state, [`${action.farmId}`]: farm
             }
-            break;
+
         case RESTORE_PAST_ORDER:
             farm = {
                 ...state[`F${action.farmId}`],
@@ -222,7 +177,7 @@ const cartReducer = (state = initialState, action) => {
             return {
                 ...state, [`${action.farmId}`]: farm
             }
-            break;
+
         default:
             return state
     }
