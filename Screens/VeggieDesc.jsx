@@ -6,7 +6,11 @@ import { add_to_cart } from "../Store/Actions/cart";
 import { useDispatch, useSelector } from "react-redux";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import { StyleSheet, View, Text, ScrollView, Image } from "react-native";
-import { saveLocalStorageData, saveExternalStorageData } from "../utils/helper";
+import {
+	saveLocalStorageData,
+	saveExternalStorageData,
+	hapticFeedback,
+} from "../utils/helper";
 
 const VeggieDesc = (props) => {
 	const { route, navigation } = props;
@@ -14,6 +18,8 @@ const VeggieDesc = (props) => {
 	const [farmId] = useState(route.params.farmId);
 	const veggieInfo = useSelector((state) => state.veggies[id]);
 	const user = useSelector((state) => state.auth);
+	const isOnline = useSelector((state) => state.auth.onlineStatus);
+
 	const dispatch = useDispatch();
 
 	const saveCurrFarmCart = (dispatch, getState) => {
@@ -26,7 +32,9 @@ const VeggieDesc = (props) => {
 		);
 		const farm = getState().cart[farmId];
 		saveLocalStorageData(`${farmId}storeData`, farm);
-		saveExternalStorageData(farm, farmId, user.firebaseUserId);
+		if (isOnline) {
+			saveExternalStorageData(farm, farmId, user.firebaseUserId);
+		}
 	};
 
 	const addVeggieToCart = () => {

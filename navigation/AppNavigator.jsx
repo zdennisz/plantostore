@@ -12,7 +12,6 @@ const AppNavigator = (props) => {
 	const dispatch = useDispatch();
 	useEffect(() => {
 		if (isOnline != undefined) {
-			console.log("online status ", isOnline);
 			dispatch(online_status({ onlineStatus: isOnline }));
 		}
 	}, [isOnline]);

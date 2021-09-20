@@ -16,7 +16,11 @@ import {
 	FlatList,
 	ActivityIndicator,
 } from "react-native";
-import { flatListItemParser, saveLocalStorageData } from "../utils/helper";
+import {
+	flatListItemParser,
+	saveLocalStorageData,
+	saveExternalStorageData,
+} from "../utils/helper";
 import farmNames from "../utils/farmNames";
 
 const Farm = (props) => {
@@ -24,9 +28,9 @@ const Farm = (props) => {
 	const [farmId] = useState(route.params.farmId);
 	const [isLoading, setIsLoading] = useState(true);
 	const farmVeggies = useSelector((state) => state.cart[farmId]?.farmVeggies);
-
+	const farm = useSelector((state) => state.cart[farmId]);
 	const user = useSelector((state) => state.auth);
-	// const isOnline = useRef(false);
+
 	const isOnline = useSelector((state) => state.auth.onlineStatus);
 	const dispatch = useDispatch();
 
@@ -85,6 +89,12 @@ const Farm = (props) => {
 				});
 		}
 	};
+	//sync the local data with the remote db data
+	// useEffect(() => {
+	// 	if (isOnline && isLoading === false) {
+	// 		saveExternalStorageData(farm, farmId, user.firebaseUserId);
+	// 	}
+	// }, [isOnline, isLoading]);
 
 	useEffect(() => {
 		navigation.setOptions({

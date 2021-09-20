@@ -23,12 +23,11 @@ const authReducer = (state = initialState, action) => {
         case LOG_OUT:
             return initialState
         case ONLINE_STATUS:
-            x = {
+            return {
                 ...state,
                 onlineStatus: action.onlineStatus
             }
-            console.log("x", x)
-            return x
+
         default:
             return state
     }

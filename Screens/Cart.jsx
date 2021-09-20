@@ -56,7 +56,9 @@ const Cart = (props) => {
 
 		saveLocalStorageData(`${farmId}farmVeggiesStoreData`, farm);
 		saveLocalStorageData(`${farmId}storeData`, farm);
-		saveExternalStorageData(farm, farmId, user.firebaseUserId);
+		if (isOnline) {
+			saveExternalStorageData(farm, farmId, user.firebaseUserId);
+		}
 		hapticFeedback("light");
 	};
 
@@ -65,7 +67,9 @@ const Cart = (props) => {
 		dispatch(increment_cart_item({ id: selectedVeggieId, farmId: farmId }));
 		const farm = getState().cart[farmId];
 		saveLocalStorageData(`${farmId}storeData`, farm);
-		saveExternalStorageData(farm, farmId, user.firebaseUserId);
+		if (isOnline) {
+			saveExternalStorageData(farm, farmId, user.firebaseUserId);
+		}
 		hapticFeedback("light");
 	};
 
@@ -74,7 +78,9 @@ const Cart = (props) => {
 		dispatch(decrement_cart_item({ id: selectedVeggieId, farmId: farmId }));
 		const farm = getState().cart[farmId];
 		saveLocalStorageData(`${farmId}storeData`, farm);
-		saveExternalStorageData(farm, farmId, user.firebaseUserId);
+		if (isOnline) {
+			saveExternalStorageData(farm, farmId, user.firebaseUserId);
+		}
 		hapticFeedback("light");
 	};
 
