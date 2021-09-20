@@ -1,21 +1,19 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Colors from "../utils/styles";
-import NetInfo from "@react-native-community/netinfo";
 import CustomButton from "../components/customButtons/CustomButton";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Ionicons } from "@expo/vector-icons";
 import { isValidEmail } from "../utils/helper";
 import { sign_up } from "../Store/Actions/auth";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StyleSheet, View, TextInput, Text, Keyboard } from "react-native";
-
 const SignUp = (props) => {
 	const { navigation } = props;
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [confirmPassword, setConfirmPassword] = useState("");
 	const [errorMessage, setErrorMessage] = useState();
-	const [isOffline, setOfflineStatus] = useState(false);
+	const isOnline = useSelector((state) => state.auth.onlineStatus);
 	const dispatch = useDispatch();
 
 	const changeEmailHandler = (text) => {
@@ -78,35 +76,9 @@ const SignUp = (props) => {
 		}
 	};
 
-	useEffect(() => {
-		// Check the network connection
-		const removeNetInfoSubscription = NetInfo.addEventListener((state) => {
-			const offline = !(state.isConnected && state.isInternetReachable);
-			setOfflineStatus(offline);
-		});
-		return () => {
-			removeNetInfoSubscription();
-		};
-	}, []);
-
 	return (
 		<SafeAreaView style={styles.container}>
-			{isOffline ? (
-				<View style={styles.notFoundContainer}>
-					<Ionicons
-						name='leaf'
-						size={80}
-						style={styles.image}
-						color={Colors.primary}
-					/>
-					<View style={styles.notFoundTextContainer}>
-						<Text style={styles.notFoundText}>
-							Internet connection was not found.
-						</Text>
-						<Text style={styles.notFoundText}>Please turn it on :)</Text>
-					</View>
-				</View>
-			) : (
+			{isOnline ? (
 				<>
 					<View style={styles.imageContainer}>
 						<Ionicons name='leaf' size={70} style={styles.image} />
@@ -150,6 +122,21 @@ const SignUp = (props) => {
 						/>
 					</View>
 				</>
+			) : (
+				<View style={styles.notFoundContainer}>
+					<Ionicons
+						name='leaf'
+						size={80}
+						style={styles.image}
+						color={Colors.primary}
+					/>
+					<View style={styles.notFoundTextContainer}>
+						<Text style={styles.notFoundText}>
+							Internet connection was not found.
+						</Text>
+						<Text style={styles.notFoundText}>Please turn it on :)</Text>
+					</View>
+				</View>
 			)}
 		</SafeAreaView>
 	);

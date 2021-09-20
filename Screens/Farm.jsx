@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import Colors from "../utils/styles";
 import VeggieCard from "../components/VeggieCard";
-import NetInfo from "@react-native-community/netinfo";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import CustomHeaderButton from "../components/customButtons/CustomHeaderButtons";
 import { Ionicons } from "@expo/vector-icons";
@@ -27,7 +26,8 @@ const Farm = (props) => {
 	const farmVeggies = useSelector((state) => state.cart[farmId]?.farmVeggies);
 
 	const user = useSelector((state) => state.auth);
-	const isOnline = useRef(false);
+	// const isOnline = useRef(false);
+	const isOnline = useSelector((state) => state.auth.onlineStatus);
 	const dispatch = useDispatch();
 
 	const farmVeggiesArray = farmVeggies ? flatListItemParser(farmVeggies) : [];
@@ -87,11 +87,6 @@ const Farm = (props) => {
 	};
 
 	useEffect(() => {
-		const unsubscribe = NetInfo.addEventListener((state) => {
-			const online = !!state.isConnected;
-			isOnline.current = online;
-		});
-
 		navigation.setOptions({
 			title: farmNames[farmId],
 			headerRight: () => (
@@ -114,7 +109,6 @@ const Farm = (props) => {
 			),
 		});
 		dispatch(getFarmVeggiesData);
-		return () => unsubscribe();
 	}, []);
 
 	return (

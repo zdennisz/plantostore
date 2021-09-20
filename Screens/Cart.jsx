@@ -1,7 +1,6 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import Colors from "../utils/styles";
 import VeggieCard from "../components/VeggieCard";
-import NetInfo from "@react-native-community/netinfo";
 import CustomButton from "../components/customButtons/CustomButton";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Ionicons } from "@expo/vector-icons";
@@ -13,7 +12,6 @@ import {
 	decrement_cart_item,
 	increment_cart_item,
 	resotre_cart_order,
-	restore_farm_veggie,
 } from "../Store/Actions/cart";
 import {
 	flatListItemParser,
@@ -22,13 +20,13 @@ import {
 	loadExternalStorageData,
 	hapticFeedback,
 } from "../utils/helper";
-
 const Cart = (props) => {
 	const { route } = props;
 	const [farmId] = useState(route.params.farmId);
 	const cart = useSelector((state) => state.cart);
 	const user = useSelector((state) => state.auth);
-	const isOnline = useRef(false);
+	const isOnline = useSelector((state) => state.auth.onlineStatus);
+
 	const dispatch = useDispatch();
 
 	const cartOrders = cart[farmId]?.cartOrders;
@@ -95,6 +93,7 @@ const Cart = (props) => {
 
 	const getCartOrdersData = (dispatch, getState) => {
 		// Display cart orders from DB if online, else from local storage
+
 		if (isOnline) {
 			loadCartOrders(dispatch, getState);
 		} else {
@@ -115,12 +114,7 @@ const Cart = (props) => {
 	};
 
 	useEffect(() => {
-		const unsubscribe = NetInfo.addEventListener((state) => {
-			const online = !!state.isConnected;
-			isOnline.current = online;
-		});
 		dispatch(getCartOrdersData);
-		return () => unsubscribe();
 	}, []);
 
 	return (

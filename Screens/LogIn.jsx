@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Colors from "../utils/styles";
-import NetInfo from "@react-native-community/netinfo";
 import CustomButton from "../components/customButtons/CustomButton";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Ionicons } from "@expo/vector-icons";
 import { isValidEmail } from "../utils/helper";
 import { log_in } from "../Store/Actions/auth";
@@ -18,11 +17,11 @@ import {
 
 const LogIn = (props) => {
 	const { navigation } = props;
-	const [isOffline, setOfflineStatus] = useState(false);
 	const [email, setEmail] = useState();
 	const [password, setPassword] = useState();
 	const [errorMessage, setErrorMessage] = useState("");
 	const dispatch = useDispatch();
+	const isOnline = useSelector((state) => state.auth.onlineStatus);
 
 	const navigateToSignUpHandler = () => {
 		navigation.navigate("signUp");
@@ -72,33 +71,9 @@ const LogIn = (props) => {
 		}
 	};
 
-	useEffect(() => {
-		// Check the network connection
-		const removeNetInfoSubscription = NetInfo.addEventListener((state) => {
-			const offline = !(state.isConnected && state.isInternetReachable);
-			setOfflineStatus(offline);
-		});
-		return () => removeNetInfoSubscription();
-	}, []);
-
 	return (
 		<SafeAreaView style={styles.container}>
-			{isOffline ? (
-				<View style={styles.notFoundContainer}>
-					<Ionicons
-						name='leaf'
-						size={80}
-						style={styles.image}
-						color={Colors.primary}
-					/>
-					<View style={styles.notFoundTextContainer}>
-						<Text style={styles.notFoundText}>
-							Internet connection was not found.
-						</Text>
-						<Text style={styles.notFoundText}>Please turn it on :)</Text>
-					</View>
-				</View>
-			) : (
+			{isOnline ? (
 				<>
 					<View style={styles.imageContainer}>
 						<Ionicons name='leaf' size={70} style={styles.image} />
@@ -140,6 +115,21 @@ const LogIn = (props) => {
 						/>
 					</View>
 				</>
+			) : (
+				<View style={styles.notFoundContainer}>
+					<Ionicons
+						name='leaf'
+						size={80}
+						style={styles.image}
+						color={Colors.primary}
+					/>
+					<View style={styles.notFoundTextContainer}>
+						<Text style={styles.notFoundText}>
+							Internet connection was not found.
+						</Text>
+						<Text style={styles.notFoundText}>Please turn it on :)</Text>
+					</View>
+				</View>
 			)}
 		</SafeAreaView>
 	);
