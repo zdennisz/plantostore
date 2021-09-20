@@ -20,6 +20,7 @@ import {
 	saveLocalStorageData,
 	saveExternalStorageData,
 	loadExternalStorageData,
+	hapticFeedback,
 } from "../utils/helper";
 
 const Cart = (props) => {
@@ -58,6 +59,7 @@ const Cart = (props) => {
 		saveLocalStorageData(`${farmId}farmVeggiesStoreData`, farm);
 		saveLocalStorageData(`${farmId}storeData`, farm);
 		saveExternalStorageData(farm, farmId, user.firebaseUserId);
+		hapticFeedback("light");
 	};
 
 	const incrementCart = (dispatch, getState, selectedVeggieId) => {
@@ -66,6 +68,7 @@ const Cart = (props) => {
 		const farm = getState().cart[farmId];
 		saveLocalStorageData(`${farmId}storeData`, farm);
 		saveExternalStorageData(farm, farmId, user.firebaseUserId);
+		hapticFeedback("light");
 	};
 
 	const decrementCart = (dispatch, getState, selectedVeggieId) => {
@@ -74,6 +77,7 @@ const Cart = (props) => {
 		const farm = getState().cart[farmId];
 		saveLocalStorageData(`${farmId}storeData`, farm);
 		saveExternalStorageData(farm, farmId, user.firebaseUserId);
+		hapticFeedback("light");
 	};
 
 	const loadCartOrders = async (dispatch, getState) => {

@@ -1,5 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
+import * as Haptics from 'expo-haptics';
 export const flatListItemParser = (dataStructure) => {
     // Parse items for the flatlist array
     const cartItems = []
@@ -43,4 +44,19 @@ export const saveExternalStorageData = (farmData, farmId, userId) => {
 export const loadExternalStorageData = async (userId, farmType) => {
     const url = `https://plantostore-33e3d-default-rtdb.europe-west1.firebasedatabase.app/users/${userId}/${farmType}.json`
     return axios.get(url)
+}
+
+export const hapticFeedback = (style) => {
+    //preform light haptic feedback
+    switch (style) {
+        case 'light':
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+            break;
+        case 'medium':
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+            break;
+        default:
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+            break;
+    }
 }

@@ -31,6 +31,7 @@ const VeggieDesc = (props) => {
 
 	const addVeggieToCart = () => {
 		dispatch(saveCurrFarmCart);
+		hapticFeedback("light");
 	};
 
 	const goToCart = () => {
