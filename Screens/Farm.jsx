@@ -57,9 +57,6 @@ const Farm = (props) => {
 
 	// Here we try to sync data from two sources to get the latest data available
 	const loadFarmVeggiesFromRemoteDb = async (dispatch, getState) => {
-		// Get data from local storage
-
-		const farm = getState().cart[farmId];
 		try {
 			const networkRes = await loadExternalStorageData(
 				user.firebaseUserId,
@@ -67,11 +64,11 @@ const Farm = (props) => {
 			);
 			const res = await AsyncStorage.getItem(`${farmId}farmVeggiesStoreData`);
 			const transformedFarmVeggiesStoreData = JSON.parse(res);
-			if (networkRes.data) {
+			if (networkRes.data && isOnline) {
 				if (
 					networkRes.data.timeStamp < transformedFarmVeggiesStoreData.timeStamp
 				) {
-					//save the local data to remote db and show the local db
+					// Save the local data to remote db and show the local db
 					dispatch(
 						restore_farm_veggie({
 							farmId: farmId,
@@ -82,7 +79,7 @@ const Farm = (props) => {
 					const farm = getState().cart[farmId];
 					saveExternalStorageData(farm, farmId, user.firebaseUserId);
 				} else {
-					//update the local db according to remote db
+					// Update the local db according to remote db
 					dispatch(
 						restore_farm_veggie({
 							farmId: farmId,
@@ -93,8 +90,20 @@ const Farm = (props) => {
 					const farm = getState().cart[farmId];
 					saveLocalStorageData(`${farmId}farmVeggiesStoreData`, farm);
 				}
-			} else {
+			} else if (networkRes.data === null && isOnline) {
+				// Remote db is out of date, Update the remote db according to local db
+				dispatch(
+					restore_farm_veggie({
+						farmId: farmId,
+						cartItems: transformedFarmVeggiesStoreData.farmVeggies,
+						timeStamp: transformedFarmVeggiesStoreData.timeStamp,
+					})
+				);
+				const farm = getState().cart[farmId];
+				saveExternalStorageData(farm, farmId, user.firebaseUserId);
+			} else if (networkRes.data === null && !isOnline) {
 				// We weren't able to get data from remote db thus load from local db
+
 				dispatch(
 					restore_farm_veggie({
 						farmId: farmId,

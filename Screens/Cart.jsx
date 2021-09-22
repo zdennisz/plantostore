@@ -83,20 +83,59 @@ const Cart = (props) => {
 		}
 		hapticFeedback("light");
 	};
-
-	const loadCartOrders = async (dispatch, getState) => {
-		const farm = getState().cart.farmId;
+	// Here we try to sync data from two sources to get the latest data available
+	const loadCartOrdersFromRemoteDb = async (dispatch, getState) => {
 		try {
-			const res = await loadExternalStorageData(user.firebaseUserId, farmId);
-			if (res.data) {
+			const networkRes = await loadExternalStorageData(
+				user.firebaseUserId,
+				farmId
+			);
+			const localRes = await AsyncStorage.getItem(`${farmId}storeData`);
+			const transformedCartData = JSON.parse(localRes);
+			if (networkRes.data && isOnline) {
+				if (networkRes.data.timeStamp < transformedCartData.timeStamp) {
+					// Save the local data to remote db and show the local db
+					dispatch(
+						resotre_cart_order({
+							farmId: farmId,
+							cartItems: transformedCartData.cartOrders,
+							timeStamp: transformedCartData.timeStamp,
+						})
+					);
+					const farm = getState().cart[farmId];
+					saveExternalStorageData(farm, farmId, user.firebaseUserId);
+				} else {
+					// Update the local db according to remote db
+					dispatch(
+						resotre_cart_order({
+							farmId: farmId,
+							cartItems: networkRes.data.cartOrders,
+							timeStamp: networkRes.data.timeStamp,
+						})
+					);
+				}
+				const farm = getState().cart[farmId];
+				saveLocalStorageData(`${farmId}storeData`, farm);
+			} else if (networkRes.data === null && isOnline) {
+				// Remote db is out of date, Update the remote db according to local db
 				dispatch(
 					resotre_cart_order({
 						farmId: farmId,
-						cartItems: res.data.cartOrders,
-						timeStamp: res.data.timeStamp,
+						cartItems: transformedCartData.cartOrders,
+						timeStamp: transformedCartData.timeStamp,
 					})
 				);
-				saveLocalStorageData(`${farmId}storeData`, farm);
+				const farm = getState().cart[farmId];
+				saveExternalStorageData(farm, farmId, user.firebaseUserId);
+			} else if (networkRes.data === null && !isOnline) {
+				// We weren't able to get data from remote db thus load from local db
+				dispatch(
+					resotre_cart_order({
+						farmId: farmId,
+						cartItems: transformedCartData.cartOrders,
+						timeStamp: transformedCartData.timeStamp,
+					})
+				);
 			}
 		} catch (err) {
 			console.error(err);
@@ -107,7 +146,7 @@ const Cart = (props) => {
 		// Display cart orders from DB if online, else from local storage
 
 		if (isOnline) {
-			loadCartOrders(dispatch, getState);
+			loadCartOrdersFromRemoteDb(dispatch, getState);
 		} else {
 			AsyncStorage.getItem(`${farmId}storeData`)
 				.then((storeData) => {
