@@ -55,31 +55,76 @@ const Farm = (props) => {
 		});
 	};
 
-	const loadFarmVeggies = async (dispatch, getState) => {
+	// Here we try to sync data from two sources to get the latest data available
+	const loadFarmVeggiesFromRemoteDb = async (dispatch, getState) => {
+		// Get data from local storage
+
 		const farm = getState().cart[farmId];
 		try {
-			const res = await loadExternalStorageData(user.firebaseUserId, farmId);
-			if (res.data) {
-				dispatch(restore_farm_veggie({ farmId: farmId, cartItems: res.data }));
-				saveLocalStorageData(`${farmId}farmVeggiesStoreData`, farm);
+			const networkRes = await loadExternalStorageData(
+				user.firebaseUserId,
+				farmId
+			);
+			const res = await AsyncStorage.getItem(`${farmId}farmVeggiesStoreData`);
+			const transformedFarmVeggiesStoreData = JSON.parse(res);
+			if (networkRes.data) {
+				if (
+					networkRes.data.timeStamp < transformedFarmVeggiesStoreData.timeStamp
+				) {
+					//save the local data to remote db and show the local db
+					dispatch(
+						restore_farm_veggie({
+							farmId: farmId,
+							cartItems: transformedFarmVeggiesStoreData.farmVeggies,
+							timeStamp: transformedFarmVeggiesStoreData.timeStamp,
+						})
+					);
+					const farm = getState().cart[farmId];
+					saveExternalStorageData(farm, farmId, user.firebaseUserId);
+				} else {
+					//update the local db according to remote db
+					dispatch(
+						restore_farm_veggie({
+							farmId: farmId,
+							cartItems: networkRes.data.farmVeggies,
+							timeStamp: networkRes.data.timeStamp,
+						})
+					);
+					const farm = getState().cart[farmId];
+					saveLocalStorageData(`${farmId}farmVeggiesStoreData`, farm);
+				}
+			} else {
+				// We weren't able to get data from remote db thus load from local db
+				dispatch(
+					restore_farm_veggie({
+						farmId: farmId,
+						cartItems: transformedFarmVeggiesStoreData.farmVeggies,
+						timeStamp: transformedFarmVeggiesStoreData.timeStamp,
+					})
+				);
 			}
-			setIsLoading(false);
 		} catch (err) {
 			console.error(err);
 		}
+		setIsLoading(false);
 	};
 
 	const getFarmVeggiesData = (dispatch, getState) => {
 		// Display farm veggies orders from DB if online, else from local storage
 		if (isOnline) {
-			loadFarmVeggies(dispatch, getState);
+			loadFarmVeggiesFromRemoteDb(dispatch, getState);
 		} else {
+			// Display veggies from local db since we are not online
 			AsyncStorage.getItem(`${farmId}farmVeggiesStoreData`)
 				.then((farmVeggiesStoreData) => {
 					const parsedData = JSON.parse(farmVeggiesStoreData);
 					if (parsedData) {
 						dispatch(
-							restore_farm_veggie({ farmId: farmId, cartItems: parsedData })
+							restore_farm_veggie({
+								farmId: farmId,
+								cartItems: parsedData.farmVeggies,
+								timeStamp: parsedData.timeStamp,
+							})
 						);
 						setIsLoading(false);
 					}
@@ -89,12 +134,6 @@ const Farm = (props) => {
 				});
 		}
 	};
-	//sync the local data with the remote db data
-	// useEffect(() => {
-	// 	if (isOnline && isLoading === false) {
-	// 		saveExternalStorageData(farm, farmId, user.firebaseUserId);
-	// 	}
-	// }, [isOnline, isLoading]);
 
 	useEffect(() => {
 		navigation.setOptions({

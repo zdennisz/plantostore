@@ -89,7 +89,13 @@ const Cart = (props) => {
 		try {
 			const res = await loadExternalStorageData(user.firebaseUserId, farmId);
 			if (res.data) {
-				dispatch(resotre_cart_order({ farmId: farmId, cartItems: res.data }));
+				dispatch(
+					resotre_cart_order({
+						farmId: farmId,
+						cartItems: res.data.cartOrders,
+						timeStamp: res.data.timeStamp,
+					})
+				);
 				saveLocalStorageData(`${farmId}storeData`, farm);
 			}
 		} catch (err) {
@@ -109,7 +115,11 @@ const Cart = (props) => {
 					if (parsedData) {
 						// Function is used via middelawre to sync the dispatch operation with the store and preform the save once the store update is done
 						dispatch(
-							resotre_cart_order({ cart: farmId, cartItems: parsedData })
+							resotre_cart_order({
+								cart: farmId,
+								cartItems: parsedData.cartOrders,
+								timeStamp: parsedData.timeStamp,
+							})
 						);
 					}
 				})

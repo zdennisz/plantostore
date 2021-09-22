@@ -28,6 +28,7 @@ const cartReducer = (state = initialState, action) => {
                 farm = {
                     farmVeggies: { ...state[`${action.farmId}`]?.farmVeggies },
                     cartOrders: { ...state[`${action.farmId}`]?.cartOrders, [action.veggieId]: veggie },
+                    timeStamp: Date.now()
                 }
 
             } else {
@@ -44,6 +45,7 @@ const cartReducer = (state = initialState, action) => {
                 farm = {
                     farmVeggies: { ...state[`${action.farmId}`]?.farmVeggies },
                     cartOrders: { [action.veggieId]: veggie },
+                    timeStamp: Date.now()
                 }
 
             }
@@ -69,7 +71,8 @@ const cartReducer = (state = initialState, action) => {
             }
             farm = {
                 cartOrders: {},
-                farmVeggies: { ...state[`${action.farmId}`].farmVeggies, ...updatedFarmVeggies }
+                farmVeggies: { ...state[`${action.farmId}`].farmVeggies, ...updatedFarmVeggies },
+                timeStamp: Date.now()
             }
             return {
                 ...state, [`${action.farmId}`]: farm
@@ -86,6 +89,7 @@ const cartReducer = (state = initialState, action) => {
             farm = {
                 farmVeggies: { ...state[`${action.farmId}`].farmVeggies },
                 cartOrders: { ...state[`${action.farmId}`].cartOrders, [action.veggieId]: veggie },
+                timeStamp: Date.now()
             }
             return { ...state, [`${action.farmId}`]: farm }
 
@@ -102,9 +106,10 @@ const cartReducer = (state = initialState, action) => {
                 farm = {
                     farmVeggies: { ...state[`${action.farmId}`].farmVeggies },
                     cartOrders: { ...state[`${action.farmId}`].cartOrders, [action.veggieId]: veggie },
+                    timeStamp: Date.now()
                 }
             } else {
-                farm = { ...state[`${action.farmId}`] }
+                farm = { ...state[`${action.farmId}`], timeStamp: Date.now() }
                 delete farm.cartOrders[action.veggieId]
             }
 
@@ -117,7 +122,9 @@ const cartReducer = (state = initialState, action) => {
         case RESTORE_CART_ORDER:
             farm = {
                 farmVeggies: { ...state[`${action.farmId}`]?.farmVeggies },
-                cartOrders: { ...action.cartItems.cartOrders },
+                cartOrders: { ...action.cartItems },
+                timeStamp: action.timeStamp
+
             }
             return {
                 ...state, [`${action.farmId}`]: farm
@@ -126,7 +133,8 @@ const cartReducer = (state = initialState, action) => {
         case RESTORE_FARM_VEGGIES:
             farm = {
                 cartOrders: { ...state[`${action.farmId}`]?.cartOrders },
-                farmVeggies: { ...action.cartItems.farmVeggies },
+                farmVeggies: { ...action.cartItems },
+                timeStamp: action.timeStamp
             }
             return {
                 ...state, [`${action.farmId}`]: farm

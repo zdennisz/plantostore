@@ -23,8 +23,8 @@ export const decrement_cart_item = (data) => {
 }
 
 export const resotre_cart_order = (data) => {
-    return { type: RESTORE_CART_ORDER, farmId: data.farmId, cartItems: data.cartItems }
+    return { type: RESTORE_CART_ORDER, farmId: data.farmId, cartItems: data.cartItems, timeStamp: data.timeStamp }
 }
 export const restore_farm_veggie = (data) => {
-    return { type: RESTORE_FARM_VEGGIES, farmId: data.farmId, cartItems: data.cartItems }
+    return { type: RESTORE_FARM_VEGGIES, farmId: data.farmId, cartItems: data.cartItems, timeStamp: data.timeStamp }
 }
