@@ -1,0 +1,2 @@
+export const REACT_APP_CATEGORIES = "https://plantostore-33e3d-default-rtdb.europe-west1.firebasedatabase.app/categories.json"
+export const REACT_APP_VEGGIES = "https://plantostore-33e3d-default-rtdb.europe-west1.firebasedatabase.app/veggies.json"

@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "agwa-hw",
-    "slug": "agwa-hw",
+    "name": "Plantostore",
+    "slug": "plantostore",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -27,6 +27,13 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "description": "Don't let the fear of limited space keep you from buying plants!",
+    "githubUrl": "https://github.com/zdennisz/plantostore",
+    "extra": {
+      "eas": {
+        "projectId": "f2573b07-0e70-4f42-9e7b-17099c30e42a"
+      }
     }
   }
 }
