@@ -29,6 +29,11 @@
       "favicon": "./assets/favicon.png"
     },
     "description": "Don't let the fear of limited space keep you from buying plants!",
-    "githubUrl": "https://github.com/zdennisz/plantostore"
+    "githubUrl": "https://github.com/zdennisz/plantostore",
+    "extra": {
+      "eas": {
+        "projectId": "f2573b07-0e70-4f42-9e7b-17099c30e42a"
+      }
+    }
   }
 }
